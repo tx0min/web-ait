@@ -13009,8 +13009,9 @@ pre.wp-block-verse {
   height: 100%;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.5);
-  border: 1px dotted #fff;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 3px dotted #2C3E50;
+  border-radius: 5px;
 }
 
 .dropzone > * {
@@ -13018,12 +13019,12 @@ pre.wp-block-verse {
 }
 
 .dropzone.active {
-  border: 1px dotted #2C3E50;
+  border: 3px dotted #2C3E50;
   display: flex;
 }
 
 .dropzone.hover {
-  background-color: rgba(52, 152, 219, 0.5);
+  background-color: rgba(255, 255, 255, 0.9);
   border-color: #3498DB;
 }
 

@@ -30,11 +30,11 @@
 
                         <div class="tab-content"">
                             <div class="tab-pane active" id="user-tab-content" role="tabpanel" >
-                                <div class="row">
+                                <div class="row align-items-start">
                                     <div class="col-sm-3 text-center">
-                                        <div  id="profile_picture_container">
+                                        <div id="profile_picture_container" class="p-3">
                                             <img src="{{ $user->acf->image('profile_picture')->url}}" class="profile-picture mb-3" />
-                                            <button type="button" class="btn  btn-light browse-button" for="f_profile_picture">Canviar imatge</button>
+                                            <button type="button" class="btn btn-block btn-light browse-button" for="f_profile_picture">Canviar imatge</button>
                                             <input type="file" hidden name="profile_picture" id="f_profile_picture"  aria-describedby="f_profile_picture" />
 
                                             <div class="dropzone"><h3>Drop image here...</h3></div>
