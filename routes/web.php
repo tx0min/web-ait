@@ -11,24 +11,6 @@
 |
 */
 
-// Route::get('/', function () {
-//     $posts = Post::type('page')->published()->get();
-//     // dump($posts);
-
-//     // $users = User::get();
-//     // dd($users);
-//     return view('home');
-// });
-
-Route::group(['prefix' => 'backend','middleware' => ['auth']], function () {
-    // Route::get('/', function () {
-    //     $users = User::get();
-    //     return view('home',compact('users'));
-    //     // dd($users);
-       
-    // });
-});
-
 Auth::routes();
 
 Route::get('/', 'WebController@home')->name('home');
@@ -39,4 +21,5 @@ Route::get('/fes-te-soci', 'WebController@festeSoci')->name('fes-te-soci');
 
 Route::group(['prefix' => 'backend','middleware' => ['auth']], function () {
     Route::get('/', 'BackController@index')->name('backend');
+    Route::post('/', 'BackController@save')->name('soci.save');
 });

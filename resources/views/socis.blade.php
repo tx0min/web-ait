@@ -8,7 +8,11 @@
                 @if($users)
                     @foreach($users as $user)
                         <a class=" card text-decoration-none border-0" href="{{ route('socis',['soci_slug'=>$user->slug]) }}">
-                            <figure><img src="{{ $user->acf->image('featured_image')->size('featured')->url}}" class="card-img-top" alt="..."></figure>
+                            @if($featured=$user->acf->image('featured_image'))
+                                @if($featured->url)
+                                    <figure><img src="{{ $featured->url}}" class="card-img-top" alt="..."></figure>
+                                @endif
+                            @endif
                             <div class="d-flex mt-3 align-items-center">
                                 <img src="{{ $user->acf->image('profile_picture')->url}}" class="profile-picture size-xs" />
                                 <div class="pl-2">
