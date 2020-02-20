@@ -1,7 +1,7 @@
-<nav class="border-bottom py-3  ">
-    <button class="d-block d-md-none" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-        <ion-icon name="menu-outline"></ion-icon>
-    </button>
+<nav class="py-3" id="main-nav">
+    <a href="#" class="nav-toggle" >
+        @icon('bars')
+    </a>
 
     <div class="container-fluid">
         <div class="row align-items-center">
@@ -10,9 +10,9 @@
             </a>
             
 
-            <div class="col d-none d-md-block">
+            <div class="col" id="nav-container">
                 <!-- Left Side Of Navbar -->
-                <div class="d-flex justify-content-between">
+                <div class="nav-menus">
                     <ul class="nav">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('associacio') }}">{{ __('Associacio') }}</a>
@@ -38,7 +38,7 @@
                             
                         @else
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('backend') }}"><ion-icon name="person-circle-outline"></ion-icon>{{ __('Backend') }}</a>
+                                <a class="nav-link" href="{{ route('backend') }}">  @icon('user-circle') {{ __('Backend') }}</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>

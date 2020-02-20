@@ -4,29 +4,30 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-12">
-
             
-                
-            <div class="card">
-                <div class="card-header">
-                    <ul class="nav nav-tabs card-header-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="user-tab" data-toggle="tab" href="#user-tab-content" role="tab">Dades del soci</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="xarxes-tab" data-toggle="tab" href="#xarxes-tab-content" role="tab">Xarxes socials</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="portfolio-tab" data-toggle="tab" href="#portfolio-tab-content" role="tab">Portafoli</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-body">
-                    
+            
                     @include('layouts._messages')
+                    
+                    
                     <form method="POST" action="{{ route('soci.save') }}" enctype="multipart/form-data">
                         @csrf
                         @method('POST')
+            
+                        <ul class="nav nav-tabs card-header-tabs responsive-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="user-tab" data-toggle="tab" href="#user-tab-content" role="tab">Dades del soci</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="xarxes-tab" data-toggle="tab" href="#xarxes-tab-content" role="tab">Xarxes socials</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="portfolio-tab" data-toggle="tab" href="#portfolio-tab-content" role="tab">Portafoli</a>
+                            </li>
+                        </ul>
+                    
+                    
+                    
+                   
 
                         <div class="tab-content"">
                             <div class="tab-pane active" id="user-tab-content" role="tabpanel" >
@@ -110,11 +111,11 @@
                             </div>
                         </div>
 
+                        
+               
                         <button type="submit" class="btn btn-lg btn-primary">Guardar</button>
         
                     </form>
-                </div>
-            </div>
 
            
         </div>

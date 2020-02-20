@@ -4,8 +4,20 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+// require('isotope-layout/dist/isotope.pkgd.min.js');
 require('./bootstrap');
+require('./responsiveTabs');
 require('./back');
+require('./socis');
+require('./home');
 
+$(document).ready(function(e){
+    $('#main-nav .nav-toggle').on('click',function(){
+        $('html').toggleClass('nav-opened');
+    })
 
+    $('.responsive-tabs').responsiveTabs({
+        accordionOn: ['xs', 'sm']
+   });
+});
 

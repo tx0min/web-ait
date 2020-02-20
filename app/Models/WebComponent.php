@@ -1,0 +1,124 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Support\Str;
+
+class WebComponent
+{
+
+	public $tag;
+
+	public $attributes;
+	public $data;
+
+	protected $defaultattributes=[];
+	protected $defaultdata=[];
+	protected $hiddenattributes = []; 
+	protected $view = '';
+
+	public function __construct($attributes=[],$data=[]){
+	
+		$this->prepareAttributes($attributes);
+		$this->prepareData($data);
+	}
+
+	protected function viewPath($view){
+		return "ajtarragona-web-components::components.".config("webcomponents.theme").".".$view;
+	}
+	
+
+
+	public function render($args=[]){
+    	if(!$this->isVisible()) return;
+
+
+    	$args=array_merge($args,['attributes'=>$this->attributes,'hiddenattributes'=>$this->hiddenattributes,'data'=>$this->data]);
+    	$args=array_merge($args,$this->attributes);
+    	$args["object"]=$this;
+    	//dump($args);
+    	
+    	return $this->renderView($this->view, $args);
+	}
+
+	protected function renderView($view,$attributes=[]){
+		$path=$this->viewPath($view);
+		$ret="";
+		if(view()->exists($path) ){	
+			$ret=view($path,$attributes)->render(); 
+		}
+		return $ret;
+	}
+
+	public static function generateUid($prefix=false){
+		$ret= ($prefix?$prefix."-":""). Str::uuid();
+		return $ret;//uniqid($prefix?$prefix."-":false);
+	}
+
+
+	protected function prepareAttributes($attributes){
+		if(!$this->attributes) $this->attributes=$this->defaultattributes;
+		if(isset($attributes['class']) && isset($this->attributes['class']) ){
+			$attributes['class'].=" ".$this->attributes['class'];
+		}
+		$this->attributes=array_merge($this->attributes,$attributes);
+	}
+	
+
+	protected function prepareData($data){
+		$this->data=array_merge($this->defaultdata,$data);
+	}
+
+    protected function renderAttributes($excluded=[]) {
+    	return self::html_attributes($this->attributes,false,$excluded);
+    }
+
+    protected function renderData($excluded=[]) {
+    	return self::html_attributes($this->data,"data",$excluded);
+    }
+
+    protected function isVisible(){
+    	if(isset($this->attributes["visible"])){
+    		return $this->attributes["visible"];
+    	} 
+    	return true;
+    }
+
+    public static function html_attributes($array=false, $prefix=false, $excluded=[]) {
+		
+		if(!$array) return;
+
+		$ret="";
+
+		
+		foreach ($array as $k => $v)
+		{	
+			//los data los pongo todos, los attributes solo los que tengan valor
+			if(!in_array($k, $excluded) && ($prefix || $v) ){
+				
+
+				$ret.=" ".($prefix?($prefix."-"):"").$k."=";
+
+				if(is_array($v) || is_object($v)){
+
+					$ret.="'".json_encode($v)."' ";
+			    }else{
+			    	$ret.="\"".addslashes($v)."\" ";
+			    }
+			}
+
+		}
+	
+		
+		return $ret;
+
+	
+	}
+
+
+
+
+	
+
+
+}

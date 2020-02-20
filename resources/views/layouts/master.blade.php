@@ -6,7 +6,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'AIT') }}</title>
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <!-- Styles -->
@@ -14,16 +14,16 @@
     <link rel="shortcut icon" type="image/png" href="{{ asset('img/favicon.png') }}"/>
 
 </head>
-<body>
-    <div id="app">
+<body class="@yield('class')">
+    <div id="app" >
         
         @include('layouts._nav')
 
         <div class="container-fluid "  >
-            <div class="row">
-                <aside class="d-none d-md-block " id="main-aside">
-                    <a href="{{ route('home')}}">
-                        @svg('img/logo-ait.svg',['id'=>'main-logo','class'=>'img-responsive fill-primary m-4'])
+            <div class="row main-row">
+                <aside class="col" id="main-aside">
+                    <a href="{{ route('home')}}" class="d-block">
+                        @svg('img/logo-ait.svg',['id'=>'main-logo','class'=>'img-responsive fill-primary'])
                     </a>
                 </aside>
                 <main class="col pt-5">
@@ -33,7 +33,6 @@
         </div>
     </div>
 
-    <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
-
+   
 </body>
 </html>

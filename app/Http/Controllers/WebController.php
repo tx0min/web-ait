@@ -13,8 +13,23 @@ class WebController extends Controller
     
     public function home()
     {
-        
-        return view('home');
+        // $images=Post::type('page')->published()->get();
+        $page=Post::slug('inicio')->first();
+        $behaviour = $page->acf->behaviour;
+        $slides=$page->acf->repeater('images');
+        // dd($behaviour);
+        $slide=null;
+
+        if($behaviour=="slider"){
+
+        }else{
+            $index=mt_rand(0,$slides->count()-1);
+            // dump($index);
+            $slide = to_object($slides->slice($index,1)->first());
+
+        }
+        // dd($images);
+        return view('home', compact('slides','behaviour','slide'));
     }
     
     public function socis($soci_slug=null){
@@ -23,7 +38,10 @@ class WebController extends Controller
             if(!$user) abort(404);
             return view('soci', compact('user'));
         }else{
-            $users=User::get();
+            $users=User::all()->filter(function($user){
+                return $user->acf->boolean('es_soci');
+            });
+            
             return view('socis', compact('users'));
         }
     }
