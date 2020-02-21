@@ -40548,16 +40548,31 @@ __webpack_require__(/*! ./responsiveTabs */ "./resources/js/responsiveTabs.js");
 
 __webpack_require__(/*! ./back */ "./resources/js/back.js");
 
-__webpack_require__(/*! ./socis */ "./resources/js/socis.js");
+__webpack_require__(/*! ./socis */ "./resources/js/socis.js"); // require('./home');
 
-__webpack_require__(/*! ./home */ "./resources/js/home.js");
 
 $(document).ready(function (e) {
-  $('#main-nav .nav-toggle').on('click', function () {
+  $('header .nav-toggle').on('click', function (e) {
+    e.preventDefault();
     $('html').toggleClass('nav-opened');
   });
   $('.responsive-tabs').responsiveTabs({
     accordionOn: ['xs', 'sm']
+  });
+  $(document).on('keyup', function (e) {
+    if (e.keyCode === 27 && $('html').is('.nav-opened')) {
+      // esc
+      $('html').removeClass('nav-opened');
+    }
+  });
+  $(document).on('click', function (e) {
+    // al(e.target);
+    if ($('html').is('.nav-opened')) {
+      if (!$(e.target).is('.nav-toggle') && $(e.target).closest('.nav-toggle').length == 0 && !$(e.target).is('nav') && $(e.target).closest('nav').length == 0) {
+        e.preventDefault();
+        $('html').removeClass('nav-opened');
+      }
+    }
   });
 });
 
@@ -40725,28 +40740,6 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
-
-/***/ }),
-
-/***/ "./resources/js/home.js":
-/*!******************************!*\
-  !*** ./resources/js/home.js ***!
-  \******************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-$(window).on('load', function () {
-  $('.home-slide').each(function (i) {
-    var color = $(this).data('color');
-    console.log(color);
-    $('body').css('color', color);
-    $('a').css('color', color); // $('#main-logo').css('fill',color);
-
-    $("#main-logo").css({
-      fill: color
-    }).attr("fill", color);
-  });
-});
 
 /***/ }),
 

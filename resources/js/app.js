@@ -9,15 +9,33 @@ require('./bootstrap');
 require('./responsiveTabs');
 require('./back');
 require('./socis');
-require('./home');
+// require('./home');
 
 $(document).ready(function(e){
-    $('#main-nav .nav-toggle').on('click',function(){
+    $('header .nav-toggle').on('click',function(e){
+        e.preventDefault();
         $('html').toggleClass('nav-opened');
     })
 
     $('.responsive-tabs').responsiveTabs({
         accordionOn: ['xs', 'sm']
    });
+
+   $(document).on('keyup', function(e) {
+        if (e.keyCode === 27 && $('html').is('.nav-opened')){
+            // esc
+            $('html').removeClass('nav-opened');
+        }
+    });
+
+    $(document).on('click',function(e){
+        // al(e.target);
+        if($('html').is('.nav-opened')){
+            if(!$(e.target).is('.nav-toggle') && $(e.target).closest('.nav-toggle').length==0  && !$(e.target).is('nav')  && $(e.target).closest('nav').length==0){
+                e.preventDefault();
+                $('html').removeClass('nav-opened');
+            }
+        }
+    });
 });
 

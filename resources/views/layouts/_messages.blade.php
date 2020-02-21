@@ -1,4 +1,16 @@
 <div id="messages">
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+           
+            @foreach ($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        
+        </div>
+    @endif
+
+
     @if (session('success') || session('error') || session('info'))
     
        

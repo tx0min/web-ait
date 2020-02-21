@@ -1,18 +1,18 @@
-<nav class="py-3" id="main-nav">
+<header class="py-3">
     <a href="#" class="nav-toggle" >
         @icon('bars')
     </a>
 
     <div class="container-fluid">
         <div class="row align-items-center">
-            <a class="col" id="nav-aside"  href="{{ route('home') }}">
-                <img src="{{ asset('img/favicon.png') }}" id="logo-ait-nav"/>
+            <a class="col nav-aside"  href="{{ route('home') }}">
+                @svg('img/logo-ait.svg',['class'=>'img-responsive fill-primary'])
+                {{-- <img src="{{ asset('img/favicon.png') }}"/> --}}
             </a>
             
-
-            <div class="col" id="nav-container">
-                <!-- Left Side Of Navbar -->
-                <div class="nav-menus">
+            <div class="col">
+                <nav id="nav-container">
+                   
                     <ul class="nav">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('associacio') }}">{{ __('Associacio') }}</a>
@@ -28,9 +28,8 @@
                         </li>
                     </ul>
 
-                    <!-- Right Side Of Navbar -->
                     <ul class="nav ">
-                        <!-- Authentication Links -->
+                       
                         @guest
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
@@ -59,8 +58,8 @@
                             </li>
                         @endguest
                     </ul>
-                </div>
+                </nav>
             </div>
         </div>
     </div>
-</nav>
+</header>

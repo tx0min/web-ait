@@ -1,9 +1,8 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col">
+
+
             @if($posts)
                 @foreach($posts as $post)
                     <div class="">
@@ -12,7 +11,5 @@
                     </div>
                 @endforeach
             @endif
-        </div>
-    </div>
-</div>
+        
 @endsection

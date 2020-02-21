@@ -4,28 +4,33 @@
   }
   
   .responsive-tabs-container[class*="accordion-"] .tab-pane {
-    margin-bottom: 15px;
+    margin-bottom: 1rem;
   }
   
   .responsive-tabs-container[class*="accordion-"] .accordion-link {
     display: none;
-    margin-bottom: 10px;
-    padding: 10px 15px;
-    background-color: #f5f5f5;
-    border-radius: 3px;
-    border: 1px solid #ddd;
-    color: #333;
+    margin-bottom: .5rem;
+    padding: .6rem 1rem;
+    background-color: $gray-200;
+    color: $primary;
+    
+    border-radius: $nav-tabs-border-radius;
+    border: $nav-tabs-border-width solid $nav-tabs-border-color;
+    // color: #333;
   }
   
   .responsive-tabs-container[class*="accordion-"] .accordion-link.active {
       border-bottom: medium none;
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
-      color: #ff6600;
+      background-color: transparent;
+      color:$primary;
+      margin-bottom: 0;
+    
   }
   
-  @media (max-width: 767px) {
-    .responsive-tabs-container.accordion-xs .nav-tabs {
+  @include media-breakpoint-down(sm) {
+    .responsive-tabs-container.accordion-xs .responsive-tabs{
       display: none;
     }
     
@@ -34,19 +39,20 @@
     }
     
     .responsive-tabs-container[class*="accordion-"] .tab-pane {
-      border:1px solid #ddd;
+      border:$nav-tabs-border-width solid $nav-tabs-border-color;
       border-top:none;
       border-top-left-radius: 0;
       border-top-right-radius: 0;
-      border-width: medium 1px 1px;
-      margin-bottom: 10px;
-      margin-top: -10px;
-      padding: 10px 10px 0;
+      border-width: medium $nav-tabs-border-width $nav-tabs-border-width;
+      margin-bottom: 1rem;
+      margin-top: -1rem;
+      padding: 1rem 1rem 0;
    }
   }
   
-  @media (min-width: 768px) and (max-width: 991px) {
-    .responsive-tabs-container.accordion-sm .nav-tabs {
+  @include media-breakpoint-only(md) {
+  
+    .responsive-tabs-container.accordion-sm .responsive-tabs {
       display: none;
     }
     
@@ -55,19 +61,19 @@
     }
     
     .responsive-tabs-container[class*="accordion-"] .tab-pane {
-      border:1px solid #ddd;
+      border:$nav-tabs-border-width solid $nav-tabs-border-color;
       border-top:none;
       border-top-left-radius: 0;
       border-top-right-radius: 0;
-      border-width: medium 1px 1px;
-      margin-bottom: 10px;
-      margin-top: -10px;
-      padding: 10px 10px 0;
+      border-width: medium $nav-tabs-border-width $nav-tabs-border-width;
+      margin-bottom: 1rem;
+      margin-top: -1rem;
+      padding: 1rem 1rem 0;
    }
   }
   
-  @media (min-width: 992px) and (max-width: 1199px) {
-    .responsive-tabs-container.accordion-md .nav-tabs {
+  @include media-breakpoint-only(lg) {
+    .responsive-tabs-container.accordion-md .responsive-tabs {
       display: none;
     }
     
@@ -76,8 +82,8 @@
     }
   }
   
-  @media (min-width: 1200px) {
-    .responsive-tabs-container.accordion-lg .nav-tabs {
+  @include media-breakpoint-only(xl) {
+    .responsive-tabs-container.accordion-lg .responsive-tabs {
       display: none;
     }
     

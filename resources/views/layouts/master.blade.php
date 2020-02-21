@@ -14,10 +14,10 @@
     <link rel="shortcut icon" type="image/png" href="{{ asset('img/favicon.png') }}"/>
 
 </head>
-<body class="@yield('class')">
+<body class="@yield('class')" style="@yield('style')">
     <div id="app" >
         
-        @include('layouts._nav')
+        @include('layouts._header')
 
         <div class="container-fluid "  >
             <div class="row main-row">
