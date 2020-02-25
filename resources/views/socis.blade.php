@@ -21,7 +21,7 @@
                             </figure>
                             <div class="d-flex align-items-center py-2">
                                 
-                                <img src="{{ $user->acf->image('profile_picture')->url}}" class="profile-picture size-xs" />
+                                <img src="{{ $user->acf->image('profile_picture')->size('square-small')->url}}" class="profile-picture size-xs" />
                                 <div class="pl-2 text-break">
                                     <h5 class="mb-0 ">{{ $user->display_name }}</h5>
                                     {{-- @include("_social") --}}

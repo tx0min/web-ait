@@ -22,4 +22,5 @@ Route::get('/fes-te-soci', 'WebController@festeSoci')->name('fes-te-soci');
 Route::group(['prefix' => 'backend','middleware' => ['auth']], function () {
     Route::get('/', 'BackController@index')->name('backend');
     Route::post('/', 'BackController@save')->name('soci.save');
+    Route::post('/upload/{picture_type}', 'BackController@uploadPicture')->name('soci.upload');
 });

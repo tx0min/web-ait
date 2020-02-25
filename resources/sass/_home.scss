@@ -1,3 +1,4 @@
+@import '~owl.carousel/dist/assets/owl.carousel.css';
 
 /** HOME PAGE */
 @include media-breakpoint-down(sm) {
@@ -46,13 +47,57 @@
     #main-aside{
       z-index:10;
     }
-    
-    .home-slide{
+   
+    #home-slider{
       width:100vw;
       height:100vh;
       position: fixed;
       top:0;
       left:0;
+      overflow: hidden;
+      z-index:1;
+      .owl-dots{
+        position: absolute;
+        left:0;
+        bottom:0;
+        z-index:2;
+        padding:1em;
+        .owl-dot{
+          width:12px;
+          height:12px;
+          display: inline-block;
+          margin-right:.3em;
+          background-color: var(--text-color);
+          border-radius: 50%;
+          opacity:.3;
+          &.active{
+            opacity:1;
+          }
+        }
+      }
+      .owl-stage-outer{
+        height: 100%;
+        .owl-stage{
+          height: 100%;
+          .owl-item{
+            height: 100%;
+            overflow: hidden;
+            .home-slide{
+              height: 100%;
+            }
+
+          }
+        }
+      }
+    }
+
+
+    .home-slide{
+      width:100vw;
+      height:100vh;
+      // position: fixed;
+      // top:0;
+      // left:0;
       overflow: hidden;
       z-index:1;
 

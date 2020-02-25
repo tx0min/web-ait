@@ -1,15 +1,20 @@
 @extends('layouts.master')
 
 @section('class','home-page')
-@section('style','--text-color: '. $slide->color .'; --bg-color: '. $slide->bgcolor )
+
 
 @section('content')
-{{-- animation: kenburns 20s infinite; --}}
-<div class="home-slide" >
-    {{-- @dump($slide) --}}
-    <div class="image" style="background-image:url({{$slide->image->url}})" >
-    </div>
-    <div class="gradient"  ></div>
-    <a class="author-name" href="{{ route('socis',['soci_slug'=>$slide->author->slug]) }}">{{ $slide->author->display_name }}</a>
+
+<div class="owl-carousel" id="home-slider" data-single="{{$behaviour=="random"}}">
+    @foreach($slides as $slide)
+        <div class="home-slide" data-color="{{$slide["color"]}}" data-bg-color="{{$slide["bgcolor"] }}" >
+            {{-- @dump($slide) --}}
+            <div class="image" style="background-image:url({{$slide["image"]->url}})" ></div>
+            <div class="gradient"  ></div>
+            <a class="author-name" href="{{ route('socis',['soci_slug'=>$slide["author"]->slug]) }}">{{ $slide["author"]->display_name }}</a>
+        </div>
+    
+    @endforeach
 </div>
+
 @endsection

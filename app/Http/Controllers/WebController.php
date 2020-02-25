@@ -20,16 +20,16 @@ class WebController extends Controller
         // dd($behaviour);
         $slide=null;
 
-        if($behaviour=="slider"){
-
-        }else{
+        if($behaviour=="random"){
             $index=mt_rand(0,$slides->count()-1);
             // dump($index);
-            $slide = to_object($slides->slice($index,1)->first());
+            $slides = $slides->slice($index,1);
+
 
         }
+        // dd($slides);
         // dd($images);
-        return view('home', compact('slides','behaviour','slide'));
+        return view('home', compact('slides','behaviour'));
     }
     
     public function socis($soci_slug=null){

@@ -5,11 +5,20 @@
  */
 
 // require('isotope-layout/dist/isotope.pkgd.min.js');
+
+window.paceOptions = {
+    ajax: {
+          trackMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH']
+    }
+ };
+
 require('./bootstrap');
+require('./functions');
+require('./vendor/pace.min');
 require('./responsiveTabs');
 require('./back');
 require('./socis');
-// require('./home');
+require('./home');
 
 $(document).ready(function(e){
     $('header .nav-toggle').on('click',function(e){

@@ -26,7 +26,7 @@
                         @svg('img/logo-ait.svg',['id'=>'main-logo','class'=>'img-responsive fill-primary'])
                     </a>
                 </aside>
-                <main class="col pt-5">
+                <main class="col">
                     @yield('content')
                 </main>
             </div>

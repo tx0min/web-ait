@@ -7,7 +7,7 @@
     @include('layouts._messages')
     
     
-    <form method="POST" action="{{ route('soci.save') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('soci.save') }}" enctype="multipart/form-data" class="mb-3" id="user-form">
         @csrf
         @method('POST')
 
@@ -28,8 +28,8 @@
             <div class="tab-pane active pt-3" id="user-tab-content" role="tabpanel" >
                 <div class="row align-items-start">
                     <div class="col-sm-3 text-center">
-                        <div id="profile_picture_container" class="p-3">
-                            <img src="{{ $user->acf->image('profile_picture')->url}}" class="profile-picture mb-3" />
+                        <div id="profile_picture_container" class="p-3 image-uploader" data-url="{{ route('soci.upload',["picture_type"=>'profile_picture']) }}" data-method="post" data-multiple="false">
+                            <img src="{{ $user->acf->image('profile_picture')->size('square-medium')->url}}" class="profile-picture mb-3 image-thumbnail" />
                             <button type="button" class="btn btn-block btn-light browse-button" for="f_profile_picture">Canviar imatge</button>
                             <input type="file" hidden name="profile_picture" id="f_profile_picture"  aria-describedby="f_profile_picture" />
 
@@ -39,7 +39,7 @@
                     <div class="col-sm-9">
                         <div class="form-group">
                             <label for="f_numero_de_soci">Soci</label>
-                            <input type="text" class="form-control" id="f_numero_de_soci" name="numero_de_soci" aria-describedby="f_numero_de_soci" value="{{ $user->acf->text('numero_de_soci') }}">
+                            <input type="text" class="form-control" id="f_numero_de_soci" readonly  name="numero_de_soci" aria-describedby="f_numero_de_soci" value="{{ $user->acf->text('numero_de_soci') }}">
                         </div>
 
                         <div class="form-group">
@@ -92,23 +92,44 @@
             </div>
 
             <div class="tab-pane  pt-3" id="portfolio-tab-content" role="tabpanel" >
+
+                <div id="featured_picture_container" class="image-uploader w-50" data-url="{{ route('soci.upload',["picture_type"=>'featured_image']) }}" data-method="post" data-multiple="false">
+                    <img src="{{ $user->acf->image('featured_image')->url}}" class="mb-3 w-100 image-thumbnail" />
+                    <button type="button" class="btn btn-block btn-light browse-button" for="f_profile_picture">Canviar imatge</button>
+                    <input type="file" hidden name="featured_image" id="f_featured_image"  aria-describedby="f_featured_image" />
+
+                    <div class="dropzone"><h3>Drop image here...</h3></div>
+                </div>
+
                 <div cass="row">
-                    @if($images=$user->acf->gallery('galeria'))
-                        @foreach($images as $image)
-                            <div class="col col-2">
-                                <figure >
-                                    <img src="{{ $image->url}}" class="img-fluid w-100" />
-                                </figure>
-                            </div>
-                        @endforeach
-                    @endif
+                    
+
+                    <div id="galeria_container" class="image-uploader" data-url="{{ route('soci.upload',["picture_type"=>'galeria']) }}" data-method="post" data-multiple="false">
+                        <div class="thumbnails-container">
+                            @if($images=$user->acf->gallery('galeria'))
+                                @foreach($images as $image)
+                                    <div class="col col-2">
+                                        <figure >
+                                            <img src="{{ $image->url}}" class="img-fluid w-100" />
+                                        </figure>
+                                    </div>
+                                @endforeach
+                            @endif
+                        </div>
+
+                        <button type="button" class="btn btn-block btn-light browse-button" for="f_galeria">Afegir imatge/s</button>
+                        <input type="file" hidden name="galeria" id="f_galeria"  aria-describedby="f_galeria" multiple />
+    
+                        <div class="dropzone"><h3>Drop image/s here...</h3></div>
+                    </div>
                 </div>
             </div>
         </div>
 
         
-
-        <button type="submit" class="btn btn-lg btn-primary">Guardar</button>
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-lg btn-primary" >Guardar</button>
+        </div>
 
     </form>
 

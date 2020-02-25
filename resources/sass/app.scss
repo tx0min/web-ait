@@ -13,8 +13,10 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+
 //wordpresss styles
 @import 'theme';
+@import 'vendor/pace';
 @import 'responsiveTabs';
 @import 'animations';
 @import 'wp';
@@ -191,8 +193,18 @@ header{
 
 .main-row{
   flex-wrap: nowrap;
-  padding-top:5em;
+  padding-top:5.2em;
+ 
 }
+
+@include media-breakpoint-up(md) {
+  
+.main-row > main{
+    padding-top:3em;
+  }
+
+}
+
 
 
 
