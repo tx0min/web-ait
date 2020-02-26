@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BackController extends Controller
 {
-    
+
     protected $client=null;
 
 
@@ -23,15 +23,16 @@ class BackController extends Controller
         return view('backend', compact('user'));
     }
 
-    
+
 
     public function removePicture($picture_type, $image_id=null, Request $request){
         try{
             $user=Auth::user();
             return $user->removePicture($picture_type, $image_id);
         }catch(Exception $e){
+
             abort(500, "Error removing image");
-        }  
+        }
     }
 
     public function sortPictures($picture_type, Request $request){
@@ -41,22 +42,22 @@ class BackController extends Controller
             return $user->sortPictures($picture_type, $request->ids);
         }catch(Exception $e){
             abort(500, "Error sorting images");
-        }    
+        }
     }
-    
+
     public function uploadPicture($picture_type, Request $request){
         try{
             $user=Auth::user();
             return $user->uploadPicture($picture_type, $request);
         }catch(Exception $e){
             abort(500, "Error uploading image");
-        }    
+        }
     }
-    
 
 
 
-    /** 
+
+    /**
      * Guarda los campos del usuario
      * Las imagenes se hacen aparta
      */
@@ -66,8 +67,9 @@ class BackController extends Controller
             //dd($request->all());
             $user=Auth::user();
             // dd($user);
+            //dd($request->all());
             $user->saveMeta($request->all());
-            
+
             return redirect()
                 ->route('backend')
                 ->with(['success'=>"ok"]);
@@ -75,7 +77,7 @@ class BackController extends Controller
         }catch(Exception $e){
             return redirect()
                 ->route('backend')
-                ->with(['error'=>"error"]); 
-        }     
+                ->with(['error'=>"error"]);
+        }
     }
 }

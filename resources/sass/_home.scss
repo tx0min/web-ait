@@ -6,12 +6,12 @@
     color: var(--text-color);
   }
 
-  
+
   .home-page header .nav-aside svg{
       fill: var(--text-color);
       height:120px;
   }
-  
+
 }
 
 
@@ -20,7 +20,7 @@
     background-color: var(--bg-color);
     color: var(--text-color);
 
-  
+
     // svg{
     //   fill:$white;
     // }
@@ -30,11 +30,11 @@
     header{
         background-color: transparent;
         z-index:10;
-        
+
     }
 
-    
-    
+
+
     @include media-breakpoint-up(md) {
       header nav a{
         color: var(--text-color);
@@ -47,7 +47,7 @@
     #main-aside{
       z-index:10;
     }
-   
+
     #home-slider{
       width:100vw;
       height:100vh;
@@ -123,7 +123,7 @@
         background-size: cover;
         animation: kenburns 20s alternate infinite ;
       }
-  
+
       .author-name{
         position: absolute;
         display: inline-block;
@@ -135,8 +135,31 @@
         z-index:5;
 
         color: var(--text-color);
-        
+
+      }
+      .page-title{
+          position:absolute;
+          top:180px;
+          left:260px;
+          z-index:6;
+          font-size:4em;
+          font-weight: 100;
+          width:50vw;
+          word-break: break-word;
+          text-shadow: 1px 1px 1px var(--bg-color);
+
+
+      }
+
+      @include media-breakpoint-down(sm) {
+        .page-title{
+            left:20px;
+            top: 200px;
+            font-size: 3em;
+            width:auto;
+
+        }
       }
     }
-  
+
   }

@@ -9,7 +9,7 @@
                 {!! $user->renderProfileImage(['class'=>'profile-picture','size'=>'square-medium']) !!}
             </div>
             <div class="col-lg-6 col-md-9 pt-2  text-break">
-                <h1 class="display-4 ">{{ $user->display_name }}</h1>
+                <h1 class="display-4 ">{{ $user->displayName() }}</h1>
                 <p>{{ $user->biografia() }}</p>
             </div>
             <div class="col-lg-2 col-md-12 pt-4">
@@ -17,9 +17,9 @@
                 @if($mail=$user->acf->text('soci_email')) <a href="mailto:{{ $mail }}">{{ $mail }}</a> @endif
                 @include("_social")
             </div>
-            
 
-            
+
+
         </div>
         <div class="row mt-4">
             <div class="col-md-12">
@@ -30,7 +30,7 @@
                         </figure>
                     @endforeach
                 @endif
-                
+
             </div>
 
         </div>

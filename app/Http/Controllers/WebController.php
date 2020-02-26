@@ -10,11 +10,11 @@ use Corcel\Acf\Field\Image;
 
 class WebController extends Controller
 {
-    
+
     public function home()
     {
         // $images=Post::type('page')->published()->get();
-        $page=Post::slug('inicio')->first();
+        $page=Post::slug(config('ait.pages.home'))->first();
         $behaviour = $page->acf->behaviour;
         $slides=$page->acf->repeater('images');
         // dd($behaviour);
@@ -31,7 +31,7 @@ class WebController extends Controller
         // dd($images);
         return view('home', compact('slides','behaviour'));
     }
-    
+
     public function socis($soci_slug=null){
         if($soci_slug){
             $user=User::getBySlug($soci_slug);
@@ -55,14 +55,14 @@ class WebController extends Controller
     }
 
     public function associacio(){
-        $page=Post::slug('associacio')->first();
+        $page=Post::slug(config('ait.pages.associacio'))->first();
         return view('associacio', compact('page'));
     }
 
     public function festeSoci(){
 
-        $page=Post::slug('fes-te-soci')->first();
-        
+        $page=Post::slug(config('fes-te-soci'))->first();
+
         return view('fes-te-soci',compact('page'));
     }
 }

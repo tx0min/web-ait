@@ -93,13 +93,13 @@ return [
 
         'wordpress' => [ // for WordPress database (used by Corcel)
             'driver'    => 'mysql',
-            'host'      => 'localhost',
-            'database'  => 'wordpress',
-            'username'  => 'root',
-            'password'  => '',
+            'host'      => env('WP_DB_HOST', 'localhost'),
+            'database'  => env('WP_DB_DATABASE', 'wordpress'),
+            'username'  => env('WP_DB_USERNAME', 'root'),
+            'password'  => env('WP_DB_PASSWORD', ''),
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
-            'prefix'    => 'wp_',
+            'prefix'    => env('WP_DB_PREFIX', 'wp_'),
             'strict'    => false,
             'engine'    => null,
         ],
