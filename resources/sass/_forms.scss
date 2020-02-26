@@ -2,9 +2,16 @@
     border-top-width: 0;
     border-right-width: 0;
     border-left-width: 0;
-    
+    color:$black;
+
     &:focus{
         box-shadow:none;
+        border-color:$gray-300;
+
+        &:not(:read-only){
+            border-color:$primary;
+            color:$primary;
+        }
     }
 
     &:not(:read-only){
@@ -13,6 +20,23 @@
     }
 }
 
+
 .custom-control-input:focus ~ .custom-control-label::before{
     box-shadow:none;
+}
+
+
+
+
+
+.input-group-prepend,
+.input-group-append{
+  margin-bottom: 0 !important;
+}
+
+.input-group-text{
+  background-color:transparent;
+  border-left-width: 0;
+  border-right-width: 0;
+  border-top-width: 0;
 }

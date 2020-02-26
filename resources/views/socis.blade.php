@@ -10,18 +10,11 @@
                     
                         <a class="soci grid-item" href="{{ route('socis',['soci_slug'=>$user->slug]) }}">
                             <figure class="mb-0">
-                            @if($featured=$user->acf->image('featured_image'))
-
-                                @if($featured->url)
-                                    <img src="{{ $featured->size('square-medium')->url}}" class="card-img-top" alt="...">
-                                @else
-                                    <img src="{{ asset('img/pencil-placeholder.png') }}" class="card-img-top" alt="...">
-                                @endif
-                            @endif
+                                 {!! $user->renderFeaturedImage(['class'=>'card-img-top','size'=>'square-medium']) !!}
                             </figure>
                             <div class="d-flex align-items-center py-2">
                                 
-                                <img src="{{ $user->acf->image('profile_picture')->size('square-small')->url}}" class="profile-picture size-xs" />
+                                {!! $user->renderProfileImage(['class'=>'profile-picture size-xs','size'=>'square-small']) !!}
                                 <div class="pl-2 text-break">
                                     <h5 class="mb-0 ">{{ $user->display_name }}</h5>
                                     {{-- @include("_social") --}}

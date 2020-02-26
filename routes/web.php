@@ -23,4 +23,6 @@ Route::group(['prefix' => 'backend','middleware' => ['auth']], function () {
     Route::get('/', 'BackController@index')->name('backend');
     Route::post('/', 'BackController@save')->name('soci.save');
     Route::post('/upload/{picture_type}', 'BackController@uploadPicture')->name('soci.upload');
+    Route::post('/sort/{picture_type}', 'BackController@sortPictures')->name('soci.sort');
+    Route::delete('/upload/{picture_type}/{image_id?}', 'BackController@removePicture')->name('soci.removepicture');
 });

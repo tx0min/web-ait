@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Corcel\Model\Post;
-use Corcel\Model\User;
+use App\User;
 use Corcel\Acf\Field\Image;
 
 class WebController extends Controller
@@ -34,14 +34,10 @@ class WebController extends Controller
     
     public function socis($soci_slug=null){
         if($soci_slug){
-            $user=User::where('user_nicename',$soci_slug)->first();
-            if(!$user) abort(404);
+            $user=User::getBySlug($soci_slug);
             return view('soci', compact('user'));
         }else{
-            $users=User::all()->filter(function($user){
-                return $user->acf->boolean('es_soci');
-            });
-            
+            $users=User::getSocis();
             return view('socis', compact('users'));
         }
     }

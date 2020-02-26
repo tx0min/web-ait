@@ -68,7 +68,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'corcel',
-            'model' => Corcel\Model\User::class,
+            'model' => App\User::class,
         ],
 
         // 'users' => [
