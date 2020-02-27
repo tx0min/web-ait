@@ -13654,36 +13654,35 @@ pre.wp-block-verse {
   }
 }
 
-.form-control {
+.form-control,
+.custom-select {
   border-top-width: 0;
   border-right-width: 0;
   border-left-width: 0;
   color: #000;
 }
 
-.form-control:focus {
+.form-control:focus,
+.custom-select:focus {
   box-shadow: none;
-  border-color: #dee2e6;
 }
 
-.form-control:focus:not(:-moz-read-only) {
-  border-color: #212529;
+.form-control:focus:not(:-moz-read-only), .custom-select:focus:not(:-moz-read-only) {
+  border-color: rgba(33, 37, 41, 0.4);
+  background-color: rgba(33, 37, 41, 0.1);
   color: #212529;
 }
 
-.form-control:focus:not(:read-only) {
-  border-color: #212529;
+.form-control:focus:not(:read-only),
+.custom-select:focus:not(:read-only) {
+  border-color: rgba(33, 37, 41, 0.4);
+  background-color: rgba(33, 37, 41, 0.1);
   color: #212529;
 }
 
-.form-control:not(:-moz-read-only) {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.form-control:not(:read-only) {
-  padding-left: 0;
-  padding-right: 0;
+.custom-select:focus {
+  background-color: rgba(33, 37, 41, 0.1);
+  border-color: rgba(33, 37, 41, 0.4);
 }
 
 .custom-control-input:focus ~ .custom-control-label::before {

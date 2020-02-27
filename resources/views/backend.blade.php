@@ -92,7 +92,7 @@
                             
                             <div class="form-group">
                                 <label for="f_nickname">Alias</label>
-                                <input type="text" class="form-control " id="f_nickname" name="nickname" aria-describedby="f_nickname" value="{{ $user->nickname }}">
+                                <input type="text" class="form-control @error('nickname') is-invalid @enderror " id="f_nickname" name="nickname" aria-describedby="f_nickname" value="{{ $user->nickname }}">
                             {{-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> --}}
                             </div>
                             <div class="form-group">
@@ -114,13 +114,14 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="f_disciplines">Disciplines</label>
+                                
+                                <label for="f_disciplines" class="@error('disciplines') text-danger @enderror" >Disciplines @error('disciplines') @icon('exclamation-circle') @enderror</label>
                                 {{-- @dump($disciplines)
                                 @dump($user_disciplines_ids) --}}
                                 {{-- @dump($user->fields()->where('meta_key','disciplines')->get()) --}}
                                 
                                 {{-- <select class="custom-select" multiple id="f_disciplines" rows="10" name="disciplines"> --}}
-                                    <input type="hidden" name="disciplines[]" value="0">
+                                    {{-- <input type="hidden" name="disciplines[]" value="0"> --}}
                                             
                                     @foreach($disciplines as $disciplina)
                                         <div class="custom-control custom-checkbox">

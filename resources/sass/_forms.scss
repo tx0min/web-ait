@@ -1,25 +1,34 @@
-.form-control{
+.form-control,
+.custom-select{
     border-top-width: 0;
     border-right-width: 0;
     border-left-width: 0;
-    color:$black;
+    color: $black;
 
     &:focus{
         box-shadow:none;
-        border-color:$gray-300;
+        // border-color: $gray-300;
 
         &:not(:read-only){
-            border-color:$primary;
+            border-color: rgba($primary, 0.4);
+            background-color: rgba($primary,0.1);
             color:$primary;
         }
     }
 
     &:not(:read-only){
-        padding-left:0;
-        padding-right:0;
+        // padding-left:0;
+        // padding-right:0;
     }
 }
-
+.custom-select{
+    // padding-left:0;
+    // padding-right:0;
+    &:focus{
+        background-color: rgba($primary,0.1);
+        border-color: rgba($primary, 0.4);
+    }
+}
 
 .custom-control-input:focus ~ .custom-control-label::before{
     box-shadow:none;

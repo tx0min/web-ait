@@ -16,5 +16,6 @@ return [
         'small' => 'square-small',
         'medium' => 'square-medium',
         'big' => 'square-big' 
-    ]
+    ],
+    'image-max-size' => 1000000
 ];

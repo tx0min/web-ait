@@ -43,8 +43,7 @@ class BackController extends Controller
             $user=Auth::user();
             return $user->removePicture($picture_type, $image_id);
         }catch(Exception $e){
-
-            abort(500, "Error removing image");
+            abort(500, "No s'ha pogut esborrar la imatge");
         }
     }
 
@@ -54,17 +53,19 @@ class BackController extends Controller
             // dd($request->all());
             return $user->sortPictures($picture_type, $request->ids);
         }catch(Exception $e){
-            abort(500, "Error sorting images");
+            abort(500, "No s'han pogut reordenar les imatges");
         }
     }
 
     public function uploadPicture($picture_type, Request $request){
-        try{
+        // try{
             $user=Auth::user();
             return $user->uploadPicture($picture_type, $request);
-        }catch(Exception $e){
-            abort(500, "Error uploading image");
-        }
+        // }catch(Exception $e){
+        //     return $e;
+        //     // dd($e);
+        //     // abort(500, "Error uploading image");
+        // }
     }
 
 
@@ -85,13 +86,13 @@ class BackController extends Controller
             
             return redirect()
                 ->route('backend')
-                ->with(['success'=>"ok"]);
+                ->with(['success'=>"El perfil s'ha guardat correctament!"]);
 
         }catch(Exception $e){
             dd($e);
             return redirect()
                 ->route('backend')
-                ->with(['error'=>"error"]);
+                ->with(['error'=>"Hi ha hagut algun error guardant el perfil..."]);
         }
     }
 }

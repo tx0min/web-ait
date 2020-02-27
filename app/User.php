@@ -15,12 +15,16 @@ class User extends CorcelUser
     protected $api_client;
     protected $rest_fields = ["disciplines"];
     protected $api_fields = ["first_name", "last_name", "nickname", "display_name",  "soci_biografia", "soci_email", "soci_web", "facebook", "twitter", "instagram", "youtube", "linkedin"];
-    
+    protected $valid_mimes = [ "image/png" , "image/jpg", "image/jpeg", "image/gif" ];
+    protected $max_file_size;
+        
     /**
      * Class constructor.
      */
     public function __construct()
     {
+        $this->max_file_size = config('ait.image-max-size');
+        
         $this->api_client = new Client([
 			'base_uri' => config('ait.wordpress.url'),
 			'verify' =>false
@@ -49,7 +53,7 @@ class User extends CorcelUser
 
     public static function getBySlug($soci_slug){
         $user=self::where('user_login',$soci_slug)->first();
-        if(!$user) abort(404, "User not found");
+        if(!$user) abort(404, "No s'ha trobat l'usuari");
         return $user;
     }
 
@@ -231,6 +235,23 @@ class User extends CorcelUser
         return $image_ids;
 
     }
+
+
+    protected function errorMessage($code, $name=""){
+        $message="Error desconegut";
+        
+        switch($code){
+            case 415: $message= __("El format de l'arxiu <strong>:name</strong> no és correcte. Només pots pujar imatges JPG, PNG o GIF.",["name"=>$name]); break;
+            case 413: $message= __("La mida de l'arxiu <strong>:name</strong> és massa gran. Només pots pujar arxius de fins a 3MB.",["name"=>$name]); break;
+            default:break;
+        }
+
+        return to_object([
+            "code"=>$code,
+            "message"=>$message
+        ]);
+            
+    }
     public function uploadPicture($picture_type, Request $request){
 
 
@@ -238,8 +259,17 @@ class User extends CorcelUser
 
         if($request->multiple){
             $uploaded_images=[];
+            $errors=[];
             foreach($request->file as $file){
-                $uploaded_images[]=$this->doUploadPicture($file);
+                
+                $pic=$this->doUploadPicture($file);
+                if(is_int($pic)){
+                    $error=$this->errorMessage($pic,$file->getClientOriginalName());
+                    
+                    $errors[]= $error->message;//$file->getClientOriginalName();
+                }else{
+                    $uploaded_images[]=$pic;
+                }
             }
 
 
@@ -265,7 +295,8 @@ class User extends CorcelUser
 
                 return [
                     "status"=>"success",
-                    "images" => $retimages
+                    "images" => $retimages,
+                    "errors" => $errors
                 ];
             }  catch(Exception $e){
                 //dd($e);
@@ -273,15 +304,25 @@ class User extends CorcelUser
 
         }else{
             $image=$this->doUploadPicture($request->file);
+            if($image){
+                if(is_int($image)){
+                    $error=$this->errorMessage($image); 
+                    abort($error->code, $error->message);
+                }else{
+                    $this->saveMeta([$picture_type=>$image->id]);
 
-            $this->saveMeta([$picture_type=>$image->id]);
-
-            $imageurl=isset($image->media_details->sizes->{$size})? $image->media_details->sizes->{$size}->source_url:$image->source_url;
-            return [
-                "status"=>"success",
-                "imageurl" => $imageurl,
-                "imageid" => $image->id
-            ];
+                    $imageurl = isset($image->media_details->sizes->{$size})? $image->media_details->sizes->{$size}->source_url:$image->source_url;
+                    return [
+                        "status"=>"success",
+                        "imageurl" => $imageurl,
+                        "imageid" => $image->id
+                    ];
+                }
+            }else{
+                $error=$this->errorMessage(400);
+                    
+            }
+            
         }
 
 
@@ -294,6 +335,11 @@ class User extends CorcelUser
 
     private function doUploadPicture($file){
         $fileName=$file->getClientOriginalName();
+        
+        if($file->getSize() > $this->max_file_size) return 413;
+
+        if(!in_array($file->getMimeType(), $this->valid_mimes)) return 415;
+         
         $fileContent = File::get($file->path());
         try{
 
