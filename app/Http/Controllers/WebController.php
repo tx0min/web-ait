@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Corcel\Model\Post;
 use App\User;
 use Corcel\Acf\Field\Image;
+use Corcel\Model\Taxonomy;
 
 class WebController extends Controller
 {
@@ -37,8 +38,10 @@ class WebController extends Controller
             $user=User::getBySlug($soci_slug);
             return view('soci', compact('user'));
         }else{
+            $disciplines= Taxonomy::where('taxonomy', 'disciplines')->get();
+        
             $users=User::getSocis();
-            return view('socis', compact('users'));
+            return view('socis', compact('users','disciplines'));
         }
     }
 
@@ -55,8 +58,9 @@ class WebController extends Controller
     }
 
     public function associacio(){
+        $users=User::getJunta();
         $page=Post::slug(config('ait.pages.associacio'))->first();
-        return view('associacio', compact('page'));
+        return view('associacio', compact('page','users'));
     }
 
     public function festeSoci(){

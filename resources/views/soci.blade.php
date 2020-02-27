@@ -2,17 +2,22 @@
 
 @section('content')
 <div class="row">
-    <div class="col-sm-9">
+    <div class="col-xl-9">
         {{-- @dump($user->meta->where('meta_key','wp_capabilities')) --}}
         <div class="row align-items-start">
-            <div class="col col-sm-3 col-md-3 col-lg-2">
-                {!! $user->renderProfileImage(['class'=>'profile-picture','size'=>'square-medium']) !!}
+            <div class="col-lg-2 text-center text-lg-left">
+                {!! $user->renderProfileImage(['class'=>'profile-picture','size'=>'medium']) !!}
             </div>
-            <div class="col-lg-6 col-md-9 pt-2  text-break">
-                <h1 class="display-4 ">{{ $user->displayName() }}</h1>
+            <div class="col-lg-6 pt-2  text-break text-center text-lg-left">
+                <h1 class="display-4 text-truncate">{{ $user->displayName() }}</h1>
                 <p>{{ $user->biografia() }}</p>
+                @if($disciplines=$user->disciplines())
+                    @foreach($disciplines as $disciplina)
+                        <span class="badge badge-dark">{{ $disciplina->name }}</span>
+                    @endforeach
+                @endif
             </div>
-            <div class="col-lg-2 col-md-12 pt-4">
+            <div class="col-lg-3 pt-4 text-center text-lg-left">
                 @if($web=$user->acf->url('soci_web')) <a href="{{ $web }}" target="_blank">{{ $web }}</a> @endif
                 @if($mail=$user->acf->text('soci_email')) <a href="mailto:{{ $mail }}">{{ $mail }}</a> @endif
                 @include("_social")

@@ -11747,7 +11747,7 @@ a {
   flex-wrap: wrap;
 }
 
-@media (min-width: 782px) {
+@media (min-width: 768px) {
   .wp-block-columns {
     flex-wrap: nowrap;
   }
@@ -11760,13 +11760,13 @@ a {
   overflow-wrap: break-word;
 }
 
-@media (max-width: 599px) {
+@media (max-width: 767.98px) {
   .wp-block-column {
     flex-basis: 100% !important;
   }
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   .wp-block-column {
     flex-basis: calc(50% - 16px);
     flex-grow: 0;
@@ -11777,15 +11777,15 @@ a {
   }
 }
 
-@media (min-width: 782px) {
+@media (min-width: 992px) {
   .wp-block-column:not(:first-child) {
     margin-left: 32px;
   }
 }
 
 /**
- * All Columns Alignment
- */
+   * All Columns Alignment
+   */
 
 .wp-block-columns.are-vertically-aligned-top {
   align-items: flex-start;
@@ -11800,8 +11800,8 @@ a {
 }
 
 /**
- * Individual Column Alignment
- */
+   * Individual Column Alignment
+   */
 
 .wp-block-column.is-vertically-aligned-top {
   align-self: flex-start;
@@ -11822,8 +11822,6 @@ a {
   background-color: #000;
   background-size: cover;
   background-position: center center;
-  min-height: 430px;
-  height: 100%;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -12297,7 +12295,7 @@ section.wp-block-cover-image > h2,
   margin-right: 0;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   .wp-block-gallery.columns-3 .blocks-gallery-image,
   .wp-block-gallery.columns-3 .blocks-gallery-item,
   .blocks-gallery-grid.columns-3 .blocks-gallery-image,
@@ -12557,50 +12555,6 @@ section.wp-block-cover-image > h2,
   }
 }
 
-.wp-block-latest-comments__comment {
-  font-size: 15px;
-  line-height: 1.1;
-  list-style: none;
-  margin-bottom: 1em;
-}
-
-.has-avatars .wp-block-latest-comments__comment {
-  min-height: 36px;
-  list-style: none;
-}
-
-.has-avatars .wp-block-latest-comments__comment .wp-block-latest-comments__comment-meta,
-.has-avatars .wp-block-latest-comments__comment .wp-block-latest-comments__comment-excerpt {
-  margin-left: 52px;
-}
-
-.has-dates .wp-block-latest-comments__comment,
-.has-excerpts .wp-block-latest-comments__comment {
-  line-height: 1.5;
-}
-
-.wp-block-latest-comments__comment-excerpt p {
-  font-size: 14px;
-  line-height: 1.8;
-  margin: 5px 0 20px;
-}
-
-.wp-block-latest-comments__comment-date {
-  color: #8f98a1;
-  display: block;
-  font-size: 12px;
-}
-
-.wp-block-latest-comments .avatar,
-.wp-block-latest-comments__comment-avatar {
-  border-radius: 24px;
-  display: block;
-  float: left;
-  height: 40px;
-  margin-right: 12px;
-  width: 40px;
-}
-
 .wp-block-latest-posts.alignleft {
   /*rtl:ignore*/
   margin-right: 2em;
@@ -12626,7 +12580,7 @@ section.wp-block-cover-image > h2,
   width: 100%;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   .wp-block-latest-posts.columns-2 li {
     width: calc((100% / 2) - 16px);
   }
@@ -12749,14 +12703,14 @@ section.wp-block-cover-image > h2,
 }
 
 /*
-* Here we here not able to use a mobile first CSS approach.
-* Custom widths are set using inline styles, and on mobile,
-* we need 100% width, so we use important to overwrite the inline style.
-* If the style were set on mobile first, on desktop styles,
-* we would have no way of setting the style again to the inline style.
-*/
+  * Here we here not able to use a mobile first CSS approach.
+  * Custom widths are set using inline styles, and on mobile,
+  * we need 100% width, so we use important to overwrite the inline style.
+  * If the style were set on mobile first, on desktop styles,
+  * we would have no way of setting the style again to the inline style.
+  */
 
-@media (max-width: 600px) {
+@media (min-width: 768px) {
   .wp-block-media-text.is-stacked-on-mobile {
     -ms-grid-columns: 100% !important;
     grid-template-columns: 100% !important;
@@ -12936,25 +12890,25 @@ p.has-text-color a {
   width: 100%;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   .wp-block-rss.columns-2 li {
-    width: calc(( 100% / 2 ) - 16px);
+    width: calc((100% / 2) - 16px);
   }
 
   .wp-block-rss.columns-3 li {
-    width: calc(( 100% / 3 ) - 16px);
+    width: calc((100% / 3) - 16px);
   }
 
   .wp-block-rss.columns-4 li {
-    width: calc(( 100% / 4 ) - 16px);
+    width: calc((100% / 4) - 16px);
   }
 
   .wp-block-rss.columns-5 li {
-    width: calc(( 100% / 5 ) - 16px);
+    width: calc((100% / 5) - 16px);
   }
 
   .wp-block-rss.columns-6 li {
-    width: calc(( 100% / 6 ) - 16px);
+    width: calc((100% / 6) - 16px);
   }
 }
 
@@ -13684,6 +13638,22 @@ pre.wp-block-verse {
   text-align: right;
 }
 
+/* Alignment Classes ------------------------- */
+
+*.alignfull {
+  margin-left: -15px;
+  width: calc(100vw - 0px);
+  margin-right: -15px;
+}
+
+@media (min-width: 768px) {
+  *.alignfull {
+    margin-left: -245px;
+    width: calc(100vw - 17px);
+    margin-right: -15px;
+  }
+}
+
 .form-control {
   border-top-width: 0;
   border-right-width: 0;
@@ -13730,6 +13700,10 @@ pre.wp-block-verse {
   border-left-width: 0;
   border-right-width: 0;
   border-top-width: 0;
+}
+
+.form-group > label {
+  color: #95a5a6;
 }
 
 /** layout styles */
@@ -13835,6 +13809,10 @@ header nav {
 
   header nav ul.nav:first-child .nav-item {
     padding-left: 0px;
+  }
+
+  header nav ul.nav:last-child .nav-item {
+    padding-right: 0px;
   }
 
   header .nav-toggle {
@@ -14035,7 +14013,7 @@ header nav {
 
 .home-page .home-slide .page-title {
   position: absolute;
-  top: 180px;
+  top: 95px;
   left: 260px;
   z-index: 6;
   font-size: 4em;
@@ -14048,8 +14026,8 @@ header nav {
 @media (max-width: 767.98px) {
   .home-page .home-slide .page-title {
     left: 20px;
-    top: 200px;
-    font-size: 3em;
+    top: 150px;
+    font-size: 2.4em;
     width: auto;
   }
 }

@@ -13,8 +13,9 @@ class User extends CorcelUser
 {
 
     protected $api_client;
-
-
+    protected $rest_fields = ["disciplines"];
+    protected $api_fields = ["first_name", "last_name", "nickname", "display_name",  "soci_biografia", "soci_email", "soci_web", "facebook", "twitter", "instagram", "youtube", "linkedin"];
+    
     /**
      * Class constructor.
      */
@@ -31,6 +32,11 @@ class User extends CorcelUser
     public static function getSocis(){
         return self::all()->filter(function($user){
             return $user->acf->boolean('es_soci');
+        });
+    }
+    public static function getJunta(){
+        return self::all()->filter(function($user){
+            return $user->acf->boolean('es_junta');
         });
     }
 
@@ -69,6 +75,10 @@ class User extends CorcelUser
         else return isset($this->{$display})?$this->{$display}:$this->nickname;
     }
 
+    public function get_display(){
+        return $this->acf->select('display_name','nickname');
+    }
+
     public function galeria(){
         return $this->acf->gallery('galeria');
     }
@@ -89,6 +99,48 @@ class User extends CorcelUser
         return $this->acf->image('featured_image');
     }
 
+
+    private function getACField($field_name){
+        //GET acf/v3/users/user_id/field_name
+        $response=$this->api_client->request('GET', 'acf/v3/users/'.$this->ID.'/'.$field_name,
+            [
+                'auth' => [
+                    config('ait.wordpress.user'),
+                    config('ait.wordpress.password')
+                ]
+            ]
+        );
+        return json_decode($response->getBody()->getContents())->{$field_name};
+
+    }
+
+    private function setACField($field_name, $value){
+        //POST acf/v3/users/user_id
+        // dump($field_name);
+        // dd($value);
+        return  $this->api_client->request('POST', 'acf/v3/users/'.$this->ID,
+            [
+                'auth' => [
+                    config('ait.wordpress.user'),
+                    config('ait.wordpress.password')
+                ],
+                'form_params' => [
+                    'fields' => [
+                        $field_name => $value
+                    ]
+                ]
+            ]
+        );
+
+    }
+
+
+    public function disciplines(){
+       return $this->getACField('disciplines');
+    }
+
+
+
     public function renderProfileImage($options=[]){
         return $this->renderImage($this->profileImage(), $options);
     }
@@ -98,34 +150,19 @@ class User extends CorcelUser
 
     }
 
-    public function renderDisplayOptions(){
-        $display=$this->acf->select('display_name');
-        //dump($display);
-        $options=[
-            "user_login" => "Username",
-            "nickname" => "Alias",
-            "first_name" => "Nom",
-            "full_name" => "Nom i Cognoms",
-        ];
-
-        $ret='<select class="custom-select" id="f_display_name" name="display_name">';
-        foreach($options as $key=>$option){
-            $ret.="<option ".(($key==$display)?"selected":"")." value='".$key."'>".$option."</option>";
-        }
-        $ret.="</select>";
-        return $ret;
-    }
+    
     public function renderImage($image, $options=[]){
         // dump($image);
         if(!is_array($options)) $options=[];
 
         $defaults=[
-            "size" => "square-medium",
+            "size" => "medium",
             "class" => "",
             "title" => $this->display_name,
         ];
 
         $options=array_merge($defaults,$options);
+        $options["size"] = config('ait.sizes.'.$options["size"]);
 
 
         if($image && $image->url){
@@ -182,19 +219,7 @@ class User extends CorcelUser
 
 
     protected function saveImageIds($picture_type,$image_ids){
-        return  $this->api_client->request('POST', 'acf/v3/users/'.$this->ID,
-            [
-                'auth' => [
-                    config('ait.wordpress.user'),
-                    config('ait.wordpress.password')
-                ],
-                'form_params' => [
-                    'fields' => [
-                        $picture_type => $image_ids
-                    ]
-                ]
-            ]
-        );
+        return $this->setACField($picture_type,$image_ids);
     }
 
     protected function getCurrentImageIds($picture_type){
@@ -209,7 +234,7 @@ class User extends CorcelUser
     public function uploadPicture($picture_type, Request $request){
 
 
-        $size="square-medium";
+        $size= config("ait.sizes.medium");
 
         if($request->multiple){
             $uploaded_images=[];
@@ -300,5 +325,25 @@ class User extends CorcelUser
         }catch(Exception $e){
             return $e;
         }
+    }
+
+
+    public function saveRest($fields){
+        foreach($fields as $key=>$value){
+            $this->setACField($key,$value);
+        }
+    }
+
+    public function saveAll($fields){
+        $rest=[];
+        $api=[];
+
+        foreach($fields as $key=>$value){
+            if(in_array($key, $this->rest_fields)) $rest[$key]=$value;
+            if(in_array($key, $this->api_fields)) $api[$key]=$value;
+        }
+        $this->saveMeta($api);
+        $this->saveRest($rest);
+            
     }
 }

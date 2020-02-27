@@ -11,5 +11,10 @@ return [
         'associacio' => 'associacio',
         'fes-te-soci' => 'fes-te-soci',
         'home' => 'inicio',
+    ],
+    'sizes' => [
+        'small' => 'square-small',
+        'medium' => 'square-medium',
+        'big' => 'square-big' 
     ]
 ];

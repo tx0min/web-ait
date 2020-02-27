@@ -12,7 +12,7 @@
             <div class="image" style="background-image:url({{$slide["image"]->url}})" ></div>
             <div class="gradient"  ></div>
             <a class="author-name" href="{{ route('socis',['soci_slug'=>$slide["author"]->slug]) }}">{{ $slide["author"]->display_name }}</a>
-            <h1 class="page-title ">Associació d’Il·lustradores de Tarragona </h1>
+            <h1 class="page-title ">Associació d’<strong>Il·lustradores</strong> de Tarragona </h1>
 
         </div>
 

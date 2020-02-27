@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SociValidate;
+use Corcel\Model\Taxonomy;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -20,7 +21,19 @@ class BackController extends Controller
     {
         $user=Auth::user();
 
-        return view('backend', compact('user'));
+        //dump($display);
+        $display_options=[
+            // "user_login" => "Username",
+            "nickname" => "Alias",
+            "first_name" => "Nom",
+            "full_name" => "Nom i Cognoms",
+        ];
+
+        $disciplines= Taxonomy::where('taxonomy', 'disciplines')->get();
+        $user_disciplines= $user->disciplines();
+        $user_disciplines_ids= collect($user_disciplines)->pluck('term_id')->toArray();
+        // dd($disciplines);
+        return view('backend', compact('user','display_options','disciplines','user_disciplines','user_disciplines_ids'));
     }
 
 
@@ -67,14 +80,15 @@ class BackController extends Controller
             //dd($request->all());
             $user=Auth::user();
             // dd($user);
-            //dd($request->all());
-            $user->saveMeta($request->all());
-
+            // dd($request->all());
+            $user->saveAll($request->all());
+            
             return redirect()
                 ->route('backend')
                 ->with(['success'=>"ok"]);
 
         }catch(Exception $e){
+            dd($e);
             return redirect()
                 ->route('backend')
                 ->with(['error'=>"error"]);

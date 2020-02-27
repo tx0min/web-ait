@@ -149,6 +149,10 @@ header{
         ul.nav:first-child .nav-item{
           padding-left:0px;
         }
+
+        ul.nav:last-child .nav-item{
+          padding-right:0px;
+        }
       }
     // }
 
