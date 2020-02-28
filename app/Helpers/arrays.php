@@ -24,3 +24,10 @@ if (! function_exists('to_array')) {
 	 	return json_decode(json_encode($object), true);
 	}
 }
+
+if (! function_exists('fullquery')) {
+
+	function fullquery($query){
+		return vsprintf(str_replace(array('?'), array('\'%s\''), $query->toSql()), $query->getBindings());
+	}
+}

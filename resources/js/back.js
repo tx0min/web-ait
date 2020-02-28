@@ -18,6 +18,10 @@ var UserForm  = {
         var o=this;
         this.$form=$('#user-form');
         this.uploaders = this.$form.find('.image-uploader');
+        
+        this.$form.find('.selectpicker').selectpicker({
+            width: '100%'
+        });
 
         if(this.uploaders.length>0){
 
@@ -97,7 +101,7 @@ $.widget( "ait.imageUploader", {
         var o=this;
         this.options = $.extend({}, this.options, this.element.data()); 
         
-        console.log('imageUploader',this);
+        // al('imageUploader',this);
 
         this.dropzone = this.element.find('.dropzone');
         this.button = this.element.find('.browse-button');
@@ -174,7 +178,7 @@ $.widget( "ait.imageUploader", {
         var o=this;
         var url=baseUrl()+"/backend/sort/"+this.options.pictureType;
         
-        al('_saveSorting', url);
+        // al('_saveSorting', url);
         // var params={
         //     ids : ids,
         // };
@@ -210,7 +214,7 @@ $.widget( "ait.imageUploader", {
         var url=this.options.url;
         if(id) url+="/"+id;
 
-        al('_remove', url);
+        //al('_remove', url);
         var params={
             // _token : csrfToken()
         };
@@ -264,7 +268,7 @@ $.widget( "ait.imageUploader", {
                 o._addThumbnails(response);
             },
             error: function( jqXHR, textStatus, errorThrown ){
-                al("Error",jqXHR);
+                //al("Error",jqXHR);
                 o._showError(jqXHR.responseJSON);
             }
         });
@@ -315,7 +319,7 @@ $.widget( "ait.imageUploader", {
     
     _showError: function( response ) {
         var msg="";
-        al(response);
+        //al(response);
         if(typeof response === 'string') msg=response;
         if(typeof response === 'object' && response.hasOwnProperty('message')) msg=response.message;
         if(msg)

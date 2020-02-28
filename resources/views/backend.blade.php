@@ -6,7 +6,7 @@
 
 
 <div class="row ">
-    <div class="col-xl-9">
+    <div class="col-xl-10">
         
         
         @include('layouts._messages')
@@ -46,12 +46,15 @@
                     <small class="text-muted ">Aquesta imatge apareixerà a la graella de socis en format quadrat. La mida recomanada és de 500x500px</small>
 
                 </div>
+
+
+
                 <div class="col-md-9 order-md-1">
 
 
                     <ul class="nav nav-tabs responsive-tabs">
                         <li class="nav-item">
-                            <a class="nav-link active" id="user-tab" data-toggle="tab" href="#user-tab-content" role="tab">Dades del soci</a>
+                            <a class="nav-link active" id="user-tab" data-toggle="tab" href="#user-tab-content" role="tab">Sobre tu</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="xarxes-tab" data-toggle="tab" href="#xarxes-tab-content" role="tab">@icon('envelope')  Contacte</a>
@@ -63,7 +66,7 @@
 
 
                     <div class="tab-content"">
-                        <div class="tab-pane active p-3" id="user-tab-content" role="tabpanel" >
+                        <div class="tab-pane active py-5" id="user-tab-content" role="tabpanel" >
 
 
                             {{-- <div class="form-group">
@@ -75,54 +78,51 @@
                                 <label for="f_user_login">Username</label>
                                 <input type="text" class="form-control" id="f_user_login" disabled  name="user_login" aria-describedby="f_user_login" value="{{ $user->user_login }}">
                             </div> --}}
-
-                        
-                            <div class="row">
-                                <div class="form-group col-sm-6">
-                                    <label for="f_first_name" >Nom</label>
+                            <div class="form-group row">
+                                <label for="f_first_name" class="col-md-3 col-form-label text-md-right">Nom</label>
+                                <div class="col-md-9">
                                     <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="f_first_name" name="first_name" value="{{ $user->first_name }}" >
-                                {{-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> --}}
                                 </div>
+                             </div>
 
-                                <div class="form-group col-sm-6">
-                                    <label for="f_last_name">Cognoms</label>
+
+                             <div class="form-group row">
+                                <label for="f_last_name" class="col-md-3 col-form-label text-md-right">Cognoms</label>
+                                <div class="col-md-9">
                                     <input type="text" class="form-control" id="f_last_name" name="last_name" value="{{ $user->last_name }}">
                                 </div>
-                            </div>
+                             </div>
+                        
+                             <div class="form-group row">
+                                <label for="f_nickname" class="col-md-3 col-form-label text-md-right">Alias</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control @error('nickname') is-invalid @enderror " id="f_nickname" name="nickname" aria-describedby="f_nickname" value="{{ $user->nickname }}">
+                                </div>
+                             </div>
+                        
                             
-                            <div class="form-group">
-                                <label for="f_nickname">Alias</label>
-                                <input type="text" class="form-control @error('nickname') is-invalid @enderror " id="f_nickname" name="nickname" aria-describedby="f_nickname" value="{{ $user->nickname }}">
-                            {{-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> --}}
-                            </div>
-                            <div class="form-group">
-                                <label for="f_display_name">Mostrar</label>
+                             <div class="form-group row">
+                                <label for="f_display_name" class="col-md-3 col-form-label text-md-right">Mostrar</label>
+                                <div class="col-md-9">
+                                    <select class="selectpicker" id="f_display_name" name="display_name">
+                                        @foreach($display_options as $key=>$option)
+                                            <option {{ ($key==$user->get_display())?"selected":""  }}  value="{{ $key }}">{{ $option }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                             </div>
 
-                                <select class="custom-select" id="f_display_name" name="display_name">
-                                    @foreach($display_options as $key=>$option)
-                                        <option {{ ($key==$user->get_display())?"selected":""  }}  value="{{ $key }}">{{ $option }}</option>
-                                    @endforeach
-                                </select>
-
-                            </div>
-
-
-
-                            <div class="form-group">
-                                <label for="f_soci_biografia">Biografia (breu)</label>
-                                <textarea class="form-control" id="f_soci_biografia" name="soci_biografia">{{ $user->biografia() }}</textarea>
-                            </div>
-
-                            <div class="form-group">
-                                
-                                <label for="f_disciplines" class="@error('disciplines') text-danger @enderror" >Disciplines @error('disciplines') @icon('exclamation-circle') @enderror</label>
-                                {{-- @dump($disciplines)
-                                @dump($user_disciplines_ids) --}}
-                                {{-- @dump($user->fields()->where('meta_key','disciplines')->get()) --}}
-                                
-                                {{-- <select class="custom-select" multiple id="f_disciplines" rows="10" name="disciplines"> --}}
-                                    {{-- <input type="hidden" name="disciplines[]" value="0"> --}}
-                                            
+                        
+                             <div class="form-group row">
+                                <label for="f_soci_biografia" class="col-md-3 col-form-label text-md-right">Breu biografia o Statement</label>
+                                <div class="col-md-9">
+                                    <textarea class="form-control" id="f_soci_biografia" rows="8" name="soci_biografia">{{ $user->biografia() }}</textarea>
+                                </div>
+                             </div>
+                           
+                             <div class="form-group row">
+                                <label for="f_disciplines" class="col-md-3 col-form-label text-md-right @error('disciplines') text-danger @enderror">Disciplines @error('disciplines') @icon('exclamation-circle') @enderror</label>
+                                <div class="col-md-9">
                                     @foreach($disciplines as $disciplina)
                                         <div class="custom-control custom-checkbox">
                                             <input {{ ( in_array($disciplina->term_id, $user_disciplines_ids)?"checked":"")  }} type="checkbox" class="custom-control-input" name="disciplines[]" id="disciplina-{{ $disciplina->term_id }}" value="{{ $disciplina->term_id }}">
@@ -131,93 +131,82 @@
                                         
                                     {{-- <option  value="{{ $disciplina->term_id }}" >{{ $disciplina->name }}</option> --}}
                                     @endforeach
-                                {{-- </select> --}}
-                                
+                                </div>
+                             </div>
+                           
+                             
 
-                            </div>
-
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-lg btn-primary" >Guardar</button>
+                            <div class="form-group row">
+                                <div class="col-md-9 offset-md-3">
+                                    <button type="submit" class="btn btn-lg btn-primary" >Guardar</button>
+                                </div>
                             </div>
 
 
                         </div>
 
-                        <div class="tab-pane  p-3" id="xarxes-tab-content" role="tabpanel" >
-
-                            <div class="form-group">
-
-                                <div class="input-group">
-                                    <label for="f_soci_email" class="input-group-prepend">
-                                        <span class="input-group-text" >@icon('envelope')</span>
-                                    </label>
-                                    <input type="email" class="form-control" id="f_soci_email" name="soci_email" placeholder="Email ..." value="{{ $user->email() }}">
+                        <div class="tab-pane  py-5" id="xarxes-tab-content" role="tabpanel" >
+                            
+                            <div class="form-group row">
+                                <label for="f_soci_email" class="col-md-3 col-form-label text-md-right">@icon('envelope') Email</label>
+                                <div class="col-md-9">
+                                    <input type="email" class="form-control" id="f_soci_email" name="soci_email" placeholder="Email ..." value="{{ $user->emailContacte() }}">
                                 </div>
-
-
                             </div>
-
-                            <div class="form-group">
-
-                                <div class="input-group">
-                                    <label for="f_soci_web" class="input-group-prepend">
-                                        <span class="input-group-text" >@icon('globe')</span>
-                                    </label>
+                           
+                            <div class="form-group row">
+                                <label for="f_soci_web" class="col-md-3 col-form-label text-md-right">@icon('globe') Web</label>
+                                <div class="col-md-9">
                                     <input type="url" class="form-control" id="f_soci_web" name="soci_web" placeholder="Web ..." value="{{ $user->web() }}">
                                 </div>
-
                             </div>
-
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <label for="f_facebook" class="input-group-prepend">
-                                        <span class="input-group-text" >@icon('facebook',['type'=>'fab'])</span>
-                                    </label>
+                           
+                           
+                            <div class="form-group row">
+                                <label for="f_facebook" class="col-md-3 col-form-label text-md-right">@icon('facebook-square',['type'=>'fab']) Facebook</label>
+                                <div class="col-md-9">
                                     <input type="url" class="form-control" id="f_facebook" name="facebook" placeholder="Facebook URL ..." value="{{ $user->acf->text('facebook') }}">
                                 </div>
                             </div>
-                            <div class="form-group">
-
-                                <div class="input-group">
-                                    <label for="f_twitter" class="input-group-prepend">
-                                        <span class="input-group-text" >@icon('twitter',['type'=>'fab'])</span>
-                                    </label>
+                                                      
+                            <div class="form-group row">
+                                <label for="f_twitter" class="col-md-3 col-form-label text-md-right">@icon('twitter',['type'=>'fab']) Twitter</label>
+                                <div class="col-md-9">
                                     <input type="text" class="form-control" id="f_twitter" name="twitter" placeholder="Twitter user ..." value="{{ $user->acf->text('twitter') }}">
                                 </div>
                             </div>
-                            <div class="form-group">
-
-                                <div class="input-group">
-                                    <label for="f_instagram" class="input-group-prepend">
-                                        <span class="input-group-text" >@icon('instagram',['type'=>'fab'])</span>
-                                    </label>
+                                                      
+                            <div class="form-group row">
+                                <label for="f_instagram" class="col-md-3 col-form-label text-md-right">@icon('instagram',['type'=>'fab']) Instagram</label>
+                                <div class="col-md-9">
                                     <input type="text" class="form-control" id="f_instagram" name="instagram" placeholder="Instagram user ..." value="{{ $user->acf->text('instagram') }}">
                                 </div>
-
                             </div>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <label for="f_instagram" class="input-group-prepend">
-                                        <span class="input-group-text" >@icon('youtube',['type'=>'fab'])</span>
-                                    </label>
+                                                
+                            
+                            <div class="form-group row">
+                                <label for="f_youtube" class="col-md-3 col-form-label text-md-right">@icon('youtube',['type'=>'fab']) Youtube</label>
+                                <div class="col-md-9">
                                     <input type="url" class="form-control" id="f_youtube" name="youtube" placeholder="Youtube URL ..." value="{{ $user->acf->text('youtube') }}">
                                 </div>
-
                             </div>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <label for="f_linkedin" class="input-group-prepend">
-                                        <span class="input-group-text" >@icon('linkedin',['type'=>'fab'])</span>
-                                    </label>
+                                                      
+                            
+                            <div class="form-group row">
+                                <label for="f_linkedin" class="col-md-3 col-form-label text-md-right">@icon('linkedin',['type'=>'fab']) LinkedIn</label>
+                                <div class="col-md-9">
                                     <input type="url" class="form-control" id="f_linkedin" name="linkedin" placeholder="LinkedIn URL ..." value="{{ $user->acf->text('linkedin') }}">
                                 </div>
-
+                            </div>
+                                                      
+                            
+                            <div class="form-group row">
+                                <div class="col-md-9 offset-md-3">
+                                    <button type="submit" class="btn btn-lg btn-primary" >Guardar</button>
+                                </div>
                             </div>
 
 
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-lg btn-primary" >Guardar</button>
-                            </div>
                         </div>
 
                         <div class="tab-pane  p-3" id="portfolio-tab-content" role="tabpanel" >

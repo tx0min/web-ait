@@ -14,6 +14,7 @@ window.paceOptions = {
 
 require('./bootstrap');
 require('./functions');
+require('bootstrap-select');
 require('./vendor/pace.min');
 require('./responsiveTabs');
 require('./back');

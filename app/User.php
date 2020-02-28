@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Corcel\Model\Taxonomy;
 use Corcel\Model\User as CorcelUser;
 use Exception;
 use GuzzleHttp\Client;
@@ -11,6 +12,8 @@ use File;
 
 class User extends CorcelUser
 {
+
+    // use HasTaxonomies;
 
     protected $api_client;
     protected $rest_fields = ["disciplines"];
@@ -32,27 +35,72 @@ class User extends CorcelUser
     }
 
 
+    public function taxonomies()
+    {
+        return $this->belongsToMany(
+            Taxonomy::class, 'term_relationships', 'object_id', 'term_taxonomy_id'
+        );
+    }
 
-    public static function getSocis(){
-        return self::all()->filter(function($user){
+    /**
+     * @param string $taxonomy
+     * @param mixed $terms
+     * @return PostBuilder
+     */
+    public function scopeTaxonomy($query, $taxonomy, $terms)
+    {
+        $query->whereHas('taxonomies', function ($query) use ($taxonomy, $terms) {
+            $query->where('taxonomy', $taxonomy)
+                ->whereHas('term', function ($query) use ($terms) {
+                    $query->whereIn('slug', is_array($terms) ? $terms : [$terms]);
+                });
+        });
+    }
+
+
+
+   
+    public function scopeSlug($query, $slug){
+        $query->where('user_login',$slug);
+    }
+
+    
+
+
+    public function scopeByTerm($query, $term){
+        $query->where('display_name','%'.$term.'%')
+            ->orWhere('user_nicename','%'.$term.'%')
+            ->orWhere(function($query) use($term){
+                $query->hasMetaLike('first_name','%'.$term.'%');
+            })
+            ->orWhere(function($query) use($term){
+                $query->hasMetaLike('last_name','%'.$term.'%');
+            })
+            ->orWhere(function($query) use($term){
+                $query->hasMetaLike('alias','%'.$term.'%');
+            });
+    }
+
+
+    // ojo este no devuelve el builder 
+    public function scopeSocis($query){
+        return $query->get()->filter(function($user){
             return $user->acf->boolean('es_soci');
         });
     }
-    public static function getJunta(){
-        return self::all()->filter(function($user){
+
+   
+    public static function scopeJunta($query){
+        return $query->get()->filter(function($user){
             return $user->acf->boolean('es_junta');
         });
     }
 
-    public static function getMembresJunta(){
-        return self::all()->filter(function($user){
-            return $user->acf->boolean('es_junta');
-        });
-    }
+    
 
 
     public static function getBySlug($soci_slug){
-        $user=self::where('user_login',$soci_slug)->first();
+        $user=self::slug($soci_slug)->first();
         if(!$user) abort(404, "No s'ha trobat l'usuari");
         return $user;
     }
@@ -65,7 +113,7 @@ class User extends CorcelUser
     }
 
 
-    public function email(){
+    public function emailContacte(){
         return $this->acf->text('soci_email');
     }
 

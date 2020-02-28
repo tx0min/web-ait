@@ -3,29 +3,29 @@
 @section('content')
 
     {{-- @dump($disciplines) --}}
-    <div class="row ">
-        <div class="col-lg-8 col-md-6 mb-3">
-
-            <div class="input-group px-2">
-                <label for="f_soci_email" class="input-group-prepend">
-                    <span class="input-group-text" >@icon('search')</span>
-                </label>
-                <input type="text" class="form-control" placeholder="Buscar ..." >
+    <form method="post" action="{{ route('socis.search') }}" id="socis-form">
+        @csrf
+        <div class="row ">
+            <div class="col-lg-8 col-md-6 mb-3">
+                <div class="search-field">
+                    <input type="text" class="form-control " placeholder="Buscar ..." id="term" name="term" value="{{ $term }}" >
+                </div>
+                
             </div>
-            
-        </div>
-        <div class="col-lg-4 col-md-6 mb-3">
-            <div class="px-2">
-                <select class="custom-select form-control-lg "  >
+            <div class="col-lg-4 col-md-6 mb-3">
+                <select class="selectpicker" id="selector-disciplina" name="disciplina" title="Disciplines...">
+                    <option value="0">Qualsevol</option>
                     @foreach($disciplines as $disciplina)
-                        <option value="{{ $disciplina->term_id }}">{{ $disciplina->name }}</option>
+                        <option value="{{ $disciplina->slug }}" {{ $current_disciplina==$disciplina->slug?"selected":"" }} >{{ $disciplina->name }}</option>
                     @endforeach
                 </select>
             </div>
         </div>
-    </div>
-    <div class="socis grid">
-        @if($users)
+        <button type="submit" hidden></button>
+        
+    </form>
+    <div class="socis grid" id="socis-grid">
+        @if($users && !$users->isEmpty())
             @foreach($users as $user)
                 {{-- @for($i=0;$i<3;$i++) --}}
 
@@ -47,6 +47,10 @@
                 {{-- @endfor --}}
 
             @endforeach
+        @else
+            <div class="display-4 p-5 text-center">
+                Oops! no hi ha socis&hellip;
+            </div>
         @endif
     </div>
 

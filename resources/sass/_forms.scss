@@ -1,17 +1,17 @@
-.form-control,
-.custom-select{
+.form-control{
     border-top-width: 0;
     border-right-width: 0;
     border-left-width: 0;
     color: $black;
-
+    border-color: rgba($primary, 0.3);
+            
     &:focus{
         box-shadow:none;
         // border-color: $gray-300;
 
         &:not(:read-only){
             border-color: rgba($primary, 0.4);
-            background-color: rgba($primary,0.1);
+            background-color: $light;
             color:$primary;
         }
     }
@@ -21,14 +21,8 @@
         // padding-right:0;
     }
 }
-.custom-select{
-    // padding-left:0;
-    // padding-right:0;
-    &:focus{
-        background-color: rgba($primary,0.1);
-        border-color: rgba($primary, 0.4);
-    }
-}
+
+
 
 .custom-control-input:focus ~ .custom-control-label::before{
     box-shadow:none;
@@ -52,4 +46,71 @@
 
 .form-group > label{
     color:$gray-600;
+}
+
+
+.search-field{
+    position: relative; 
+
+    > input{
+        padding-left: 4*$input-padding-x;
+    }
+    
+    &::before,
+    &::after{
+        display:inline-block;
+        -webkit-font-smoothing: antialiased;
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        text-rendering: auto;
+        line-height: 1;
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        line-height:1.5;
+        padding: $input-padding-y $input-padding-x;
+        position:absolute;
+        
+    }
+
+    &::before{
+        pointer-events: none;
+        content: "\f002"; //search
+        left:0;
+        top:0;
+        opacity:.6;
+    }
+    
+    // &::after{
+    //     content: "\f00d"; //times
+    //     right:0;
+    //     top:0;
+    //     opacity:.6;
+    //     cursor:pointer;
+    // }
+
+}
+
+
+.dropdown-item.active, 
+.dropdown-item:active{
+    background-color:$light;
+    color:$primary;
+}
+.dropdown-item:hover{
+    background-color:$light;
+    color:$primary;
+}
+
+.bootstrap-select .dropdown-toggle{
+    background-color:transparent;
+    border-color:transparent;   
+    border-bottom:1px solid rgba($primary, 0.3);
+
+    &:focus{
+        background-color:$light;
+        box-shadow:none;
+        outline:none !important;
+    }
+            
 }

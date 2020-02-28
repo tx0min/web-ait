@@ -15,6 +15,7 @@ Auth::routes();
 
 Route::get('/', 'WebController@home')->name('home');
 Route::get('/socis/{soci_slug?}', 'WebController@socis')->name('socis');
+Route::post('/socis', 'WebController@search')->name('socis.search');
 Route::get('/blog/{post_slug?}', 'WebController@blog')->name('blog');
 Route::get('/associacio', 'WebController@associacio')->name('associacio');
 Route::get('/fes-te-soci', 'WebController@festeSoci')->name('fes-te-soci');
