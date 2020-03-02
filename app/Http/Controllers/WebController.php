@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Corcel\Model\Post;
 use App\User;
 use Corcel\Acf\Field\Image;
+use Corcel\Model\Option;
 use Corcel\Model\Taxonomy;
 use Exception;
 
@@ -31,59 +32,9 @@ class WebController extends Controller
         }
         // dd($slides);
         // dd($images);
-        return view('home', compact('slides','behaviour'));
+        return view('home', compact('slides','behaviour','page'));
     }
 
-
-    public function socis($soci_slug=null){
-        if($soci_slug){
-            $user=User::getBySlug($soci_slug);
-            return view('soci', compact('user'));
-        }else{
-
-            $disciplines= Taxonomy::where('taxonomy', 'disciplines')->get();
-            
-            $current_disciplina=session('disciplina',0);
-            
-            $users=User::select();
-            
-            if($current_disciplina){
-                $users = $users->taxonomy('disciplines', $current_disciplina);
-            }
-            // dump(fullquery($users));
-            $term=session('term','');
-
-            if($term){
-                $users=$users->byTerm($term);
-            }
-            
-            $users=$users->socis();
-
-            return view('socis', compact('users','disciplines','current_disciplina','term'));
-        }
-    }
-
-    public function search(Request $request){
-        session([
-            'disciplina'=>$request->disciplina,
-            'term'=>$request->term
-        ]);
-
-        return redirect('socis');
-    
-    }
-
-
-    public function blog($post_slug=null){
-        if($post_slug){
-            $post=Post::slug($post_slug)->first();
-            if(!$post) abort(404);
-            return view('post', compact('post'));
-        }else{
-            $posts=Post::type('post')->published()->paginate();
-            return view('blog', compact('posts'));
-        }
-    }
 
     public function associacio(){
         $users=User::junta();

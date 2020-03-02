@@ -68,8 +68,7 @@ class User extends CorcelUser
 
 
     public function scopeByTerm($query, $term){
-        $query->where('display_name','%'.$term.'%')
-            ->orWhere('user_nicename','%'.$term.'%')
+        $query->where('user_nicename','%'.$term.'%')
             ->orWhere(function($query) use($term){
                 $query->hasMetaLike('first_name','%'.$term.'%');
             })
@@ -77,7 +76,7 @@ class User extends CorcelUser
                 $query->hasMetaLike('last_name','%'.$term.'%');
             })
             ->orWhere(function($query) use($term){
-                $query->hasMetaLike('alias','%'.$term.'%');
+                $query->hasMetaLike('nickname','%'.$term.'%');
             });
     }
 

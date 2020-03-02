@@ -238,9 +238,12 @@ header{
 }
 
 
+@import 'grid';
+
 
 // Paginas concretas
 @import 'home';
+@import 'blog';
 @import 'socis';
 @import 'back';
 

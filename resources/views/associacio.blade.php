@@ -6,7 +6,7 @@
 
 
 <div class="alignfull mt-5">
-    <div class="container-fluid ">
+    <div class="container ">
         <div class="row ">
             {{-- <div class="col-md-4 text-center text-md-left mb-5">
                 <h2>La junta</h2>

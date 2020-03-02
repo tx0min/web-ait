@@ -1,17 +1,3 @@
-var Isotope = require('isotope-layout');
-require('isotope-fit-columns')
-
-$( window ).on('load',function() {
-    if($('.grid').length>0){
-        var pckry = new Isotope( '.grid', {
-            // options
-            itemSelector: '.grid-item',
-            // layoutMode: 'fitColumns'
-        });
-    }
-});
-
-
 
 $(document).ready(function(){
 
@@ -45,7 +31,7 @@ $(document).ready(function(){
         width: '100%'
     });
 
-    $('#selector-disciplina').on('change',function(e){
+    $('.form-submitter').on('change',function(e){
         $(this).closest('form').submit();
         
     });

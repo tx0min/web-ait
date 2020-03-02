@@ -22,14 +22,22 @@ require('./socis');
 require('./home');
 
 $(document).ready(function(e){
+
+   //responsive TAbs
+   $('.responsive-tabs').responsiveTabs({
+        accordionOn: ['xs', 'sm']
+   });
+
+
+
+    //NAV
+
     $('header .nav-toggle').on('click',function(e){
         e.preventDefault();
         $('html').toggleClass('nav-opened');
     })
 
-    $('.responsive-tabs').responsiveTabs({
-        accordionOn: ['xs', 'sm']
-   });
+   
 
    $(document).on('keyup', function(e) {
         if (e.keyCode === 27 && $('html').is('.nav-opened')){
@@ -47,5 +55,59 @@ $(document).ready(function(e){
             }
         }
     });
+});
+
+//infiniscroll
+
+
+
+
+
+
+var Isotope = require('isotope-layout');
+require('jscroll');
+// require('isotope-fit-columns')
+
+$( window ).on('load',function() {
+    
+    
+    //infiniscroll
+    $('.infinite-scroll').each(function(i){
+        var ul=$(this).find('ul.pagination');
+        ul.hide();
+        al('infiniscroll',this);
+
+
+        $(this).infiniteScroll({
+            autoTrigger: true,
+            loadingHtml: '<span>Loading more ...</span>',
+            padding: 0,
+            nextSelector: '.pagination a[rel=next]',
+            contentSelector: 'div.infinite-scroll',
+            callback: function() {
+                al("callback jscroll");
+                ul.remove();
+            }
+        });
+    
+
+    });
+    
+    
+    //GRIDS
+    if($('.grid').length>0){
+        var pckry = new Isotope( '.grid', {
+            // options
+            itemSelector: '.grid-item',
+            percentPosition: true,
+            masonry: {
+                // use outer width of grid-sizer for columnWidth
+                columnWidth: '.grid-sizer'
+            }
+            // layoutMode: 'fitColumns'
+        });
+        // pckry.on( 'arrangeComplete', onArrangeGrid );
+
+    }
 });
 

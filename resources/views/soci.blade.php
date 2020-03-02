@@ -13,7 +13,7 @@
                 <p>{{ $user->biografia() }}</p>
                 @if($disciplines=$user->disciplines())
                     @foreach($disciplines as $disciplina)
-                        <span class="badge badge-dark">{{ $disciplina->name }}</span>
+                        <a class="badge badge-dark" href="{{ route('socis.disciplina',['disciplina'=>$disciplina->slug])}}">{{ $disciplina->name }}</a>
                     @endforeach
                 @endif
             </div>

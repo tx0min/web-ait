@@ -137,11 +137,16 @@
         color: var(--text-color);
 
       }
-      .page-title{
+
+      .page-content{
           position:absolute;
           top:95px;
           left:260px;
           z-index:6;
+      }
+
+      .page-title{
+          text-transform: none;
           font-size:4em;
           font-weight: 100;
           width:50vw;
@@ -155,11 +160,13 @@
       }
 
       @include media-breakpoint-down(sm) {
-        .page-title{
+        .page-content{
             left:20px;
             top: 150px;
-            font-size: 2.4em;
-            width:auto;
+            .page-title{
+                width:auto;
+                font-size: 2.4em;
+            }
 
         }
       }

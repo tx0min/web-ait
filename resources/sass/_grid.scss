@@ -1,0 +1,99 @@
+
+.grid{
+    >.grid-sizer,
+    > .grid-item{
+      display: block;
+      // margin-bottom:2em;
+      width:25%;
+      padding:.5em;
+      text-decoration: none;
+        
+      figure{
+        overflow: hidden;
+        background-color: $primary;
+        display: block;
+        
+        img{
+          transition: all 200ms ease-in;
+        }
+       
+      }
+      
+      &:hover{
+       figure img{
+          transform: scale(1.1);
+          opacity:.7;
+        }
+      }
+
+
+    }
+
+    >.grid-item.size-featured{
+        width:75%;
+    }
+
+    >.grid-item.size-important{
+        width:50%;
+    }
+
+    
+    @include media-breakpoint-only(lg) {
+        >.grid-sizer,
+        > .grid-item{
+            width:25%;
+        }
+
+        >.grid-item.size-featured{
+            width:100%;
+        }
+
+        >.grid-item.size-important{
+            width:75%;
+        }
+        
+    }
+
+    @include media-breakpoint-only(md) {
+        >.grid-sizer,
+        > .grid-item{
+            width:33.3%;
+        }
+
+        >.grid-item.size-featured{
+            width:100%;
+        }
+        > .grid-item.size-important{
+            width:66.6%;
+        }
+        
+    }
+
+    @include media-breakpoint-only(sm) {
+        >.grid-sizer,
+        > .grid-item{
+            width:50%;
+        }
+
+        > .grid-item.size-important{
+            width:50%;
+        }
+        >.grid-item.size-featured{
+            width:100%;
+        }
+    }
+
+    @include media-breakpoint-down(xs) {
+        >.grid-sizer,
+        > .grid-item{
+            width:100% !important;
+        }
+
+        
+        .grid-item.size-featured,
+        > .grid-item.size-important{
+            width:100%;
+        }
+    }
+  
+}
