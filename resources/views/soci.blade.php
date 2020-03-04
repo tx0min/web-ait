@@ -16,11 +16,8 @@
                     @include("_social")
                 </div>
                 <p>{{ $user->biografia() }}</p>
-                @if($disciplines=$user->disciplines())
-                    @foreach($disciplines as $disciplina)
-                        <a class="badge badge-dark" href="{{ route('socis.disciplina',['disciplina'=>$disciplina->slug])}}">{{ $disciplina->name }}</a>
-                    @endforeach
-                @endif
+                @include("_user_disciplines")
+
             </div>
 
 

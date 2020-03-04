@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="base-url" content="{{ url('') }}">
-    
+
     <title>{{ config('app.name', 'AIT') }}</title>
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -18,13 +18,13 @@
 </head>
 <body class="@yield('class')" style="@yield('style')">
     <div id="app" >
-        
+
         @include('layouts._header')
 
         <div class="container-fluid "  >
             <div class="row main-row">
                 <aside class="col" id="main-aside">
-                    <a href="{{ route('home')}}" class="d-block">
+                    <a href="{{ route('home')}}" class="d-block anim from-bottom in">
                         @svg('img/logo-ait.svg',['id'=>'main-logo','class'=>'img-responsive fill-primary'])
                     </a>
                 </aside>
@@ -35,6 +35,6 @@
         </div>
     </div>
 
-   
+
 </body>
 </html>

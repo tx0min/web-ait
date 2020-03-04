@@ -29,8 +29,6 @@ class SocisController extends Controller
         if($disciplina){
             $users = $users->taxonomy('disciplines', $disciplina);
         }
-        // dump(fullquery($users));
-
 
         if($term){
             $users=$users->byTerm($term);

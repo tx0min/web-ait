@@ -33,22 +33,30 @@
             @foreach($users as $user)
                 {{-- @for($i=0;$i<3;$i++) --}}
 
-                        <a class="soci grid__item" href="{{ route('socis.soci',['soci_slug'=>$user->slug]) }}">
+                        <div class="soci grid__item" >
                             <div class="soci-inner">
-                                <figure class="mb-0">
-                                    {!! $user->renderFeaturedImage(['class'=>'card-img-top','size'=>'medium']) !!}
-                                </figure>
-                                <div class="d-flex align-items-center p-2">
+                                <a href="{{ route('socis.soci',['soci_slug'=>$user->slug]) }}">
+                                    <figure class="mb-0">
+                                        {!! $user->renderFeaturedImage(['class'=>'card-img-top','size'=>'medium']) !!}
+                                    </figure>
+                                </a>
+                                <div class="d-flex align-items-start p-2">
 
-                                    {!! $user->renderProfileImage(['class'=>'profile-picture size-xs','size'=>'small']) !!}
+                                    <a href="{{ route('socis.soci',['soci_slug'=>$user->slug]) }}"">
+                                        {!! $user->renderProfileImage(['class'=>'profile-picture size-xs','size'=>'small']) !!}
+                                    </a>
                                     <div class="pl-2 text-break">
-                                        <h3 class="mb-0 ">{{ $user->displayName() }}</h3>
-                                        {{-- @include("_social") --}}
+                                        <a href="{{ route('socis.soci',['soci_slug'=>$user->slug]) }}">
+                                            <h3 class="mb-0 ">{{ $user->displayName() }}</h3>
+                                        </a>
+                                        @include("_social")
+                                        @include("_user_disciplines")
+
                                     </div>
                                 </div>
                             </div>
 
-                        </a>
+                        </div>
 
                 {{-- @endfor --}}
 
