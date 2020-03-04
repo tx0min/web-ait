@@ -15,7 +15,7 @@
                     @if($mail=$user->acf->text('soci_email')) <a href="mailto:{{ $mail }}" class="d-block">{{ $mail }}</a> @endif
                     @include("_social")
                 </div>
-                <p>{{ $user->biografia() }}</p>
+                <p>{!! $user->biografia(true) !!}</p>
                 @include("_user_disciplines")
 
             </div>

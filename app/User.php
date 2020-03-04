@@ -104,8 +104,10 @@ class User extends CorcelUser
 
 
 
-    public function biografia(){
-        return $this->acf->text('soci_biografia');
+    public function biografia($nl2br=false){
+        $ret= $this->acf->text('soci_biografia');
+        if($nl2br) $ret=nl2br($ret);
+        return $ret;
     }
 
 
