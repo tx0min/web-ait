@@ -11,7 +11,9 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css')	
-   .copyDirectory('resources/img', 'public/img')
-	.copyDirectory('resources/fonts', 'public/fonts');
+mix.config.publicPath='public_html';
+
+mix.js('resources/js/app.js', 'public_html/js')
+   .sass('resources/sass/app.scss', 'public_html/css')
+   .copyDirectory('resources/img', 'public_html/img');
+	//.copyDirectory('resources/fonts', 'public/fonts');

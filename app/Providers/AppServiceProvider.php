@@ -14,11 +14,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+
+        $this->app->bind('path.public', function() {
+            return base_path().'/public_html';
+        });
+
         //helpers
         foreach (glob(app_path().'/Helpers/*.php') as $filename){
             require_once($filename);
         }
-       
+
+
+
     }
 
     /**
@@ -28,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        
+
         //$directives = require __DIR__.'/directives.php';
 // dd($directives);
 
@@ -39,6 +46,6 @@ class AppServiceProvider extends ServiceProvider
             return "<?php echo icon({$expression}); ?>";
         });
 
-        
+
     }
 }

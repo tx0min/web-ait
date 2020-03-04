@@ -1,12 +1,12 @@
 import 'owl.carousel';
 
 $( window ).on('load',function() {
-    
+
     var setPageColors = function(event){
-        console.log("changed",event.target);
+        //al("changed",event.target);
         var slide=$(event.target).find('.owl-item.active').find('.home-slide');
 
-        console.log(slide);
+        //al(slide);
         $('body').css({'--text-color': slide.data('color'), '--bg-color': slide.data('bg-color')} );
     }
 
@@ -18,7 +18,7 @@ $( window ).on('load',function() {
         slider.on('initialized.owl.carousel', function(event) {
             setPageColors(event);
         });
-        
+
         slider.owlCarousel({
             items:1,
             lazyLoad:true,
@@ -34,7 +34,7 @@ $( window ).on('load',function() {
 
         });
 
-    
+
         slider.on('changed.owl.carousel', function(event) {
             slider.trigger('stop.owl.autoplay');
             slider.trigger('play.owl.autoplay');
@@ -50,7 +50,7 @@ $( window ).on('load',function() {
     //     // $('body').css('color', color);
     //     // $('a').css('color', color);
     //     // // $('#main-logo').css('fill',color);
-    //     // $("#main-logo").css({fill:color}).attr("fill",color);   
+    //     // $("#main-logo").css({fill:color}).attr("fill",color);
 
     // });
 });
