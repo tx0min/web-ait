@@ -14743,7 +14743,7 @@ header nav {
 }
 
 .grid .grid__gutter-sizer {
-  width: 0%;
+  width: 1%;
 }
 
 .grid > nav {
@@ -14752,12 +14752,12 @@ header nav {
 
 .grid .grid__col-sizer,
 .grid .grid__item {
-  width: 25%;
+  width: 24.25%;
 }
 
 .grid .grid__item {
   display: block;
-  padding: 0.5em;
+  padding-bottom: 0.8em;
   text-decoration: none;
   float: left;
 }
@@ -14779,17 +14779,21 @@ header nav {
 }
 
 .grid .grid__item.size-featured {
-  width: 75%;
+  width: 74.75%;
 }
 
 .grid .grid__item.size-important {
-  width: 50%;
+  width: 49.5%;
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
+  .grid .grid__item {
+    padding-bottom: 0.4em;
+  }
+
   .grid .grid__col-sizer,
   .grid .grid__item {
-    width: 33.3%;
+    width: 32.66%;
   }
 
   .grid .grid__item.size-featured {
@@ -14797,14 +14801,18 @@ header nav {
   }
 
   .grid .grid__item.size-important {
-    width: 66.6%;
+    width: 66.33%;
   }
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
   .grid .grid__col-sizer,
   .grid .grid__item {
-    width: 50%;
+    width: 49.5%;
+  }
+
+  .grid .grid__item {
+    padding-bottom: 0.3em;
   }
 
   .grid .grid__item.size-featured {
@@ -14819,10 +14827,11 @@ header nav {
 @media (min-width: 576px) and (max-width: 767.98px) {
   .grid .grid__col-sizer,
   .grid .grid__item {
-    width: 50%;
+    width: 49.5%;
   }
 
   .grid .grid__item {
+    padding-bottom: 0.5em;
     padding-left: 0em;
     padding-right: 0em;
   }
