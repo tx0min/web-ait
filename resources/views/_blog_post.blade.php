@@ -18,7 +18,7 @@
         <div class="p-3">
 
             {{ post_date($post) }}
-            <h5><a href="{{ route('blog.post',['post_slug'=>$post->slug]) }}">{{ $post->post_title }}</a></h5>
+            <h3><a href="{{ route('blog.post',['post_slug'=>$post->slug]) }}">{{ $post->post_title }}</a></h3>
             @include('_post_categories')
 
         </div>

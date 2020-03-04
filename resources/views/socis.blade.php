@@ -3,16 +3,16 @@
 @section('content')
 
     {{-- @dump($disciplines) --}}
-    <form method="post" action="{{ route('socis.search') }}" id="socis-form" >
+    <form method="post" action="{{ route('socis.search') }}" id="socis-form" class="grid-form">
         @csrf
         <div class="row ">
-            <div class="col-lg-8 col-md-6 mb-3">
+            <div class="col-lg-8 col-6">
                 <div class="search-field">
                     <input type="text" class="form-control " placeholder="Buscar ..." id="term" name="term" value="{{ $term }}" >
                 </div>
 
             </div>
-            <div class="col-lg-4 col-md-6 mb-3">
+            <div class="col-lg-4 col-6">
                 <select class="selectpicker form-submitter" id="selector-disciplina" name="disciplina" title="Disciplines...">
                     <option value="0">Qualsevol</option>
                     @foreach($disciplines as $dis)
@@ -27,7 +27,7 @@
 
 
     @if($users && !$users->isEmpty())
-        <div class="socis grid are-images-unloaded" id="socis-grid">
+        <div class="socis grid are-images-unloaded mt-3" id="socis-grid">
             <div class="grid__col-sizer"></div>
             <div class="grid__gutter-sizer"></div>
             @foreach($users as $user)
@@ -42,7 +42,7 @@
 
                                     {!! $user->renderProfileImage(['class'=>'profile-picture size-xs','size'=>'small']) !!}
                                     <div class="pl-2 text-break">
-                                        <h5 class="mb-0 ">{{ $user->displayName() }}</h5>
+                                        <h3 class="mb-0 ">{{ $user->displayName() }}</h3>
                                         {{-- @include("_social") --}}
                                     </div>
                                 </div>
@@ -57,7 +57,7 @@
         </div>
         @include('_grid-loader')
     @else
-        <div class="display-4 p-5 text-center">
+        <div class="display-4 p-5 mt-3 text-center">
             Oops! no hi ha socis&hellip;
         </div>
     @endif

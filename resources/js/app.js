@@ -77,43 +77,44 @@ InfiniteScroll.imagesLoaded = imagesLoaded;
 onWindowLoad(function() {
 
     //GRIDS
-    var grid = document.querySelector('.grid');
+    if($('.grid').length>0){
+        var grid = document.querySelector('.grid');
 
-    /* var ul=$(this).find('ul.pagination');
-    ul.hide(); */
-   // al('grid', grid);
-
-
-    var msnry = new Masonry( grid, {
-        itemSelector: 'none', // select none at first
-        columnWidth: '.grid__col-sizer',
-        gutter: '.grid__gutter-sizer',
-        //gutter: '.grid__gutter-sizer',
-        percentPosition: true,
-        stagger: 30,
-        // nicer reveal transition
-        visibleStyle: { transform: 'translateY(0)', opacity: 1 },
-        hiddenStyle: { transform: 'translateY(100px)', opacity: 0 },
-    });
-
-    // initial items reveal
-    imagesLoaded( grid, function() {
-      grid.classList.remove('are-images-unloaded');
-      msnry.options.itemSelector = '.grid__item';
-      var items = grid.querySelectorAll('.grid__item');
-      //al('imagesLoaded', items);
-      msnry.appended( items );
-      msnry.layout();
-
-    });
+        /* var ul=$(this).find('ul.pagination');
+        ul.hide(); */
+    // al('grid', grid);
 
 
-    var infScroll = new InfiniteScroll( grid, {
-        path: '.page-link[rel=next]',
-        append: '.grid__item',
-        outlayer: msnry,
-        status: '.page-load-status',
-    });
+        var msnry = new Masonry( grid, {
+            itemSelector: 'none', // select none at first
+            columnWidth: '.grid__col-sizer',
+            gutter: '.grid__gutter-sizer',
+            //gutter: '.grid__gutter-sizer',
+            percentPosition: true,
+            stagger: 30,
+            // nicer reveal transition
+            visibleStyle: { transform: 'translateY(0)', opacity: 1 },
+            hiddenStyle: { transform: 'translateY(100px)', opacity: 0 },
+        });
 
+        // initial items reveal
+        imagesLoaded( grid, function() {
+        grid.classList.remove('are-images-unloaded');
+        msnry.options.itemSelector = '.grid__item';
+        var items = grid.querySelectorAll('.grid__item');
+        //al('imagesLoaded', items);
+        msnry.appended( items );
+        msnry.layout();
+
+        });
+
+
+        var infScroll = new InfiniteScroll( grid, {
+            path: '.page-link[rel=next]',
+            append: '.grid__item',
+            outlayer: msnry,
+            status: '.page-load-status',
+        });
+    }
 });
 

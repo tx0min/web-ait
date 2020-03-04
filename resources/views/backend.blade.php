@@ -7,8 +7,8 @@
 
 <div class="row ">
     <div class="col-xl-10">
-        
-        
+
+
         @include('layouts._messages')
 
         <form method="POST" action="{{ route('soci.save') }}" enctype="multipart/form-data" class="mb-3" id="user-form">
@@ -17,7 +17,7 @@
 
             <div class="row align-items-start">
                 <div class="col-md-3 mb-4 order-md-12">
-                    <h5 class="text-center">@icon('user') Imatge de perfil</h5>
+                    <h3 class="text-center">Imatge de perfil</h3>
                     <div id="profile_picture_container" class="p-3 text-center image-uploader @if(!$user->hasProfileImage()) empty @endif" data-picture-type="profile_picture"  data-url="{{ route('soci.upload',["picture_type"=>'profile_picture']) }}" data-method="post" data-multiple="false">
                         <figure>
                             {!! $user->renderProfileImage(['class'=>'profile-picture mb-3 image-thumbnail','size'=>'medium']) !!}
@@ -31,8 +31,8 @@
                     </div>
                     <small class="text-muted ">Aquesta imatge apareixerà arrodonida automàticament. La mida recomanada és de 150x150px</small>
 
-                    <hr/>
-                    <h5 class="text-center">@icon('image')  Imatge de portada</h5>
+
+                    <h3 class="mt-5 text-center pb-2">Imatge de portada</h3>
                     <div id="featured_picture_container" class="image-uploader text-center  mb-3 @if(!$user->hasFeaturedImage()) empty @endif" data-picture-type="featured_image"  data-url="{{ route('soci.upload',["picture_type"=>'featured_image']) }}" data-method="post" data-multiple="false">
                         <figure>
                             {!! $user->renderFeaturedImage(['class'=>'mb-3 w-100 image-thumbnail','size'=>'large']) !!}
@@ -54,13 +54,13 @@
 
                     <ul class="nav nav-tabs responsive-tabs">
                         <li class="nav-item">
-                            <a class="nav-link active" id="user-tab" data-toggle="tab" href="#user-tab-content" role="tab">Sobre tu</a>
+                            <a class="nav-link active" id="user-tab" data-toggle="tab" href="#user-tab-content" role="tab"><h3>Sobre tu</h3></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="xarxes-tab" data-toggle="tab" href="#xarxes-tab-content" role="tab">@icon('envelope')  Contacte</a>
+                            <a class="nav-link" id="xarxes-tab" data-toggle="tab" href="#xarxes-tab-content" role="tab"><h3>@icon('envelope')  Contacte</h3></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="portfolio-tab" data-toggle="tab" href="#portfolio-tab-content" role="tab">@icon('images') Portafoli</a>
+                            <a class="nav-link" id="portfolio-tab" data-toggle="tab" href="#portfolio-tab-content" role="tab"><h3>@icon('images') Portafoli</h3></a>
                         </li>
                     </ul>
 
@@ -92,15 +92,15 @@
                                     <input type="text" class="form-control" id="f_last_name" name="last_name" value="{{ $user->last_name }}">
                                 </div>
                              </div>
-                        
+
                              <div class="form-group row">
                                 <label for="f_nickname" class="col-md-3 col-form-label text-md-right">Alias</label>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control @error('nickname') is-invalid @enderror " id="f_nickname" name="nickname" aria-describedby="f_nickname" value="{{ $user->nickname }}">
                                 </div>
                              </div>
-                        
-                            
+
+
                              <div class="form-group row">
                                 <label for="f_display_name" class="col-md-3 col-form-label text-md-right">Mostrar</label>
                                 <div class="col-md-9">
@@ -112,14 +112,14 @@
                                 </div>
                              </div>
 
-                        
+
                              <div class="form-group row">
                                 <label for="f_soci_biografia" class="col-md-3 col-form-label text-md-right">Breu biografia o Statement</label>
                                 <div class="col-md-9">
                                     <textarea class="form-control" id="f_soci_biografia" rows="8" name="soci_biografia">{{ $user->biografia() }}</textarea>
                                 </div>
                              </div>
-                           
+
                              <div class="form-group row">
                                 <label for="f_disciplines" class="col-md-3 col-form-label text-md-right @error('disciplines') text-danger @enderror">Disciplines @error('disciplines') @icon('exclamation-circle') @enderror</label>
                                 <div class="col-md-9">
@@ -127,14 +127,14 @@
                                         <div class="custom-control custom-checkbox">
                                             <input {{ ( in_array($disciplina->term_id, $user_disciplines_ids)?"checked":"")  }} type="checkbox" class="custom-control-input" name="disciplines[]" id="disciplina-{{ $disciplina->term_id }}" value="{{ $disciplina->term_id }}">
                                             <label class="custom-control-label" for="disciplina-{{ $disciplina->term_id }}">{{ $disciplina->name }}</label>
-                                        </div>    
-                                        
+                                        </div>
+
                                     {{-- <option  value="{{ $disciplina->term_id }}" >{{ $disciplina->name }}</option> --}}
                                     @endforeach
                                 </div>
                              </div>
-                           
-                             
+
+
 
                             <div class="form-group row">
                                 <div class="col-md-9 offset-md-3">
@@ -146,60 +146,60 @@
                         </div>
 
                         <div class="tab-pane  py-5" id="xarxes-tab-content" role="tabpanel" >
-                            
+
                             <div class="form-group row">
                                 <label for="f_soci_email" class="col-md-3 col-form-label text-md-right">@icon('envelope') Email</label>
                                 <div class="col-md-9">
                                     <input type="email" class="form-control" id="f_soci_email" name="soci_email" placeholder="Email ..." value="{{ $user->emailContacte() }}">
                                 </div>
                             </div>
-                           
+
                             <div class="form-group row">
                                 <label for="f_soci_web" class="col-md-3 col-form-label text-md-right">@icon('globe') Web</label>
                                 <div class="col-md-9">
                                     <input type="url" class="form-control" id="f_soci_web" name="soci_web" placeholder="Web ..." value="{{ $user->web() }}">
                                 </div>
                             </div>
-                           
-                           
+
+
                             <div class="form-group row">
                                 <label for="f_facebook" class="col-md-3 col-form-label text-md-right">@icon('facebook-square',['type'=>'fab']) Facebook</label>
                                 <div class="col-md-9">
                                     <input type="url" class="form-control" id="f_facebook" name="facebook" placeholder="Facebook URL ..." value="{{ $user->acf->text('facebook') }}">
                                 </div>
                             </div>
-                                                      
+
                             <div class="form-group row">
                                 <label for="f_twitter" class="col-md-3 col-form-label text-md-right">@icon('twitter',['type'=>'fab']) Twitter</label>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="f_twitter" name="twitter" placeholder="Twitter user ..." value="{{ $user->acf->text('twitter') }}">
                                 </div>
                             </div>
-                                                      
+
                             <div class="form-group row">
                                 <label for="f_instagram" class="col-md-3 col-form-label text-md-right">@icon('instagram',['type'=>'fab']) Instagram</label>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="f_instagram" name="instagram" placeholder="Instagram user ..." value="{{ $user->acf->text('instagram') }}">
                                 </div>
                             </div>
-                                                
-                            
+
+
                             <div class="form-group row">
                                 <label for="f_youtube" class="col-md-3 col-form-label text-md-right">@icon('youtube',['type'=>'fab']) Youtube</label>
                                 <div class="col-md-9">
                                     <input type="url" class="form-control" id="f_youtube" name="youtube" placeholder="Youtube URL ..." value="{{ $user->acf->text('youtube') }}">
                                 </div>
                             </div>
-                                                      
-                            
+
+
                             <div class="form-group row">
                                 <label for="f_linkedin" class="col-md-3 col-form-label text-md-right">@icon('linkedin',['type'=>'fab']) LinkedIn</label>
                                 <div class="col-md-9">
                                     <input type="url" class="form-control" id="f_linkedin" name="linkedin" placeholder="LinkedIn URL ..." value="{{ $user->acf->text('linkedin') }}">
                                 </div>
                             </div>
-                                                      
-                            
+
+
                             <div class="form-group row">
                                 <div class="col-md-9 offset-md-3">
                                     <button type="submit" class="btn btn-lg btn-primary" >Guardar</button>
