@@ -14,6 +14,8 @@
 Auth::routes();
 
 
+Route::get('/sitemap.xml', 'SiteMapController@index');
+
 Route::get('/', 'WebController@home')->name('home');
 
 Route::get('/associacio', 'WebController@associacio')->name('associacio');
