@@ -32,7 +32,8 @@ if (! function_exists('post_categories')) {
 
     function post_categories($post){
         $excluded=BlogController::$excluded_categories;
-        return collect($post->terms["category"])->except($excluded)->toArray();
+        if(isset($post->terms["category"]))
+            return collect($post->terms["category"])->except($excluded)->toArray();
     }
 }
 
@@ -42,7 +43,7 @@ if (! function_exists('post_date')) {
     function post_date($post, $ellapsed=false){
         if($ellapsed) return $post->post_date->diffForHumans();
         else return $post->post_date->format("j F Y");
-       
+
 
         // return $post->post_date;
     }

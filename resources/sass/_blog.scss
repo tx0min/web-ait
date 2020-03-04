@@ -6,9 +6,9 @@
         }
 
         .post-inner{
-            border:1px solid rgba($primary, 0.2);
+            border:1px solid rgba($primary, 1);
             transition: all 200ms ease-out;
-        
+
             h5{
                 margin-bottom: 0;
             }
@@ -19,14 +19,14 @@
             color:$white;
             a{
                 color:$white;
-            } 
+            }
             // .badge{
             //     background-color:$white;
             //     color:$primary;
             // }
         }
 
-       
+
     }
 }
 

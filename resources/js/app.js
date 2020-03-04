@@ -37,7 +37,7 @@ $(document).ready(function(e){
         $('html').toggleClass('nav-opened');
     })
 
-   
+
 
    $(document).on('keyup', function(e) {
         if (e.keyCode === 27 && $('html').is('.nav-opened')){
@@ -64,50 +64,56 @@ $(document).ready(function(e){
 
 
 
-var Isotope = require('isotope-layout');
-require('jscroll');
+//var Isotope = require('isotope-layout');
+var Masonry = require('masonry-layout');
+var InfiniteScroll=require('infinite-scroll');
+var imagesLoaded=require('imagesloaded');
+InfiniteScroll.imagesLoaded = imagesLoaded;
+//require('jscroll');
 // require('isotope-fit-columns')
 
-$( window ).on('load',function() {
-    
-    
-    //infiniscroll
-    $('.infinite-scroll').each(function(i){
-        var ul=$(this).find('ul.pagination');
-        ul.hide();
-        al('infiniscroll',this);
 
 
-        $(this).infiniteScroll({
-            autoTrigger: true,
-            loadingHtml: '<span>Loading more ...</span>',
-            padding: 0,
-            nextSelector: '.pagination a[rel=next]',
-            contentSelector: 'div.infinite-scroll',
-            callback: function() {
-                al("callback jscroll");
-                ul.remove();
-            }
-        });
-    
+onWindowLoad(function() {
+
+    //GRIDS
+    var grid = document.querySelector('.grid');
+
+    /* var ul=$(this).find('ul.pagination');
+    ul.hide(); */
+   // al('grid', grid);
+
+
+    var msnry = new Masonry( grid, {
+        itemSelector: 'none', // select none at first
+        columnWidth: '.grid__col-sizer',
+        gutter: '.grid__gutter-sizer',
+        //gutter: '.grid__gutter-sizer',
+        percentPosition: true,
+        stagger: 30,
+        // nicer reveal transition
+        visibleStyle: { transform: 'translateY(0)', opacity: 1 },
+        hiddenStyle: { transform: 'translateY(100px)', opacity: 0 },
+    });
+
+    // initial items reveal
+    imagesLoaded( grid, function() {
+      grid.classList.remove('are-images-unloaded');
+      msnry.options.itemSelector = '.grid__item';
+      var items = grid.querySelectorAll('.grid__item');
+      //al('imagesLoaded', items);
+      msnry.appended( items );
+      msnry.layout();
 
     });
-    
-    
-    //GRIDS
-    if($('.grid').length>0){
-        var pckry = new Isotope( '.grid', {
-            // options
-            itemSelector: '.grid-item',
-            percentPosition: true,
-            masonry: {
-                // use outer width of grid-sizer for columnWidth
-                columnWidth: '.grid-sizer'
-            }
-            // layoutMode: 'fitColumns'
-        });
-        // pckry.on( 'arrangeComplete', onArrangeGrid );
 
-    }
+
+    var infScroll = new InfiniteScroll( grid, {
+        path: '.page-link[rel=next]',
+        append: '.grid__item',
+        outlayer: msnry,
+        status: '.page-load-status',
+    });
+
 });
 

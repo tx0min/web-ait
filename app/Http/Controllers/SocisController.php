@@ -11,7 +11,7 @@ use Exception;
 class SocisController extends Controller
 {
 
-    
+
 
     public function disciplina($disciplina){
         return $this->socis($disciplina);
@@ -20,26 +20,26 @@ class SocisController extends Controller
 
 
     public function socis($disciplina=null, $term=null){
-        
+
         $disciplines= Taxonomy::where('taxonomy', 'disciplines')->get();
-        
-        
+
+
         $users=User::select();
-        
+
         if($disciplina){
             $users = $users->taxonomy('disciplines', $disciplina);
         }
         // dump(fullquery($users));
-       
-        
+
+
         if($term){
             $users=$users->byTerm($term);
         }
-        // dump(fullquery($users));
-        $users=$users->socis();
+
+        $users=$users->socis()->simplePaginate(20);
 
         return view('socis', compact('users','disciplines','disciplina','term'));
-        
+
     }
 
 
@@ -51,9 +51,9 @@ class SocisController extends Controller
 
     public function search(Request $request){
         return $this->socis($request->disciplina, $request->term);
-        
+
     }
 
 
-   
+
 }

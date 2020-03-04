@@ -9,7 +9,7 @@
                 <div class="search-field">
                     <input type="text" class="form-control " placeholder="Buscar ..." id="term" name="term" value="{{ $term }}" >
                 </div>
-                
+
             </div>
             <div class="col-lg-4 col-md-6 mb-3">
                 <select class="selectpicker form-submitter" id="selector-category" name="category" title="Categories...">
@@ -21,22 +21,23 @@
             </div>
         </div>
         <button type="submit" hidden></button>
-        
+
     </form>
     @if($posts && !$posts->isEmpty())
-    
-        <div class="infinite-scroll">
 
-            <div class="blog grid">
-                <div class="grid-sizer"></div>
-                
+        <div class="grid-container">
+            <div class="blog grid are-images-unloaded" data-url="{{ route('blog') }}" data-page="1">
+                <div class="grid__col-sizer"></div>
+                <div class="grid__gutter-sizer"></div>
+
                 @foreach($posts as $post)
                     @include('_blog_post')
                 @endforeach
-                
-                
-            </div>        
-            {!! $posts->links() !!}
+                {!! $posts->links() !!}
+
+            </div>
+
+            @include('_grid-loader')
     </div>
 
     @else

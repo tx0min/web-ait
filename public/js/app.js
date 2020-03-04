@@ -10218,1045 +10218,1644 @@ return getSize;
 
 /***/ }),
 
-/***/ "./node_modules/isotope-layout/js/isotope.js":
+/***/ "./node_modules/imagesloaded/imagesloaded.js":
 /*!***************************************************!*\
-  !*** ./node_modules/isotope-layout/js/isotope.js ***!
+  !*** ./node_modules/imagesloaded/imagesloaded.js ***!
   \***************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
- * Isotope v3.0.6
- *
- * Licensed GPLv3 for open source use
- * or Isotope Commercial License for commercial use
- *
- * https://isotope.metafizzy.co
- * Copyright 2010-2018 Metafizzy
+ * imagesLoaded v4.1.4
+ * JavaScript is all like "You images are done yet or what?"
+ * MIT License
  */
 
-( function( window, factory ) {
+( function( window, factory ) { 'use strict';
   // universal module definition
-  /* jshint strict: false */ /*globals define, module, require */
+
+  /*global define: false, module: false, require: false */
+
   if ( true ) {
     // AMD
     !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-        __webpack_require__(/*! outlayer/outlayer */ "./node_modules/outlayer/outlayer.js"),
-        __webpack_require__(/*! get-size/get-size */ "./node_modules/get-size/get-size.js"),
-        __webpack_require__(/*! desandro-matches-selector/matches-selector */ "./node_modules/desandro-matches-selector/matches-selector.js"),
-        __webpack_require__(/*! fizzy-ui-utils/utils */ "./node_modules/fizzy-ui-utils/utils.js"),
-        __webpack_require__(/*! ./item */ "./node_modules/isotope-layout/js/item.js"),
-        __webpack_require__(/*! ./layout-mode */ "./node_modules/isotope-layout/js/layout-mode.js"),
-        // include default layout modes
-        __webpack_require__(/*! ./layout-modes/masonry */ "./node_modules/isotope-layout/js/layout-modes/masonry.js"),
-        __webpack_require__(/*! ./layout-modes/fit-rows */ "./node_modules/isotope-layout/js/layout-modes/fit-rows.js"),
-        __webpack_require__(/*! ./layout-modes/vertical */ "./node_modules/isotope-layout/js/layout-modes/vertical.js")
-      ], __WEBPACK_AMD_DEFINE_RESULT__ = (function( Outlayer, getSize, matchesSelector, utils, Item, LayoutMode ) {
-        return factory( window, Outlayer, getSize, matchesSelector, utils, Item, LayoutMode );
-      }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+      __webpack_require__(/*! ev-emitter/ev-emitter */ "./node_modules/ev-emitter/ev-emitter.js")
+    ], __WEBPACK_AMD_DEFINE_RESULT__ = (function( EvEmitter ) {
+      return factory( window, EvEmitter );
+    }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else {}
 
-}( window, function factory( window, Outlayer, getSize, matchesSelector, utils,
-  Item, LayoutMode ) {
+})( typeof window !== 'undefined' ? window : this,
+
+// --------------------------  factory -------------------------- //
+
+function factory( window, EvEmitter ) {
 
 'use strict';
 
-// -------------------------- vars -------------------------- //
-
-var jQuery = window.jQuery;
+var $ = window.jQuery;
+var console = window.console;
 
 // -------------------------- helpers -------------------------- //
 
-var trim = String.prototype.trim ?
-  function( str ) {
-    return str.trim();
-  } :
-  function( str ) {
-    return str.replace( /^\s+|\s+$/g, '' );
-  };
-
-// -------------------------- isotopeDefinition -------------------------- //
-
-  // create an Outlayer layout class
-  var Isotope = Outlayer.create( 'isotope', {
-    layoutMode: 'masonry',
-    isJQueryFiltering: true,
-    sortAscending: true
-  });
-
-  Isotope.Item = Item;
-  Isotope.LayoutMode = LayoutMode;
-
-  var proto = Isotope.prototype;
-
-  proto._create = function() {
-    this.itemGUID = 0;
-    // functions that sort items
-    this._sorters = {};
-    this._getSorters();
-    // call super
-    Outlayer.prototype._create.call( this );
-
-    // create layout modes
-    this.modes = {};
-    // start filteredItems with all items
-    this.filteredItems = this.items;
-    // keep of track of sortBys
-    this.sortHistory = [ 'original-order' ];
-    // create from registered layout modes
-    for ( var name in LayoutMode.modes ) {
-      this._initLayoutMode( name );
-    }
-  };
-
-  proto.reloadItems = function() {
-    // reset item ID counter
-    this.itemGUID = 0;
-    // call super
-    Outlayer.prototype.reloadItems.call( this );
-  };
-
-  proto._itemize = function() {
-    var items = Outlayer.prototype._itemize.apply( this, arguments );
-    // assign ID for original-order
-    for ( var i=0; i < items.length; i++ ) {
-      var item = items[i];
-      item.id = this.itemGUID++;
-    }
-    this._updateItemsSortData( items );
-    return items;
-  };
-
-
-  // -------------------------- layout -------------------------- //
-
-  proto._initLayoutMode = function( name ) {
-    var Mode = LayoutMode.modes[ name ];
-    // set mode options
-    // HACK extend initial options, back-fill in default options
-    var initialOpts = this.options[ name ] || {};
-    this.options[ name ] = Mode.options ?
-      utils.extend( Mode.options, initialOpts ) : initialOpts;
-    // init layout mode instance
-    this.modes[ name ] = new Mode( this );
-  };
-
-
-  proto.layout = function() {
-    // if first time doing layout, do all magic
-    if ( !this._isLayoutInited && this._getOption('initLayout') ) {
-      this.arrange();
-      return;
-    }
-    this._layout();
-  };
-
-  // private method to be used in layout() & magic()
-  proto._layout = function() {
-    // don't animate first layout
-    var isInstant = this._getIsInstant();
-    // layout flow
-    this._resetLayout();
-    this._manageStamps();
-    this.layoutItems( this.filteredItems, isInstant );
-
-    // flag for initalized
-    this._isLayoutInited = true;
-  };
-
-  // filter + sort + layout
-  proto.arrange = function( opts ) {
-    // set any options pass
-    this.option( opts );
-    this._getIsInstant();
-    // filter, sort, and layout
-
-    // filter
-    var filtered = this._filter( this.items );
-    this.filteredItems = filtered.matches;
-
-    this._bindArrangeComplete();
-
-    if ( this._isInstant ) {
-      this._noTransition( this._hideReveal, [ filtered ] );
-    } else {
-      this._hideReveal( filtered );
-    }
-
-    this._sort();
-    this._layout();
-  };
-  // alias to _init for main plugin method
-  proto._init = proto.arrange;
-
-  proto._hideReveal = function( filtered ) {
-    this.reveal( filtered.needReveal );
-    this.hide( filtered.needHide );
-  };
-
-  // HACK
-  // Don't animate/transition first layout
-  // Or don't animate/transition other layouts
-  proto._getIsInstant = function() {
-    var isLayoutInstant = this._getOption('layoutInstant');
-    var isInstant = isLayoutInstant !== undefined ? isLayoutInstant :
-      !this._isLayoutInited;
-    this._isInstant = isInstant;
-    return isInstant;
-  };
-
-  // listen for layoutComplete, hideComplete and revealComplete
-  // to trigger arrangeComplete
-  proto._bindArrangeComplete = function() {
-    // listen for 3 events to trigger arrangeComplete
-    var isLayoutComplete, isHideComplete, isRevealComplete;
-    var _this = this;
-    function arrangeParallelCallback() {
-      if ( isLayoutComplete && isHideComplete && isRevealComplete ) {
-        _this.dispatchEvent( 'arrangeComplete', null, [ _this.filteredItems ] );
-      }
-    }
-    this.once( 'layoutComplete', function() {
-      isLayoutComplete = true;
-      arrangeParallelCallback();
-    });
-    this.once( 'hideComplete', function() {
-      isHideComplete = true;
-      arrangeParallelCallback();
-    });
-    this.once( 'revealComplete', function() {
-      isRevealComplete = true;
-      arrangeParallelCallback();
-    });
-  };
-
-  // -------------------------- filter -------------------------- //
-
-  proto._filter = function( items ) {
-    var filter = this.options.filter;
-    filter = filter || '*';
-    var matches = [];
-    var hiddenMatched = [];
-    var visibleUnmatched = [];
-
-    var test = this._getFilterTest( filter );
-
-    // test each item
-    for ( var i=0; i < items.length; i++ ) {
-      var item = items[i];
-      if ( item.isIgnored ) {
-        continue;
-      }
-      // add item to either matched or unmatched group
-      var isMatched = test( item );
-      // item.isFilterMatched = isMatched;
-      // add to matches if its a match
-      if ( isMatched ) {
-        matches.push( item );
-      }
-      // add to additional group if item needs to be hidden or revealed
-      if ( isMatched && item.isHidden ) {
-        hiddenMatched.push( item );
-      } else if ( !isMatched && !item.isHidden ) {
-        visibleUnmatched.push( item );
-      }
-    }
-
-    // return collections of items to be manipulated
-    return {
-      matches: matches,
-      needReveal: hiddenMatched,
-      needHide: visibleUnmatched
-    };
-  };
-
-  // get a jQuery, function, or a matchesSelector test given the filter
-  proto._getFilterTest = function( filter ) {
-    if ( jQuery && this.options.isJQueryFiltering ) {
-      // use jQuery
-      return function( item ) {
-        return jQuery( item.element ).is( filter );
-      };
-    }
-    if ( typeof filter == 'function' ) {
-      // use filter as function
-      return function( item ) {
-        return filter( item.element );
-      };
-    }
-    // default, use filter as selector string
-    return function( item ) {
-      return matchesSelector( item.element, filter );
-    };
-  };
-
-  // -------------------------- sorting -------------------------- //
-
-  /**
-   * @params {Array} elems
-   * @public
-   */
-  proto.updateSortData = function( elems ) {
-    // get items
-    var items;
-    if ( elems ) {
-      elems = utils.makeArray( elems );
-      items = this.getItems( elems );
-    } else {
-      // update all items if no elems provided
-      items = this.items;
-    }
-
-    this._getSorters();
-    this._updateItemsSortData( items );
-  };
-
-  proto._getSorters = function() {
-    var getSortData = this.options.getSortData;
-    for ( var key in getSortData ) {
-      var sorter = getSortData[ key ];
-      this._sorters[ key ] = mungeSorter( sorter );
-    }
-  };
-
-  /**
-   * @params {Array} items - of Isotope.Items
-   * @private
-   */
-  proto._updateItemsSortData = function( items ) {
-    // do not update if no items
-    var len = items && items.length;
-
-    for ( var i=0; len && i < len; i++ ) {
-      var item = items[i];
-      item.updateSortData();
-    }
-  };
-
-  // ----- munge sorter ----- //
-
-  // encapsulate this, as we just need mungeSorter
-  // other functions in here are just for munging
-  var mungeSorter = ( function() {
-    // add a magic layer to sorters for convienent shorthands
-    // `.foo-bar` will use the text of .foo-bar querySelector
-    // `[foo-bar]` will use attribute
-    // you can also add parser
-    // `.foo-bar parseInt` will parse that as a number
-    function mungeSorter( sorter ) {
-      // if not a string, return function or whatever it is
-      if ( typeof sorter != 'string' ) {
-        return sorter;
-      }
-      // parse the sorter string
-      var args = trim( sorter ).split(' ');
-      var query = args[0];
-      // check if query looks like [an-attribute]
-      var attrMatch = query.match( /^\[(.+)\]$/ );
-      var attr = attrMatch && attrMatch[1];
-      var getValue = getValueGetter( attr, query );
-      // use second argument as a parser
-      var parser = Isotope.sortDataParsers[ args[1] ];
-      // parse the value, if there was a parser
-      sorter = parser ? function( elem ) {
-        return elem && parser( getValue( elem ) );
-      } :
-      // otherwise just return value
-      function( elem ) {
-        return elem && getValue( elem );
-      };
-
-      return sorter;
-    }
-
-    // get an attribute getter, or get text of the querySelector
-    function getValueGetter( attr, query ) {
-      // if query looks like [foo-bar], get attribute
-      if ( attr ) {
-        return function getAttribute( elem ) {
-          return elem.getAttribute( attr );
-        };
-      }
-
-      // otherwise, assume its a querySelector, and get its text
-      return function getChildText( elem ) {
-        var child = elem.querySelector( query );
-        return child && child.textContent;
-      };
-    }
-
-    return mungeSorter;
-  })();
-
-  // parsers used in getSortData shortcut strings
-  Isotope.sortDataParsers = {
-    'parseInt': function( val ) {
-      return parseInt( val, 10 );
-    },
-    'parseFloat': function( val ) {
-      return parseFloat( val );
-    }
-  };
-
-  // ----- sort method ----- //
-
-  // sort filteredItem order
-  proto._sort = function() {
-    if ( !this.options.sortBy ) {
-      return;
-    }
-    // keep track of sortBy History
-    var sortBys = utils.makeArray( this.options.sortBy );
-    if ( !this._getIsSameSortBy( sortBys ) ) {
-      // concat all sortBy and sortHistory, add to front, oldest goes in last
-      this.sortHistory = sortBys.concat( this.sortHistory );
-    }
-    // sort magic
-    var itemSorter = getItemSorter( this.sortHistory, this.options.sortAscending );
-    this.filteredItems.sort( itemSorter );
-  };
-
-  // check if sortBys is same as start of sortHistory
-  proto._getIsSameSortBy = function( sortBys ) {
-    for ( var i=0; i < sortBys.length; i++ ) {
-      if ( sortBys[i] != this.sortHistory[i] ) {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  // returns a function used for sorting
-  function getItemSorter( sortBys, sortAsc ) {
-    return function sorter( itemA, itemB ) {
-      // cycle through all sortKeys
-      for ( var i = 0; i < sortBys.length; i++ ) {
-        var sortBy = sortBys[i];
-        var a = itemA.sortData[ sortBy ];
-        var b = itemB.sortData[ sortBy ];
-        if ( a > b || a < b ) {
-          // if sortAsc is an object, use the value given the sortBy key
-          var isAscending = sortAsc[ sortBy ] !== undefined ? sortAsc[ sortBy ] : sortAsc;
-          var direction = isAscending ? 1 : -1;
-          return ( a > b ? 1 : -1 ) * direction;
-        }
-      }
-      return 0;
-    };
+// extend objects
+function extend( a, b ) {
+  for ( var prop in b ) {
+    a[ prop ] = b[ prop ];
   }
-
-  // -------------------------- methods -------------------------- //
-
-  // get layout mode
-  proto._mode = function() {
-    var layoutMode = this.options.layoutMode;
-    var mode = this.modes[ layoutMode ];
-    if ( !mode ) {
-      // TODO console.error
-      throw new Error( 'No layout mode: ' + layoutMode );
-    }
-    // HACK sync mode's options
-    // any options set after init for layout mode need to be synced
-    mode.options = this.options[ layoutMode ];
-    return mode;
-  };
-
-  proto._resetLayout = function() {
-    // trigger original reset layout
-    Outlayer.prototype._resetLayout.call( this );
-    this._mode()._resetLayout();
-  };
-
-  proto._getItemLayoutPosition = function( item  ) {
-    return this._mode()._getItemLayoutPosition( item );
-  };
-
-  proto._manageStamp = function( stamp ) {
-    this._mode()._manageStamp( stamp );
-  };
-
-  proto._getContainerSize = function() {
-    return this._mode()._getContainerSize();
-  };
-
-  proto.needsResizeLayout = function() {
-    return this._mode().needsResizeLayout();
-  };
-
-  // -------------------------- adding & removing -------------------------- //
-
-  // HEADS UP overwrites default Outlayer appended
-  proto.appended = function( elems ) {
-    var items = this.addItems( elems );
-    if ( !items.length ) {
-      return;
-    }
-    // filter, layout, reveal new items
-    var filteredItems = this._filterRevealAdded( items );
-    // add to filteredItems
-    this.filteredItems = this.filteredItems.concat( filteredItems );
-  };
-
-  // HEADS UP overwrites default Outlayer prepended
-  proto.prepended = function( elems ) {
-    var items = this._itemize( elems );
-    if ( !items.length ) {
-      return;
-    }
-    // start new layout
-    this._resetLayout();
-    this._manageStamps();
-    // filter, layout, reveal new items
-    var filteredItems = this._filterRevealAdded( items );
-    // layout previous items
-    this.layoutItems( this.filteredItems );
-    // add to items and filteredItems
-    this.filteredItems = filteredItems.concat( this.filteredItems );
-    this.items = items.concat( this.items );
-  };
-
-  proto._filterRevealAdded = function( items ) {
-    var filtered = this._filter( items );
-    this.hide( filtered.needHide );
-    // reveal all new items
-    this.reveal( filtered.matches );
-    // layout new items, no transition
-    this.layoutItems( filtered.matches, true );
-    return filtered.matches;
-  };
-
-  /**
-   * Filter, sort, and layout newly-appended item elements
-   * @param {Array or NodeList or Element} elems
-   */
-  proto.insert = function( elems ) {
-    var items = this.addItems( elems );
-    if ( !items.length ) {
-      return;
-    }
-    // append item elements
-    var i, item;
-    var len = items.length;
-    for ( i=0; i < len; i++ ) {
-      item = items[i];
-      this.element.appendChild( item.element );
-    }
-    // filter new stuff
-    var filteredInsertItems = this._filter( items ).matches;
-    // set flag
-    for ( i=0; i < len; i++ ) {
-      items[i].isLayoutInstant = true;
-    }
-    this.arrange();
-    // reset flag
-    for ( i=0; i < len; i++ ) {
-      delete items[i].isLayoutInstant;
-    }
-    this.reveal( filteredInsertItems );
-  };
-
-  var _remove = proto.remove;
-  proto.remove = function( elems ) {
-    elems = utils.makeArray( elems );
-    var removeItems = this.getItems( elems );
-    // do regular thing
-    _remove.call( this, elems );
-    // bail if no items to remove
-    var len = removeItems && removeItems.length;
-    // remove elems from filteredItems
-    for ( var i=0; len && i < len; i++ ) {
-      var item = removeItems[i];
-      // remove item from collection
-      utils.removeFrom( this.filteredItems, item );
-    }
-  };
-
-  proto.shuffle = function() {
-    // update random sortData
-    for ( var i=0; i < this.items.length; i++ ) {
-      var item = this.items[i];
-      item.sortData.random = Math.random();
-    }
-    this.options.sortBy = 'random';
-    this._sort();
-    this._layout();
-  };
-
-  /**
-   * trigger fn without transition
-   * kind of hacky to have this in the first place
-   * @param {Function} fn
-   * @param {Array} args
-   * @returns ret
-   * @private
-   */
-  proto._noTransition = function( fn, args ) {
-    // save transitionDuration before disabling
-    var transitionDuration = this.options.transitionDuration;
-    // disable transition
-    this.options.transitionDuration = 0;
-    // do it
-    var returnValue = fn.apply( this, args );
-    // re-enable transition for reveal
-    this.options.transitionDuration = transitionDuration;
-    return returnValue;
-  };
-
-  // ----- helper methods ----- //
-
-  /**
-   * getter method for getting filtered item elements
-   * @returns {Array} elems - collection of item elements
-   */
-  proto.getFilteredItemElements = function() {
-    return this.filteredItems.map( function( item ) {
-      return item.element;
-    });
-  };
-
-  // -----  ----- //
-
-  return Isotope;
-
-}));
-
-
-/***/ }),
-
-/***/ "./node_modules/isotope-layout/js/item.js":
-/*!************************************************!*\
-  !*** ./node_modules/isotope-layout/js/item.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
- * Isotope Item
-**/
-
-( function( window, factory ) {
-  // universal module definition
-  /* jshint strict: false */ /*globals define, module, require */
-  if ( true ) {
-    // AMD
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-        __webpack_require__(/*! outlayer/outlayer */ "./node_modules/outlayer/outlayer.js")
-      ], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else {}
-
-}( window, function factory( Outlayer ) {
-'use strict';
-
-// -------------------------- Item -------------------------- //
-
-// sub-class Outlayer Item
-function Item() {
-  Outlayer.Item.apply( this, arguments );
+  return a;
 }
 
-var proto = Item.prototype = Object.create( Outlayer.Item.prototype );
+var arraySlice = Array.prototype.slice;
 
-var _create = proto._create;
-proto._create = function() {
-  // assign id, used for original-order sorting
-  this.id = this.layout.itemGUID++;
-  _create.call( this );
-  this.sortData = {};
-};
+// turn element or nodeList into an array
+function makeArray( obj ) {
+  if ( Array.isArray( obj ) ) {
+    // use object if already an array
+    return obj;
+  }
 
-proto.updateSortData = function() {
-  if ( this.isIgnored ) {
+  var isArrayLike = typeof obj == 'object' && typeof obj.length == 'number';
+  if ( isArrayLike ) {
+    // convert nodeList to array
+    return arraySlice.call( obj );
+  }
+
+  // array of single index
+  return [ obj ];
+}
+
+// -------------------------- imagesLoaded -------------------------- //
+
+/**
+ * @param {Array, Element, NodeList, String} elem
+ * @param {Object or Function} options - if function, use as callback
+ * @param {Function} onAlways - callback function
+ */
+function ImagesLoaded( elem, options, onAlways ) {
+  // coerce ImagesLoaded() without new, to be new ImagesLoaded()
+  if ( !( this instanceof ImagesLoaded ) ) {
+    return new ImagesLoaded( elem, options, onAlways );
+  }
+  // use elem as selector string
+  var queryElem = elem;
+  if ( typeof elem == 'string' ) {
+    queryElem = document.querySelectorAll( elem );
+  }
+  // bail if bad element
+  if ( !queryElem ) {
+    console.error( 'Bad element for imagesLoaded ' + ( queryElem || elem ) );
     return;
   }
-  // default sorters
-  this.sortData.id = this.id;
-  // for backward compatibility
-  this.sortData['original-order'] = this.id;
-  this.sortData.random = Math.random();
-  // go thru getSortData obj and apply the sorters
-  var getSortData = this.layout.options.getSortData;
-  var sorters = this.layout._sorters;
-  for ( var key in getSortData ) {
-    var sorter = sorters[ key ];
-    this.sortData[ key ] = sorter( this.element, this );
+
+  this.elements = makeArray( queryElem );
+  this.options = extend( {}, this.options );
+  // shift arguments if no options set
+  if ( typeof options == 'function' ) {
+    onAlways = options;
+  } else {
+    extend( this.options, options );
+  }
+
+  if ( onAlways ) {
+    this.on( 'always', onAlways );
+  }
+
+  this.getImages();
+
+  if ( $ ) {
+    // add jQuery Deferred object
+    this.jqDeferred = new $.Deferred();
+  }
+
+  // HACK check async to allow time to bind listeners
+  setTimeout( this.check.bind( this ) );
+}
+
+ImagesLoaded.prototype = Object.create( EvEmitter.prototype );
+
+ImagesLoaded.prototype.options = {};
+
+ImagesLoaded.prototype.getImages = function() {
+  this.images = [];
+
+  // filter & find items if we have an item selector
+  this.elements.forEach( this.addElementImages, this );
+};
+
+/**
+ * @param {Node} element
+ */
+ImagesLoaded.prototype.addElementImages = function( elem ) {
+  // filter siblings
+  if ( elem.nodeName == 'IMG' ) {
+    this.addImage( elem );
+  }
+  // get background image on element
+  if ( this.options.background === true ) {
+    this.addElementBackgroundImages( elem );
+  }
+
+  // find children
+  // no non-element nodes, #143
+  var nodeType = elem.nodeType;
+  if ( !nodeType || !elementNodeTypes[ nodeType ] ) {
+    return;
+  }
+  var childImgs = elem.querySelectorAll('img');
+  // concat childElems to filterFound array
+  for ( var i=0; i < childImgs.length; i++ ) {
+    var img = childImgs[i];
+    this.addImage( img );
+  }
+
+  // get child background images
+  if ( typeof this.options.background == 'string' ) {
+    var children = elem.querySelectorAll( this.options.background );
+    for ( i=0; i < children.length; i++ ) {
+      var child = children[i];
+      this.addElementBackgroundImages( child );
+    }
   }
 };
 
-var _destroy = proto.destroy;
-proto.destroy = function() {
-  // call super
-  _destroy.apply( this, arguments );
-  // reset display, #741
-  this.css({
-    display: ''
+var elementNodeTypes = {
+  1: true,
+  9: true,
+  11: true
+};
+
+ImagesLoaded.prototype.addElementBackgroundImages = function( elem ) {
+  var style = getComputedStyle( elem );
+  if ( !style ) {
+    // Firefox returns null if in a hidden iframe https://bugzil.la/548397
+    return;
+  }
+  // get url inside url("...")
+  var reURL = /url\((['"])?(.*?)\1\)/gi;
+  var matches = reURL.exec( style.backgroundImage );
+  while ( matches !== null ) {
+    var url = matches && matches[2];
+    if ( url ) {
+      this.addBackground( url, elem );
+    }
+    matches = reURL.exec( style.backgroundImage );
+  }
+};
+
+/**
+ * @param {Image} img
+ */
+ImagesLoaded.prototype.addImage = function( img ) {
+  var loadingImage = new LoadingImage( img );
+  this.images.push( loadingImage );
+};
+
+ImagesLoaded.prototype.addBackground = function( url, elem ) {
+  var background = new Background( url, elem );
+  this.images.push( background );
+};
+
+ImagesLoaded.prototype.check = function() {
+  var _this = this;
+  this.progressedCount = 0;
+  this.hasAnyBroken = false;
+  // complete if no images
+  if ( !this.images.length ) {
+    this.complete();
+    return;
+  }
+
+  function onProgress( image, elem, message ) {
+    // HACK - Chrome triggers event before object properties have changed. #83
+    setTimeout( function() {
+      _this.progress( image, elem, message );
+    });
+  }
+
+  this.images.forEach( function( loadingImage ) {
+    loadingImage.once( 'progress', onProgress );
+    loadingImage.check();
   });
 };
 
-return Item;
+ImagesLoaded.prototype.progress = function( image, elem, message ) {
+  this.progressedCount++;
+  this.hasAnyBroken = this.hasAnyBroken || !image.isLoaded;
+  // progress event
+  this.emitEvent( 'progress', [ this, image, elem ] );
+  if ( this.jqDeferred && this.jqDeferred.notify ) {
+    this.jqDeferred.notify( this, image );
+  }
+  // check if completed
+  if ( this.progressedCount == this.images.length ) {
+    this.complete();
+  }
+
+  if ( this.options.debug && console ) {
+    console.log( 'progress: ' + message, image, elem );
+  }
+};
+
+ImagesLoaded.prototype.complete = function() {
+  var eventName = this.hasAnyBroken ? 'fail' : 'done';
+  this.isComplete = true;
+  this.emitEvent( eventName, [ this ] );
+  this.emitEvent( 'always', [ this ] );
+  if ( this.jqDeferred ) {
+    var jqMethod = this.hasAnyBroken ? 'reject' : 'resolve';
+    this.jqDeferred[ jqMethod ]( this );
+  }
+};
+
+// --------------------------  -------------------------- //
+
+function LoadingImage( img ) {
+  this.img = img;
+}
+
+LoadingImage.prototype = Object.create( EvEmitter.prototype );
+
+LoadingImage.prototype.check = function() {
+  // If complete is true and browser supports natural sizes,
+  // try to check for image status manually.
+  var isComplete = this.getIsImageComplete();
+  if ( isComplete ) {
+    // report based on naturalWidth
+    this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
+    return;
+  }
+
+  // If none of the checks above matched, simulate loading on detached element.
+  this.proxyImage = new Image();
+  this.proxyImage.addEventListener( 'load', this );
+  this.proxyImage.addEventListener( 'error', this );
+  // bind to image as well for Firefox. #191
+  this.img.addEventListener( 'load', this );
+  this.img.addEventListener( 'error', this );
+  this.proxyImage.src = this.img.src;
+};
+
+LoadingImage.prototype.getIsImageComplete = function() {
+  // check for non-zero, non-undefined naturalWidth
+  // fixes Safari+InfiniteScroll+Masonry bug infinite-scroll#671
+  return this.img.complete && this.img.naturalWidth;
+};
+
+LoadingImage.prototype.confirm = function( isLoaded, message ) {
+  this.isLoaded = isLoaded;
+  this.emitEvent( 'progress', [ this, this.img, message ] );
+};
+
+// ----- events ----- //
+
+// trigger specified handler for event type
+LoadingImage.prototype.handleEvent = function( event ) {
+  var method = 'on' + event.type;
+  if ( this[ method ] ) {
+    this[ method ]( event );
+  }
+};
+
+LoadingImage.prototype.onload = function() {
+  this.confirm( true, 'onload' );
+  this.unbindEvents();
+};
+
+LoadingImage.prototype.onerror = function() {
+  this.confirm( false, 'onerror' );
+  this.unbindEvents();
+};
+
+LoadingImage.prototype.unbindEvents = function() {
+  this.proxyImage.removeEventListener( 'load', this );
+  this.proxyImage.removeEventListener( 'error', this );
+  this.img.removeEventListener( 'load', this );
+  this.img.removeEventListener( 'error', this );
+};
+
+// -------------------------- Background -------------------------- //
+
+function Background( url, element ) {
+  this.url = url;
+  this.element = element;
+  this.img = new Image();
+}
+
+// inherit LoadingImage prototype
+Background.prototype = Object.create( LoadingImage.prototype );
+
+Background.prototype.check = function() {
+  this.img.addEventListener( 'load', this );
+  this.img.addEventListener( 'error', this );
+  this.img.src = this.url;
+  // check if image is already complete
+  var isComplete = this.getIsImageComplete();
+  if ( isComplete ) {
+    this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
+    this.unbindEvents();
+  }
+};
+
+Background.prototype.unbindEvents = function() {
+  this.img.removeEventListener( 'load', this );
+  this.img.removeEventListener( 'error', this );
+};
+
+Background.prototype.confirm = function( isLoaded, message ) {
+  this.isLoaded = isLoaded;
+  this.emitEvent( 'progress', [ this, this.element, message ] );
+};
+
+// -------------------------- jQuery -------------------------- //
+
+ImagesLoaded.makeJQueryPlugin = function( jQuery ) {
+  jQuery = jQuery || window.jQuery;
+  if ( !jQuery ) {
+    return;
+  }
+  // set local variable
+  $ = jQuery;
+  // $().imagesLoaded()
+  $.fn.imagesLoaded = function( options, callback ) {
+    var instance = new ImagesLoaded( this, options, callback );
+    return instance.jqDeferred.promise( $(this) );
+  };
+};
+// try making plugin
+ImagesLoaded.makeJQueryPlugin();
+
+// --------------------------  -------------------------- //
+
+return ImagesLoaded;
+
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/infinite-scroll/js/button.js":
+/*!***************************************************!*\
+  !*** ./node_modules/infinite-scroll/js/button.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// button
+( function( window, factory ) {
+  // universal module definition
+  /* globals define, module, require */
+  if ( true ) {
+    // AMD
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+      __webpack_require__(/*! ./core */ "./node_modules/infinite-scroll/js/core.js"),
+      __webpack_require__(/*! fizzy-ui-utils/utils */ "./node_modules/fizzy-ui-utils/utils.js"),
+    ], __WEBPACK_AMD_DEFINE_RESULT__ = (function( InfiniteScroll, utils ) {
+      return factory( window, InfiniteScroll, utils );
+    }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else {}
+
+}( window, function factory( window, InfiniteScroll, utils ) {
+
+// InfiniteScroll.defaults.button = null;
+
+InfiniteScroll.create.button = function() {
+  var buttonElem = utils.getQueryElement( this.options.button );
+  if ( buttonElem ) {
+    this.button = new InfiniteScrollButton( buttonElem, this );
+    return;
+  }
+};
+
+InfiniteScroll.destroy.button = function() {
+  if ( this.button ) {
+    this.button.destroy();
+  }
+};
+
+// -------------------------- InfiniteScrollButton -------------------------- //
+
+function InfiniteScrollButton( element, infScroll ) {
+  this.element = element;
+  this.infScroll = infScroll;
+  // events
+  this.clickHandler = this.onClick.bind( this );
+  this.element.addEventListener( 'click', this.clickHandler );
+  infScroll.on( 'request', this.disable.bind( this ) );
+  infScroll.on( 'load', this.enable.bind( this ) );
+  infScroll.on( 'error', this.hide.bind( this ) );
+  infScroll.on( 'last', this.hide.bind( this ) );
+}
+
+InfiniteScrollButton.prototype.onClick = function( event ) {
+  event.preventDefault();
+  this.infScroll.loadNextPage();
+};
+
+InfiniteScrollButton.prototype.enable = function() {
+  this.element.removeAttribute('disabled');
+};
+
+InfiniteScrollButton.prototype.disable = function() {
+  this.element.disabled = 'disabled';
+};
+
+InfiniteScrollButton.prototype.hide = function() {
+  this.element.style.display = 'none';
+};
+
+InfiniteScrollButton.prototype.destroy = function() {
+  this.element.removeEventListener( 'click', this.clickHandler );
+};
+
+// --------------------------  -------------------------- //
+
+InfiniteScroll.Button = InfiniteScrollButton;
+
+return InfiniteScroll;
 
 }));
 
 
 /***/ }),
 
-/***/ "./node_modules/isotope-layout/js/layout-mode.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/isotope-layout/js/layout-mode.js ***!
-  \*******************************************************/
+/***/ "./node_modules/infinite-scroll/js/core.js":
+/*!*************************************************!*\
+  !*** ./node_modules/infinite-scroll/js/core.js ***!
+  \*************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
- * Isotope LayoutMode
- */
-
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// core
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */ /*globals define, module, require */
+  /* globals define, module, require */
   if ( true ) {
     // AMD
     !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-        __webpack_require__(/*! get-size/get-size */ "./node_modules/get-size/get-size.js"),
-        __webpack_require__(/*! outlayer/outlayer */ "./node_modules/outlayer/outlayer.js")
-      ], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+      __webpack_require__(/*! ev-emitter/ev-emitter */ "./node_modules/ev-emitter/ev-emitter.js"),
+      __webpack_require__(/*! fizzy-ui-utils/utils */ "./node_modules/fizzy-ui-utils/utils.js"),
+    ], __WEBPACK_AMD_DEFINE_RESULT__ = (function( EvEmitter, utils) {
+      return factory( window, EvEmitter, utils );
+    }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else {}
 
-}( window, function factory( getSize, Outlayer ) {
-  'use strict';
+}( window, function factory( window, EvEmitter, utils ) {
 
-  // layout mode class
-  function LayoutMode( isotope ) {
-    this.isotope = isotope;
-    // link properties
-    if ( isotope ) {
-      this.options = isotope.options[ this.namespace ];
-      this.element = isotope.element;
-      this.items = isotope.filteredItems;
-      this.size = isotope.size;
-    }
+var jQuery = window.jQuery;
+// internal store of all InfiniteScroll intances
+var instances = {};
+
+function InfiniteScroll( element, options ) {
+  var queryElem = utils.getQueryElement( element );
+
+  if ( !queryElem ) {
+    console.error( 'Bad element for InfiniteScroll: ' + ( queryElem || element ) );
+    return;
+  }
+  element = queryElem;
+  // do not initialize twice on same element
+  if ( element.infiniteScrollGUID ) {
+    var instance = instances[ element.infiniteScrollGUID ];
+    instance.option( options );
+    return instance;
   }
 
-  var proto = LayoutMode.prototype;
+  this.element = element;
+  // options
+  this.options = utils.extend( {}, InfiniteScroll.defaults );
+  this.option( options );
+  // add jQuery
+  if ( jQuery ) {
+    this.$element = jQuery( this.element );
+  }
 
-  /**
-   * some methods should just defer to default Outlayer method
-   * and reference the Isotope instance as `this`
-  **/
-  var facadeMethods = [
-    '_resetLayout',
-    '_getItemLayoutPosition',
-    '_manageStamp',
-    '_getContainerSize',
-    '_getElementOffset',
-    'needsResizeLayout',
-    '_getOption'
-  ];
+  this.create();
+}
 
-  facadeMethods.forEach( function( methodName ) {
-    proto[ methodName ] = function() {
-      return Outlayer.prototype[ methodName ].apply( this.isotope, arguments );
+// defaults
+InfiniteScroll.defaults = {
+  // path: null,
+  // hideNav: null,
+  // debug: false,
+};
+
+// create & destroy methods
+InfiniteScroll.create = {};
+InfiniteScroll.destroy = {};
+
+var proto = InfiniteScroll.prototype;
+// inherit EvEmitter
+utils.extend( proto, EvEmitter.prototype );
+
+// --------------------------  -------------------------- //
+
+// globally unique identifiers
+var GUID = 0;
+
+proto.create = function() {
+  // create core
+  // add id for InfiniteScroll.data
+  var id = this.guid = ++GUID;
+  this.element.infiniteScrollGUID = id; // expando
+  instances[ id ] = this; // associate via id
+  // properties
+  this.pageIndex = 1; // default to first page
+  this.loadCount = 0;
+  this.updateGetPath();
+  // bail if getPath not set, or returns falsey #776
+  var hasPath = this.getPath && this.getPath();
+  if ( !hasPath ) {
+    console.error('Disabling InfiniteScroll');
+    return;
+  }
+  this.updateGetAbsolutePath();
+  this.log( 'initialized', [ this.element.className ] );
+  this.callOnInit();
+  // create features
+  for ( var method in InfiniteScroll.create ) {
+    InfiniteScroll.create[ method ].call( this );
+  }
+};
+
+proto.option = function( opts ) {
+  utils.extend( this.options, opts );
+};
+
+// call onInit option, used for binding events on init
+proto.callOnInit = function() {
+  var onInit = this.options.onInit;
+  if ( onInit ) {
+    onInit.call( this, this );
+  }
+};
+
+// ----- events ----- //
+
+proto.dispatchEvent = function( type, event, args ) {
+  this.log( type, args );
+  var emitArgs = event ? [ event ].concat( args ) : args;
+  this.emitEvent( type, emitArgs );
+  // trigger jQuery event
+  if ( !jQuery || !this.$element ) {
+    return;
+  }
+  // namespace jQuery event
+  type += '.infiniteScroll';
+  var $event = type;
+  if ( event ) {
+    // create jQuery event
+    var jQEvent = jQuery.Event( event );
+    jQEvent.type = type;
+    $event = jQEvent;
+  }
+  this.$element.trigger( $event, args );
+};
+
+var loggers = {
+  initialized: function( className ) {
+    return 'on ' + className;
+  },
+  request: function( path ) {
+    return 'URL: ' + path;
+  },
+  load: function( response, path ) {
+    return ( response.title || '' ) + '. URL: ' + path;
+  },
+  error: function( error, path ) {
+    return error + '. URL: ' + path;
+  },
+  append: function( response, path, items ) {
+    return items.length + ' items. URL: ' + path;
+  },
+  last: function( response, path ) {
+    return 'URL: ' + path;
+  },
+  history: function( title, path ) {
+    return 'URL: ' + path;
+  },
+  pageIndex: function( index, origin ) {
+    return 'current page determined to be: ' + index + ' from ' + origin;
+  },
+};
+
+// log events
+proto.log = function( type, args ) {
+  if ( !this.options.debug ) {
+    return;
+  }
+  var message = '[InfiniteScroll] ' + type;
+  var logger = loggers[ type ];
+  if ( logger ) {
+    message += '. ' + logger.apply( this, args );
+  }
+  console.log( message );
+};
+
+// -------------------------- methods used amoung features -------------------------- //
+
+proto.updateMeasurements = function() {
+  this.windowHeight = window.innerHeight;
+  var rect = this.element.getBoundingClientRect();
+  this.top = rect.top + window.pageYOffset;
+};
+
+proto.updateScroller = function() {
+  var elementScroll = this.options.elementScroll;
+  if ( !elementScroll ) {
+    // default, use window
+    this.scroller = window;
+    return;
+  }
+  // if true, set to element, otherwise use option
+  this.scroller = elementScroll === true ? this.element :
+    utils.getQueryElement( elementScroll );
+  if ( !this.scroller ) {
+    throw 'Unable to find elementScroll: ' + elementScroll;
+  }
+};
+
+// -------------------------- page path -------------------------- //
+
+proto.updateGetPath = function() {
+  var optPath = this.options.path;
+  if ( !optPath ) {
+    console.error( 'InfiniteScroll path option required. Set as: ' + optPath );
+    return;
+  }
+  // function
+  var type = typeof optPath;
+  if ( type == 'function' ) {
+    this.getPath = optPath;
+    return;
+  }
+  // template string: '/pages/{{#}}.html'
+  var templateMatch = type == 'string' && optPath.match('{{#}}');
+  if ( templateMatch ) {
+    this.updateGetPathTemplate( optPath );
+    return;
+  }
+  // selector: '.next-page-selector'
+  this.updateGetPathSelector( optPath );
+};
+
+proto.updateGetPathTemplate = function( optPath ) {
+  // set getPath with template string
+  this.getPath = function() {
+    var nextIndex = this.pageIndex + 1;
+    return optPath.replace( '{{#}}', nextIndex );
+  }.bind( this );
+  // get pageIndex from location
+  // convert path option into regex to look for pattern in location
+  // escape query (?) in url, allows for parsing GET parameters 
+  var regexString = optPath
+    .replace( /(\\\?|\?)/, '\\?' )
+    .replace( '{{#}}', '(\\d\\d?\\d?)' );
+  var templateRe = new RegExp( regexString );
+  var match = location.href.match( templateRe );
+
+  if ( match ) {
+    this.pageIndex = parseInt( match[1], 10 );
+    this.log( 'pageIndex', [ this.pageIndex, 'template string' ] );
+  }
+};
+
+var pathRegexes = [
+  // WordPress & Tumblr - example.com/page/2
+  // Jekyll - example.com/page2
+  /^(.*?\/?page\/?)(\d\d?\d?)(.*?$)/,
+  // Drupal - example.com/?page=1
+  /^(.*?\/?\?page=)(\d\d?\d?)(.*?$)/,
+  // catch all, last occurence of a number
+  /(.*?)(\d\d?\d?)(?!.*\d)(.*?$)/,
+];
+
+proto.updateGetPathSelector = function( optPath ) {
+  // parse href of link: '.next-page-link'
+  var hrefElem = document.querySelector( optPath );
+  if ( !hrefElem ) {
+    console.error( 'Bad InfiniteScroll path option. Next link not found: ' +
+      optPath );
+    return;
+  }
+  var href = hrefElem.getAttribute('href');
+  // try matching href to pathRegexes patterns
+  var pathParts, regex;
+  for ( var i=0; href && i < pathRegexes.length; i++ ) {
+    regex = pathRegexes[i];
+    var match = href.match( regex );
+    if ( match ) {
+      pathParts = match.slice(1); // remove first part
+      break;
+    }
+  }
+  if ( !pathParts ) {
+    console.error( 'InfiniteScroll unable to parse next link href: ' + href );
+    return;
+  }
+  this.isPathSelector = true; // flag for checkLastPage()
+  this.getPath = function() {
+    var nextIndex = this.pageIndex + 1;
+    return pathParts[0] + nextIndex + pathParts[2];
+  }.bind( this );
+  // get pageIndex from href
+  this.pageIndex = parseInt( pathParts[1], 10 ) - 1;
+  this.log( 'pageIndex', [ this.pageIndex, 'next link' ] );
+};
+
+proto.updateGetAbsolutePath = function() {
+  var path = this.getPath();
+  // path doesn't start with http or /
+  var isAbsolute = path.match( /^http/ ) || path.match( /^\// );
+  if ( isAbsolute ) {
+    this.getAbsolutePath = this.getPath;
+    return;
+  }
+
+  var pathname = location.pathname;
+  // query parameter #829. example.com/?pg=2
+  var isQuery = path.match( /^\?/ );
+  if ( isQuery ) {
+    this.getAbsolutePath = function() {
+      return pathname + this.getPath();
     };
-  });
+    return;
+  }
 
-  // -----  ----- //
-
-  // for horizontal layout modes, check vertical size
-  proto.needsVerticalResizeLayout = function() {
-    // don't trigger if size did not change
-    var size = getSize( this.isotope.element );
-    // check that this.size and size are there
-    // IE8 triggers resize on body size change, so they might not be
-    var hasSizes = this.isotope.size && size;
-    return hasSizes && size.innerHeight != this.isotope.size.innerHeight;
+  // /foo/bar/index.html => /foo/bar
+  var directory = pathname.substring( 0, pathname.lastIndexOf('/') );
+  this.getAbsolutePath = function() {
+    return directory + '/' + this.getPath();
   };
+};
 
-  // ----- measurements ----- //
+// -------------------------- nav -------------------------- //
 
-  proto._getMeasurement = function() {
-    this.isotope._getMeasurement.apply( this, arguments );
-  };
+// hide navigation
+InfiniteScroll.create.hideNav = function() {
+  var nav = utils.getQueryElement( this.options.hideNav );
+  if ( !nav ) {
+    return;
+  }
+  nav.style.display = 'none';
+  this.nav = nav;
+};
 
-  proto.getColumnWidth = function() {
-    this.getSegmentSize( 'column', 'Width' );
-  };
+InfiniteScroll.destroy.hideNav = function() {
+  if ( this.nav ) {
+    this.nav.style.display = '';
+  }
+};
 
-  proto.getRowHeight = function() {
-    this.getSegmentSize( 'row', 'Height' );
-  };
+// -------------------------- destroy -------------------------- //
 
-  /**
-   * get columnWidth or rowHeight
-   * segment: 'column' or 'row'
-   * size 'Width' or 'Height'
-  **/
-  proto.getSegmentSize = function( segment, size ) {
-    var segmentName = segment + size;
-    var outerSize = 'outer' + size;
-    // columnWidth / outerWidth // rowHeight / outerHeight
-    this._getMeasurement( segmentName, outerSize );
-    // got rowHeight or columnWidth, we can chill
-    if ( this[ segmentName ] ) {
-      return;
+proto.destroy = function() {
+  this.allOff(); // remove all event listeners
+  // call destroy methods
+  for ( var method in InfiniteScroll.destroy ) {
+    InfiniteScroll.destroy[ method ].call( this );
+  }
+
+  delete this.element.infiniteScrollGUID;
+  delete instances[ this.guid ];
+  // remove jQuery data. #807
+  if ( jQuery && this.$element ) {
+    jQuery.removeData( this.element, 'infiniteScroll' );
+  }
+};
+
+// -------------------------- utilities -------------------------- //
+
+// https://remysharp.com/2010/07/21/throttling-function-calls
+InfiniteScroll.throttle = function( fn, threshold ) {
+  threshold = threshold || 200;
+  var last, timeout;
+
+  return function() {
+    var now = +new Date();
+    var args = arguments;
+    var trigger = function() {
+      last = now;
+      fn.apply( this, args );
+    }.bind( this );
+    if ( last && now < last + threshold ) {
+      // hold on to it
+      clearTimeout( timeout );
+      timeout = setTimeout( trigger, threshold );
+    } else {
+      trigger();
     }
-    // fall back to item of first element
-    var firstItemSize = this.getFirstItemSize();
-    this[ segmentName ] = firstItemSize && firstItemSize[ outerSize ] ||
-      // or size of container
-      this.isotope.size[ 'inner' + size ];
   };
+};
 
-  proto.getFirstItemSize = function() {
-    var firstItem = this.isotope.filteredItems[0];
-    return firstItem && firstItem.element && getSize( firstItem.element );
-  };
+InfiniteScroll.data = function( elem ) {
+  elem = utils.getQueryElement( elem );
+  var id = elem && elem.infiniteScrollGUID;
+  return id && instances[ id ];
+};
 
-  // ----- methods that should reference isotope ----- //
+// set internal jQuery, for Webpack + jQuery v3
+InfiniteScroll.setJQuery = function( $ ) {
+  jQuery = $;
+};
 
-  proto.layout = function() {
-    this.isotope.layout.apply( this.isotope, arguments );
-  };
+// -------------------------- setup -------------------------- //
 
-  proto.getSize = function() {
-    this.isotope.getSize();
-    this.size = this.isotope.size;
-  };
+utils.htmlInit( InfiniteScroll, 'infinite-scroll' );
 
-  // -------------------------- create -------------------------- //
+// add noop _init method for jQuery Bridget. #768
+proto._init = function() {};
 
-  LayoutMode.modes = {};
+if ( jQuery && jQuery.bridget ) {
+  jQuery.bridget( 'infiniteScroll', InfiniteScroll );
+}
 
-  LayoutMode.create = function( namespace, options ) {
+// --------------------------  -------------------------- //
 
-    function Mode() {
-      LayoutMode.apply( this, arguments );
-    }
-
-    Mode.prototype = Object.create( proto );
-    Mode.prototype.constructor = Mode;
-
-    // default options
-    if ( options ) {
-      Mode.options = options;
-    }
-
-    Mode.prototype.namespace = namespace;
-    // register in Isotope
-    LayoutMode.modes[ namespace ] = Mode;
-
-    return Mode;
-  };
-
-  return LayoutMode;
+return InfiniteScroll;
 
 }));
 
 
 /***/ }),
 
-/***/ "./node_modules/isotope-layout/js/layout-modes/fit-rows.js":
-/*!*****************************************************************!*\
-  !*** ./node_modules/isotope-layout/js/layout-modes/fit-rows.js ***!
-  \*****************************************************************/
+/***/ "./node_modules/infinite-scroll/js/history.js":
+/*!****************************************************!*\
+  !*** ./node_modules/infinite-scroll/js/history.js ***!
+  \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
- * fitRows layout mode
- */
-
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// history
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */ /*globals define, module, require */
+  /* globals define, module, require */
   if ( true ) {
     // AMD
     !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-        __webpack_require__(/*! ../layout-mode */ "./node_modules/isotope-layout/js/layout-mode.js")
-      ], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+      __webpack_require__(/*! ./core */ "./node_modules/infinite-scroll/js/core.js"),
+      __webpack_require__(/*! fizzy-ui-utils/utils */ "./node_modules/fizzy-ui-utils/utils.js"),
+    ], __WEBPACK_AMD_DEFINE_RESULT__ = (function( InfiniteScroll, utils ) {
+      return factory( window, InfiniteScroll, utils );
+    }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else {}
 
-}( window, function factory( LayoutMode ) {
-'use strict';
+}( window, function factory( window, InfiniteScroll, utils ) {
 
-var FitRows = LayoutMode.create('fitRows');
+var proto = InfiniteScroll.prototype;
 
-var proto = FitRows.prototype;
+InfiniteScroll.defaults.history = 'replace';
+// InfiniteScroll.defaults.historyTitle = false;
 
-proto._resetLayout = function() {
-  this.x = 0;
-  this.y = 0;
-  this.maxY = 0;
-  this._getMeasurement( 'gutter', 'outerWidth' );
-};
+var link = document.createElement('a');
 
-proto._getItemLayoutPosition = function( item ) {
-  item.getSize();
+// ----- create/destroy ----- //
 
-  var itemWidth = item.size.outerWidth + this.gutter;
-  // if this element cannot fit in the current row
-  var containerWidth = this.isotope.size.innerWidth + this.gutter;
-  if ( this.x !== 0 && itemWidth + this.x > containerWidth ) {
-    this.x = 0;
-    this.y = this.maxY;
+InfiniteScroll.create.history = function() {
+  if ( !this.options.history ) {
+    return;
+  }
+  // check for same origin
+  link.href = this.getAbsolutePath();
+  // MS Edge does not have origin on link https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/12236493/
+  var linkOrigin = link.origin || link.protocol + '//' + link.host;
+  var isSameOrigin = linkOrigin == location.origin;
+  if ( !isSameOrigin ) {
+    console.error( '[InfiniteScroll] cannot set history with different origin: ' +
+      link.origin + ' on ' + location.origin +
+      ' . History behavior disabled.' );
+    return;
   }
 
-  var position = {
-    x: this.x,
-    y: this.y
-  };
-
-  this.maxY = Math.max( this.maxY, this.y + item.size.outerHeight );
-  this.x += itemWidth;
-
-  return position;
+  // two ways to handle changing history
+  if ( this.options.append ) {
+    this.createHistoryAppend();
+  } else {
+    this.createHistoryPageLoad();
+  }
 };
 
-proto._getContainerSize = function() {
-  return { height: this.maxY };
+proto.createHistoryAppend = function() {
+  this.updateMeasurements();
+  this.updateScroller();
+  // array of scroll positions of appended pages
+  this.scrollPages = [
+    {
+      // first page
+      top: 0,
+      path: location.href,
+      title: document.title,
+    }
+  ];
+  this.scrollPageIndex = 0;
+  // events
+  this.scrollHistoryHandler = this.onScrollHistory.bind( this );
+  this.unloadHandler = this.onUnload.bind( this );
+  this.scroller.addEventListener( 'scroll', this.scrollHistoryHandler );
+  this.on( 'append', this.onAppendHistory );
+  this.bindHistoryAppendEvents( true );
 };
 
-return FitRows;
+proto.bindHistoryAppendEvents = function( isBind ) {
+  var addRemove = isBind ? 'addEventListener' : 'removeEventListener';
+  this.scroller[ addRemove ]( 'scroll', this.scrollHistoryHandler );
+  window[ addRemove ]( 'unload', this.unloadHandler );
+};
+
+proto.createHistoryPageLoad = function() {
+  this.on( 'load', this.onPageLoadHistory );
+};
+
+InfiniteScroll.destroy.history =
+proto.destroyHistory = function() {
+  var isHistoryAppend = this.options.history && this.options.append;
+  if ( isHistoryAppend ) {
+    this.bindHistoryAppendEvents( false );
+  }
+};
+
+// ----- append history ----- //
+
+proto.onAppendHistory = function( response, path, items ) {
+  // do not proceed if no items. #779
+  if ( !items || !items.length ) {
+    return;
+  }
+  var firstItem = items[0];
+  var elemScrollY = this.getElementScrollY( firstItem );
+  // resolve path
+  link.href = path;
+  // add page data to hash
+  this.scrollPages.push({
+    top: elemScrollY,
+    path: link.href,
+    title: response.title,
+  });
+};
+
+proto.getElementScrollY = function( elem ) {
+  if ( this.options.elementScroll ) {
+    return this.getElementElementScrollY( elem );
+  } else {
+    return this.getElementWindowScrollY( elem );
+  }
+};
+
+proto.getElementWindowScrollY = function( elem ) {
+  var rect = elem.getBoundingClientRect();
+  return rect.top + window.pageYOffset;
+};
+
+// wow, stupid name
+proto.getElementElementScrollY = function( elem ) {
+  return elem.offsetTop - this.top;
+};
+
+proto.onScrollHistory = function() {
+  // cycle through positions, find biggest without going over
+  var scrollViewY = this.getScrollViewY();
+  var pageIndex, page;
+  for ( var i=0; i < this.scrollPages.length; i++ ) {
+    var scrollPage = this.scrollPages[i];
+    if ( scrollPage.top >= scrollViewY ) {
+      break;
+    }
+    pageIndex = i;
+    page = scrollPage;
+  }
+  // set history if changed
+  if ( pageIndex != this.scrollPageIndex ) {
+    this.scrollPageIndex = pageIndex;
+    this.setHistory( page.title, page.path );
+  }
+};
+
+utils.debounceMethod( InfiniteScroll, 'onScrollHistory', 150 );
+
+proto.getScrollViewY = function() {
+  if ( this.options.elementScroll ) {
+    return this.scroller.scrollTop + this.scroller.clientHeight/2;
+  } else {
+    return window.pageYOffset + this.windowHeight/2;
+  }
+};
+
+proto.setHistory = function( title, path ) {
+  var optHistory = this.options.history;
+  var historyMethod = optHistory && history[ optHistory + 'State' ];
+  if ( !historyMethod ) {
+    return;
+  }
+
+  history[ optHistory + 'State' ]( null, title, path );
+
+  if ( this.options.historyTitle ) {
+    document.title = title;
+  }
+
+  this.dispatchEvent( 'history', null, [ title, path ] );
+};
+
+// scroll to top to prevent initial scroll-reset after page refresh
+// https://stackoverflow.com/a/18633915/182183
+proto.onUnload = function() {
+  var pageIndex = this.scrollPageIndex;
+  if ( pageIndex === 0 ) {
+    return;
+  }
+  // calculate where scroll position would be on refresh
+  var scrollPage = this.scrollPages[ pageIndex ];
+  var scrollY = window.pageYOffset - scrollPage.top + this.top;
+  // disable scroll event before setting scroll #679
+  this.destroyHistory();
+  scrollTo( 0, scrollY );
+};
+
+// ----- load history ----- //
+
+// update URL
+proto.onPageLoadHistory = function( response, path ) {
+  this.setHistory( response.title, path );
+};
+
+// --------------------------  -------------------------- //
+
+return InfiniteScroll;
 
 }));
 
 
 /***/ }),
 
-/***/ "./node_modules/isotope-layout/js/layout-modes/masonry.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/isotope-layout/js/layout-modes/masonry.js ***!
-  \****************************************************************/
+/***/ "./node_modules/infinite-scroll/js/index.js":
+/*!**************************************************!*\
+  !*** ./node_modules/infinite-scroll/js/index.js ***!
+  \**************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
- * Masonry layout mode
- * sub-classes Masonry
- * https://masonry.desandro.com
+ * Infinite Scroll v3.0.6
+ * Automatically add next page
+ *
+ * Licensed GPLv3 for open source use
+ * or Infinite Scroll Commercial License for commercial use
+ *
+ * https://infinite-scroll.com
+ * Copyright 2018 Metafizzy
  */
 
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */ /*globals define, module, require */
+  /* globals define, module, require */
   if ( true ) {
     // AMD
     !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-        __webpack_require__(/*! ../layout-mode */ "./node_modules/isotope-layout/js/layout-mode.js"),
-        __webpack_require__(/*! masonry-layout/masonry */ "./node_modules/masonry-layout/masonry.js")
-      ], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+      __webpack_require__(/*! ./core */ "./node_modules/infinite-scroll/js/core.js"),
+      __webpack_require__(/*! ./page-load */ "./node_modules/infinite-scroll/js/page-load.js"),
+      __webpack_require__(/*! ./scroll-watch */ "./node_modules/infinite-scroll/js/scroll-watch.js"),
+      __webpack_require__(/*! ./history */ "./node_modules/infinite-scroll/js/history.js"),
+      __webpack_require__(/*! ./button */ "./node_modules/infinite-scroll/js/button.js"),
+      __webpack_require__(/*! ./status */ "./node_modules/infinite-scroll/js/status.js"),
+    ], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else {}
 
-}( window, function factory( LayoutMode, Masonry ) {
-'use strict';
+})( window, function factory( InfiniteScroll ) {
+  return InfiniteScroll;
+});
 
-// -------------------------- masonryDefinition -------------------------- //
 
-  // create an Outlayer layout class
-  var MasonryMode = LayoutMode.create('masonry');
+/***/ }),
 
-  var proto = MasonryMode.prototype;
+/***/ "./node_modules/infinite-scroll/js/page-load.js":
+/*!******************************************************!*\
+  !*** ./node_modules/infinite-scroll/js/page-load.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-  var keepModeMethods = {
-    _getElementOffset: true,
-    layout: true,
-    _getMeasurement: true
-  };
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// page-load
+( function( window, factory ) {
+  // universal module definition
+  /* globals define, module, require */
+  if ( true ) {
+    // AMD
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+      __webpack_require__(/*! ./core */ "./node_modules/infinite-scroll/js/core.js"),
+    ], __WEBPACK_AMD_DEFINE_RESULT__ = (function( InfiniteScroll ) {
+      return factory( window, InfiniteScroll );
+    }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else {}
 
-  // inherit Masonry prototype
-  for ( var method in Masonry.prototype ) {
-    // do not inherit mode methods
-    if ( !keepModeMethods[ method ] ) {
-      proto[ method ] = Masonry.prototype[ method ];
-    }
+}( window, function factory( window, InfiniteScroll ) {
+
+var proto = InfiniteScroll.prototype;
+
+// InfiniteScroll.defaults.append = false;
+InfiniteScroll.defaults.loadOnScroll = true;
+InfiniteScroll.defaults.checkLastPage = true;
+InfiniteScroll.defaults.responseType = 'document';
+// InfiniteScroll.defaults.prefill = false;
+// InfiniteScroll.defaults.outlayer = null;
+
+InfiniteScroll.create.pageLoad = function() {
+  this.canLoad = true;
+  this.on( 'scrollThreshold', this.onScrollThresholdLoad );
+  this.on( 'load', this.checkLastPage );
+  if ( this.options.outlayer ) {
+    this.on( 'append', this.onAppendOutlayer );
+  }
+};
+
+proto.onScrollThresholdLoad = function() {
+  if ( this.options.loadOnScroll ) {
+    this.loadNextPage();
+  }
+};
+
+proto.loadNextPage = function() {
+  if ( this.isLoading || !this.canLoad ) {
+    return;
   }
 
-  var measureColumns = proto.measureColumns;
-  proto.measureColumns = function() {
-    // set items, used if measuring first item
-    this.items = this.isotope.filteredItems;
-    measureColumns.call( this );
-  };
+  var path = this.getAbsolutePath();
+  this.isLoading = true;
 
-  // point to mode options for fitWidth
-  var _getOption = proto._getOption;
-  proto._getOption = function( option ) {
-    if ( option == 'fitWidth' ) {
-      return this.options.isFitWidth !== undefined ?
-        this.options.isFitWidth : this.options.fitWidth;
+  var onLoad = function( response ) {
+    this.onPageLoad( response, path );
+  }.bind( this );
+
+  var onError = function( error ) {
+    this.onPageError( error, path );
+  }.bind( this );
+
+  var onLast = function( response ) {
+    this.lastPageReached( response, path );
+  }.bind( this );
+
+  request( path, this.options.responseType, onLoad, onError, onLast );
+  this.dispatchEvent( 'request', null, [ path ] );
+};
+
+proto.onPageLoad = function( response, path ) {
+  // done loading if not appending
+  if ( !this.options.append ) {
+    this.isLoading = false;
+  }
+  this.pageIndex++;
+  this.loadCount++;
+  this.dispatchEvent( 'load', null, [ response, path ] );
+  this.appendNextPage( response, path );
+  return response;
+};
+
+proto.appendNextPage = function( response, path ) {
+  var optAppend = this.options.append;
+  // do not append json
+  var isDocument = this.options.responseType == 'document';
+  if ( !isDocument || !optAppend ) {
+    return;
+  }
+
+  var items = response.querySelectorAll( optAppend );
+  var fragment = getItemsFragment( items );
+  var appendReady = function () {
+    this.appendItems( items, fragment );
+    this.isLoading = false;
+    this.dispatchEvent( 'append', null, [ response, path, items ] );
+  }.bind( this );
+
+  // TODO add hook for option to trigger appendReady
+  if ( this.options.outlayer ) {
+    this.appendOutlayerItems( fragment, appendReady );
+  } else {
+    appendReady();
+  }
+};
+
+proto.appendItems = function( items, fragment ) {
+  if ( !items || !items.length ) {
+    return;
+  }
+  // get fragment if not provided
+  fragment = fragment || getItemsFragment( items );
+  refreshScripts( fragment );
+  this.element.appendChild( fragment );
+};
+
+function getItemsFragment( items ) {
+  // add items to fragment
+  var fragment = document.createDocumentFragment();
+  for ( var i=0; items && i < items.length; i++ ) {
+    fragment.appendChild( items[i] );
+  }
+  return fragment;
+}
+
+// replace <script>s with copies so they load
+// <script>s added by InfiniteScroll will not load
+// similar to https://stackoverflow.com/questions/610995
+function refreshScripts( fragment ) {
+  var scripts = fragment.querySelectorAll('script');
+  for ( var i=0; i < scripts.length; i++ ) {
+    var script = scripts[i];
+    var freshScript = document.createElement('script');
+    copyAttributes( script, freshScript );
+    // copy inner script code. #718, #782
+    freshScript.innerHTML = script.innerHTML;
+    script.parentNode.replaceChild( freshScript, script );
+  }
+}
+
+function copyAttributes( fromNode, toNode ) {
+  var attrs = fromNode.attributes;
+  for ( var i=0; i < attrs.length; i++ ) {
+    var attr = attrs[i];
+    toNode.setAttribute( attr.name, attr.value );
+  }
+}
+
+// ----- outlayer ----- //
+
+proto.appendOutlayerItems = function( fragment, appendReady ) {
+  var imagesLoaded = InfiniteScroll.imagesLoaded || window.imagesLoaded;
+  if ( !imagesLoaded ) {
+    console.error('[InfiniteScroll] imagesLoaded required for outlayer option');
+    this.isLoading = false;
+    return;
+  }
+  // append once images loaded
+  imagesLoaded( fragment, appendReady );
+};
+
+proto.onAppendOutlayer = function( response, path, items ) {
+  this.options.outlayer.appended( items );
+};
+
+// ----- checkLastPage ----- //
+
+// check response for next element
+proto.checkLastPage = function( response, path ) {
+  var checkLastPage = this.options.checkLastPage;
+  if ( !checkLastPage ) {
+    return;
+  }
+
+  var pathOpt = this.options.path;
+  // if path is function, check if next path is truthy
+  if ( typeof pathOpt == 'function' ) {
+    var nextPath = this.getPath();
+    if ( !nextPath ) {
+      this.lastPageReached( response, path );
+      return;
     }
-    return _getOption.apply( this.isotope, arguments );
+  }
+  // get selector from checkLastPage or path option
+  var selector;
+  if ( typeof checkLastPage == 'string' ) {
+    selector = checkLastPage;
+  } else if ( this.isPathSelector ) {
+    // path option is selector string
+    selector = pathOpt;
+  }
+  // check last page for selector
+  // bail if no selector or not document response
+  if ( !selector || !response.querySelector ) {
+    return;
+  }
+  // check if response has selector
+  var nextElem = response.querySelector( selector );
+  if ( !nextElem ) {
+    this.lastPageReached( response, path );
+  }
+};
+
+proto.lastPageReached = function( response, path ) {
+  this.canLoad = false;
+  this.dispatchEvent( 'last', null, [ response, path ] );
+};
+
+// ----- error ----- //
+
+proto.onPageError = function( error, path ) {
+  this.isLoading = false;
+  this.canLoad = false;
+  this.dispatchEvent( 'error', null, [ error, path ] );
+  return error;
+};
+
+// -------------------------- prefill -------------------------- //
+
+InfiniteScroll.create.prefill = function() {
+  if ( !this.options.prefill ) {
+    return;
+  }
+  var append = this.options.append;
+  if ( !append ) {
+    console.error( 'append option required for prefill. Set as :' + append );
+    return;
+  }
+  this.updateMeasurements();
+  this.updateScroller();
+  this.isPrefilling = true;
+  this.on( 'append', this.prefill );
+  this.once( 'error', this.stopPrefill );
+  this.once( 'last', this.stopPrefill );
+  this.prefill();
+};
+
+proto.prefill = function() {
+  var distance = this.getPrefillDistance();
+  this.isPrefilling = distance >= 0;
+  if ( this.isPrefilling ) {
+    this.log('prefill');
+    this.loadNextPage();
+  } else {
+    this.stopPrefill();
+  }
+};
+
+proto.getPrefillDistance = function() {
+  // element scroll
+  if ( this.options.elementScroll ) {
+    return this.scroller.clientHeight - this.scroller.scrollHeight;
+  }
+  // window
+  return this.windowHeight - this.element.clientHeight;
+};
+
+proto.stopPrefill = function() {
+  this.log('stopPrefill');
+  this.off( 'append', this.prefill );
+};
+
+// -------------------------- request -------------------------- //
+
+function request( url, responseType, onLoad, onError, onLast ) {
+  var req = new XMLHttpRequest();
+  req.open( 'GET', url, true );
+  // set responseType document to return DOM
+  req.responseType = responseType || '';
+
+  // set X-Requested-With header to check that is ajax request
+  req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+  req.onload = function() {
+    if ( req.status == 200 ) {
+      onLoad( req.response );
+    } else if ( req.status == 204 ) {
+      onLast( req.response );
+    } else {
+      // not 200 OK, error
+      var error = new Error( req.statusText );
+      onError( error );
+    }
   };
 
-  return MasonryMode;
+  // Handle network errors
+  req.onerror = function() {
+    var error = new Error( 'Network error requesting ' + url );
+    onError( error );
+  };
+
+  req.send();
+}
+
+// --------------------------  -------------------------- //
+
+return InfiniteScroll;
 
 }));
 
 
 /***/ }),
 
-/***/ "./node_modules/isotope-layout/js/layout-modes/vertical.js":
-/*!*****************************************************************!*\
-  !*** ./node_modules/isotope-layout/js/layout-modes/vertical.js ***!
-  \*****************************************************************/
+/***/ "./node_modules/infinite-scroll/js/scroll-watch.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/infinite-scroll/js/scroll-watch.js ***!
+  \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
- * vertical layout mode
- */
-
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// scroll-watch
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */ /*globals define, module, require */
+  /* globals define, module, require */
   if ( true ) {
     // AMD
     !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-        __webpack_require__(/*! ../layout-mode */ "./node_modules/isotope-layout/js/layout-mode.js")
-      ], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+      __webpack_require__(/*! ./core */ "./node_modules/infinite-scroll/js/core.js"),
+      __webpack_require__(/*! fizzy-ui-utils/utils */ "./node_modules/fizzy-ui-utils/utils.js"),
+    ], __WEBPACK_AMD_DEFINE_RESULT__ = (function( InfiniteScroll, utils ) {
+      return factory( window, InfiniteScroll, utils );
+    }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else {}
 
-}( window, function factory( LayoutMode ) {
-'use strict';
+}( window, function factory( window, InfiniteScroll, utils ) {
 
-var Vertical = LayoutMode.create( 'vertical', {
-  horizontalAlignment: 0
+var proto = InfiniteScroll.prototype;
+
+// default options
+InfiniteScroll.defaults.scrollThreshold = 400;
+// InfiniteScroll.defaults.elementScroll = null;
+
+InfiniteScroll.create.scrollWatch = function() {
+  // events
+  this.pageScrollHandler = this.onPageScroll.bind( this );
+  this.resizeHandler = this.onResize.bind( this );
+
+  var scrollThreshold = this.options.scrollThreshold;
+  var isEnable = scrollThreshold || scrollThreshold === 0;
+  if ( isEnable ) {
+    this.enableScrollWatch();
+  }
+};
+
+InfiniteScroll.destroy.scrollWatch = function() {
+  this.disableScrollWatch();
+};
+
+proto.enableScrollWatch = function() {
+  if ( this.isScrollWatching ) {
+    return;
+  }
+  this.isScrollWatching = true;
+  this.updateMeasurements();
+  this.updateScroller();
+  // TODO disable after error?
+  this.on( 'last', this.disableScrollWatch );
+  this.bindScrollWatchEvents( true );
+};
+
+proto.disableScrollWatch = function() {
+  if ( !this.isScrollWatching ) {
+    return;
+  }
+  this.bindScrollWatchEvents( false );
+  delete this.isScrollWatching;
+};
+
+proto.bindScrollWatchEvents = function( isBind ) {
+  var addRemove = isBind ? 'addEventListener' : 'removeEventListener';
+  this.scroller[ addRemove ]( 'scroll', this.pageScrollHandler );
+  window[ addRemove ]( 'resize', this.resizeHandler );
+};
+
+proto.onPageScroll = InfiniteScroll.throttle( function() {
+  var distance = this.getBottomDistance();
+  if ( distance <= this.options.scrollThreshold ) {
+    this.dispatchEvent('scrollThreshold');
+  }
 });
 
-var proto = Vertical.prototype;
-
-proto._resetLayout = function() {
-  this.y = 0;
+proto.getBottomDistance = function() {
+  if ( this.options.elementScroll ) {
+    return this.getElementBottomDistance();
+  } else {
+    return this.getWindowBottomDistance();
+  }
 };
 
-proto._getItemLayoutPosition = function( item ) {
-  item.getSize();
-  var x = ( this.isotope.size.innerWidth - item.size.outerWidth ) *
-    this.options.horizontalAlignment;
-  var y = this.y;
-  this.y += item.size.outerHeight;
-  return { x: x, y: y };
+proto.getWindowBottomDistance = function() {
+  var bottom = this.top + this.element.clientHeight;
+  var scrollY = window.pageYOffset + this.windowHeight;
+  return bottom - scrollY;
 };
 
-proto._getContainerSize = function() {
-  return { height: this.y };
+proto.getElementBottomDistance = function() {
+  var bottom = this.scroller.scrollHeight;
+  var scrollY = this.scroller.scrollTop + this.scroller.clientHeight;
+  return bottom - scrollY;
 };
 
-return Vertical;
+proto.onResize = function() {
+  this.updateMeasurements();
+};
+
+utils.debounceMethod( InfiniteScroll, 'onResize', 150 );
+
+// --------------------------  -------------------------- //
+
+return InfiniteScroll;
+
+}));
+
+
+/***/ }),
+
+/***/ "./node_modules/infinite-scroll/js/status.js":
+/*!***************************************************!*\
+  !*** ./node_modules/infinite-scroll/js/status.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// status
+( function( window, factory ) {
+  // universal module definition
+  /* globals define, module, require */
+  if ( true ) {
+    // AMD
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+      __webpack_require__(/*! ./core */ "./node_modules/infinite-scroll/js/core.js"),
+      __webpack_require__(/*! fizzy-ui-utils/utils */ "./node_modules/fizzy-ui-utils/utils.js"),
+    ], __WEBPACK_AMD_DEFINE_RESULT__ = (function( InfiniteScroll, utils ) {
+      return factory( window, InfiniteScroll, utils );
+    }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else {}
+
+}( window, function factory( window, InfiniteScroll, utils ) { 
+
+var proto = InfiniteScroll.prototype;
+
+// InfiniteScroll.defaults.status = null;
+
+InfiniteScroll.create.status = function() {
+  var statusElem = utils.getQueryElement( this.options.status );
+  if ( !statusElem ) {
+    return;
+  }
+  // elements
+  this.statusElement = statusElem;
+  this.statusEventElements = {
+    request: statusElem.querySelector('.infinite-scroll-request'),
+    error: statusElem.querySelector('.infinite-scroll-error'),
+    last: statusElem.querySelector('.infinite-scroll-last'),
+  };
+  // events
+  this.on( 'request', this.showRequestStatus );
+  this.on( 'error', this.showErrorStatus );
+  this.on( 'last', this.showLastStatus );
+  this.bindHideStatus('on');
+};
+
+proto.bindHideStatus = function( bindMethod ) {
+  var hideEvent = this.options.append ? 'append' : 'load';
+  this[ bindMethod ]( hideEvent, this.hideAllStatus );
+};
+
+proto.showRequestStatus = function() {
+  this.showStatus('request');
+};
+
+proto.showErrorStatus = function() {
+  this.showStatus('error');
+};
+
+proto.showLastStatus = function() {
+  this.showStatus('last');
+  // prevent last then append event race condition from showing last status #706
+  this.bindHideStatus('off');
+};
+
+proto.showStatus = function( eventName ) {
+  show( this.statusElement );
+  this.hideStatusEventElements();
+  var eventElem = this.statusEventElements[ eventName ];
+  show( eventElem );
+};
+
+proto.hideAllStatus = function() {
+  hide( this.statusElement );
+  this.hideStatusEventElements();
+};
+
+proto.hideStatusEventElements = function() {
+  for ( var type in this.statusEventElements ) {
+    var eventElem = this.statusEventElements[ type ];
+    hide( eventElem );
+  }
+};
+
+// --------------------------  -------------------------- //
+
+function hide( elem ) {
+  setDisplay( elem, 'none' );
+}
+
+function show( elem ) {
+  setDisplay( elem, 'block' );
+}
+
+function setDisplay( elem, value ) {
+  if ( elem ) {
+    elem.style.display = value;
+  }
+}
+
+// --------------------------  -------------------------- //
+
+return InfiniteScroll;
 
 }));
 
@@ -24569,242 +25168,6 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
-
-/***/ }),
-
-/***/ "./node_modules/jscroll/jquery.jscroll.js":
-/*!************************************************!*\
-  !*** ./node_modules/jscroll/jquery.jscroll.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*!
- * jScroll - jQuery Plugin for Infinite Scrolling / Auto-Paging
- * @see @link{https://jscroll.com}
- *
- * @copyright Philip Klauzinski
- * @license Dual licensed under the MIT and GPL Version 2 licenses
- * @author Philip Klauzinski (https://webtopian.com)
- * @version 2.4.1
- * @requires jQuery v1.8.0+
- * @preserve
- */
-(function($) {
-
-    'use strict';
-
-    // Define the jscroll namespace and default settings
-    $.jscroll = {
-        defaults: {
-            debug: false,
-            autoTrigger: true,
-            autoTriggerUntil: false,
-            loadingHtml: '<small>Loading...</small>',
-            loadingFunction: false,
-            padding: 0,
-            nextSelector: 'a:last',
-            contentSelector: '',
-            pagingSelector: '',
-            callback: false
-        }
-    };
-
-    // Constructor
-    var jScroll = function($e, options) {
-
-        // Private vars and methods
-        var _data = $e.data('jscroll'),
-            _userOptions = (typeof options === 'function') ? { callback: options } : options,
-            _options = $.extend({}, $.jscroll.defaults, _userOptions, _data || {}),
-            _isWindow = ($e.css('overflow-y') === 'visible'),
-            _$next = $e.find(_options.nextSelector).first(),
-            _$window = $(window),
-            _$body = $('body'),
-            _$scroll = _isWindow ? _$window : $e,
-            _nextHref = $.trim(_$next.prop('href') + ' ' + _options.contentSelector),
-
-            // Check if a loading image is defined and preload
-            _preloadImage = function() {
-                var src = $(_options.loadingHtml).filter('img').attr('src');
-                if (src) {
-                    var image = new Image();
-                    image.src = src;
-                }
-            },
-
-            // Wrap inner content, if it isn't already
-            _wrapInnerContent = function() {
-                if (!$e.find('.jscroll-inner').length) {
-                    $e.contents().wrapAll('<div class="jscroll-inner" />');
-                }
-            },
-
-            // Find the next link's parent, or add one, and hide it
-            _nextWrap = function($next) {
-                var $parent;
-                if (_options.pagingSelector) {
-                    $next.closest(_options.pagingSelector).hide();
-                } else {
-                    $parent = $next.parent().not('.jscroll-inner,.jscroll-added').addClass('jscroll-next-parent').hide();
-                    if (!$parent.length) {
-                        $next.wrap('<div class="jscroll-next-parent" />').parent().hide();
-                    }
-                }
-            },
-
-            // Remove the jscroll behavior and data from an element
-            _destroy = function() {
-                return _$scroll.unbind('.jscroll')
-                    .removeData('jscroll')
-                    .find('.jscroll-inner').children().unwrap()
-                    .filter('.jscroll-added').children().unwrap();
-            },
-
-            // Observe the scroll event for when to trigger the next load
-            _observe = function() {
-                if ($e.is(':visible')) {
-                    _wrapInnerContent();
-                    var $inner = $e.find('div.jscroll-inner').first(),
-                        data = $e.data('jscroll'),
-                        borderTopWidth = parseInt($e.css('borderTopWidth'), 10),
-                        borderTopWidthInt = isNaN(borderTopWidth) ? 0 : borderTopWidth,
-                        iContainerTop = parseInt($e.css('paddingTop'), 10) + borderTopWidthInt,
-                        iTopHeight = _isWindow ? _$scroll.scrollTop() : $e.offset().top,
-                        innerTop = $inner.length ? $inner.offset().top : 0,
-                        iTotalHeight = Math.ceil(iTopHeight - innerTop + _$scroll.height() + iContainerTop);
-
-                    if (!data.waiting && iTotalHeight + _options.padding >= $inner.outerHeight()) {
-                        _debug('info', 'jScroll:', $inner.outerHeight() - iTotalHeight, 'from bottom. Loading next request...');
-                        return _load();
-                    }
-                }
-            },
-
-            // Check if the href for the next set of content has been set
-            _checkNextHref = function(data) {
-                data = data || $e.data('jscroll');
-                if (!data || !data.nextHref) {
-                    _debug('warn', 'jScroll: nextSelector not found - destroying');
-                    _destroy();
-                    return false;
-                } else {
-                    _setBindings();
-                    return true;
-                }
-            },
-
-            _setBindings = function() {
-                var $next = $e.find(_options.nextSelector).first();
-                if (!$next.length) {
-                    return;
-                }
-                if (_options.autoTrigger && (_options.autoTriggerUntil === false || _options.autoTriggerUntil > 0)) {
-                    _nextWrap($next);
-                    var scrollingBodyHeight = _$body.height() - $e.offset().top,
-                        scrollingHeight = ($e.height() < scrollingBodyHeight) ? $e.height() : scrollingBodyHeight,
-                        windowHeight = ($e.offset().top - _$window.scrollTop() > 0) ? _$window.height() - ($e.offset().top - $(window).scrollTop()) : _$window.height();
-                    if (scrollingHeight <= windowHeight) {
-                        _observe();
-                    }
-                    _$scroll.unbind('.jscroll').bind('scroll.jscroll', function() {
-                        return _observe();
-                    });
-                    if (_options.autoTriggerUntil > 0) {
-                        _options.autoTriggerUntil--;
-                    }
-                } else {
-                    _$scroll.unbind('.jscroll');
-                    $next.bind('click.jscroll', function() {
-                        _nextWrap($next);
-                        _load();
-                        return false;
-                    });
-                }
-            },
-
-            // Load the next set of content, if available
-            _load = function() {
-                var $inner = $e.find('div.jscroll-inner').first(),
-                    data = $e.data('jscroll');
-
-                data.waiting = true;
-                $inner.append('<div class="jscroll-added" />')
-                    .children('.jscroll-added').last()
-                    .html('<div class="jscroll-loading" id="jscroll-loading">' + _options.loadingHtml + '</div>')
-                    .promise()
-                    .done(function() {
-                        if (_options.loadingFunction) {
-                            _options.loadingFunction();
-                        }
-                    });
-
-                return $e.animate({scrollTop: $inner.outerHeight()}, 0, function() {
-                    var nextHref = data.nextHref;
-                    $inner.find('div.jscroll-added').last().load(nextHref, function(r, status) {
-                        if (status === 'error') {
-                            return _destroy();
-                        }
-                        var $next = $(this).find(_options.nextSelector).first();
-                        data.waiting = false;
-                        data.nextHref = $next.prop('href') ? $.trim($next.prop('href') + ' ' + _options.contentSelector) : false;
-                        $('.jscroll-next-parent', $e).remove(); // Remove the previous next link now that we have a new one
-                        _checkNextHref();
-                        if (_options.callback) {
-                            _options.callback.call(this, nextHref);
-                        }
-                        _debug('dir', data);
-                    });
-                });
-            },
-
-            // Safe console debug - http://klauzinski.com/javascript/safe-firebug-console-in-javascript
-            _debug = function(m) {
-                if (_options.debug && typeof console === 'object' && (typeof m === 'object' || typeof console[m] === 'function')) {
-                    if (typeof m === 'object') {
-                        var args = [];
-                        for (var sMethod in m) {
-                            if (typeof console[sMethod] === 'function') {
-                                args = (m[sMethod].length) ? m[sMethod] : [m[sMethod]];
-                                console[sMethod].apply(console, args);
-                            } else {
-                                console.log.apply(console, args);
-                            }
-                        }
-                    } else {
-                        console[m].apply(console, Array.prototype.slice.call(arguments, 1));
-                    }
-                }
-            };
-
-        // Initialization
-        $e.data('jscroll', $.extend({}, _data, {initialized: true, waiting: false, nextHref: _nextHref}));
-        _wrapInnerContent();
-        _preloadImage();
-        _setBindings();
-
-        // Expose API methods via the jQuery.jscroll namespace, e.g. $('sel').jscroll.method()
-        $.extend($e.jscroll, {
-            destroy: _destroy
-        });
-        return $e;
-    };
-
-    // Define the jscroll plugin method and loop
-    $.fn.jscroll = function(m) {
-        return this.each(function() {
-            var $this = $(this),
-                data = $this.data('jscroll');
-
-            // Instantiate jScroll on this element if it hasn't been already
-            if (data && data.initialized) {
-                return;
-            }
-            jScroll($this, m);
-        });
-    };
-
-})(jQuery);
 
 /***/ }),
 
@@ -50057,48 +50420,57 @@ $(document).ready(function (e) {
     }
   });
 }); //infiniscroll
+//var Isotope = require('isotope-layout');
 
-var Isotope = __webpack_require__(/*! isotope-layout */ "./node_modules/isotope-layout/js/isotope.js");
+var Masonry = __webpack_require__(/*! masonry-layout */ "./node_modules/masonry-layout/masonry.js");
 
-__webpack_require__(/*! jscroll */ "./node_modules/jscroll/jquery.jscroll.js"); // require('isotope-fit-columns')
+var InfiniteScroll = __webpack_require__(/*! infinite-scroll */ "./node_modules/infinite-scroll/js/index.js");
 
+var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
 
-$(window).on('load', function () {
-  function onArrangeGrid() {
-    al("onArrangeGrid"); //infiniscroll
+InfiniteScroll.imagesLoaded = imagesLoaded; //require('jscroll');
+// require('isotope-fit-columns')
 
-    $('.infinite-scroll').each(function (i) {
-      var ul = $(this).find('ul.pagination');
-      ul.hide();
-      al('infiniscroll', this);
-      $(this).jscroll({
-        autoTrigger: true,
-        loadingHtml: '<span>Loading more ...</span>',
-        padding: 0,
-        nextSelector: '.pagination a[rel=next]',
-        contentSelector: 'div.infinite-scroll',
-        callback: function callback() {
-          al("callback jscroll");
-          ul.remove();
-        }
-      });
-    });
-  } //GRIDS
+onWindowLoad(function () {
+  //GRIDS
+  var grid = document.querySelector('.grid');
+  /* var ul=$(this).find('ul.pagination');
+  ul.hide(); */
+  // al('grid', grid);
 
+  var msnry = new Masonry(grid, {
+    itemSelector: 'none',
+    // select none at first
+    columnWidth: '.grid__col-sizer',
+    gutter: '.grid__gutter-sizer',
+    //gutter: '.grid__gutter-sizer',
+    percentPosition: true,
+    stagger: 30,
+    // nicer reveal transition
+    visibleStyle: {
+      transform: 'translateY(0)',
+      opacity: 1
+    },
+    hiddenStyle: {
+      transform: 'translateY(100px)',
+      opacity: 0
+    }
+  }); // initial items reveal
 
-  if ($('.grid').length > 0) {
-    var pckry = new Isotope('.grid', {
-      // options
-      itemSelector: '.grid-item',
-      percentPosition: true,
-      masonry: {
-        // use outer width of grid-sizer for columnWidth
-        columnWidth: '.grid-sizer'
-      } // layoutMode: 'fitColumns'
+  imagesLoaded(grid, function () {
+    grid.classList.remove('are-images-unloaded');
+    msnry.options.itemSelector = '.grid__item';
+    var items = grid.querySelectorAll('.grid__item'); //al('imagesLoaded', items);
 
-    });
-    pckry.on('arrangeComplete', onArrangeGrid);
-  }
+    msnry.appended(items);
+    msnry.layout();
+  });
+  var infScroll = new InfiniteScroll(grid, {
+    path: '.page-link[rel=next]',
+    append: '.grid__item',
+    outlayer: msnry,
+    status: '.page-load-status'
+  });
 });
 
 /***/ }),
@@ -50492,6 +50864,26 @@ baseUrl = function baseUrl(url) {
 
 _icon = function _icon(text, style) {
   return "<i class='fa fa-" + text + "' " + (style ? 'style="' + style + '"' : '') + "></i>";
+};
+
+onWindowLoad = function onWindowLoad(callback) {
+  if (window.addEventListener) {
+    window.addEventListener('load', callback, false);
+  } else {
+    window.attachEvent('onload', callback);
+  }
+};
+
+onWindowError = function onWindowError(callback) {
+  if (window.addEventListener) {
+    window.addEventListener('error', callback, false);
+  } else {
+    window.attachEvent('onerror', callback);
+  }
+};
+
+onDocumentReady = function onDocumentReady(callback) {
+  document.addEventListener('DOMContentLoaded', callback);
 };
 
 /***/ }),
@@ -51206,8 +51598,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(obj) { "@babel/helpers - type
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\tmedrano\DEVELOP\xampp\htdocs\laravel\web-ait\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\tmedrano\DEVELOP\xampp\htdocs\laravel\web-ait\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/txomin/web/web-ait/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/txomin/web/web-ait/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

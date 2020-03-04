@@ -37,7 +37,7 @@ class WebController extends Controller
 
 
     public function associacio(){
-        $users=User::junta();
+        $users=User::junta()->get();
         $page=Post::slug(config('ait.pages.associacio'))->first();
         return view('associacio', compact('page','users'));
     }

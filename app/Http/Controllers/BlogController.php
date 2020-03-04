@@ -12,17 +12,17 @@ use Exception;
 class BlogController extends Controller
 {
 
-   
+
 
     public static $excluded_categories=["sin-categoria","uncategorized"];
 
     public function search(Request $request){
         return $this->blog($request->category, $request->term);
-        
+
     }
 
 
-   
+
     public function post($post_slug){
         $post=Post::slug($post_slug)->first();
         if(!$post) abort(404);
@@ -44,13 +44,13 @@ class BlogController extends Controller
         });
 
         // dd($categories);
-        
-       
-        
+
+
+
 
         $posts=Post::type('post')->newest()->published();
-        
-        
+
+
         if($category){
             $posts=$posts->taxonomy('category', $category);
         }
@@ -62,11 +62,11 @@ class BlogController extends Controller
         }
         // dump(fullquery($posts));
 
-        $posts=$posts->simplePaginate(10);
+        $posts=$posts->simplePaginate(20);
 
         // dd($posts);
         return view('blog', compact('posts','categories','term','category'));
-        
+
     }
 
 }

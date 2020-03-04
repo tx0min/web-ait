@@ -20,14 +20,14 @@ class User extends CorcelUser
     protected $api_fields = ["first_name", "last_name", "nickname", "display_name",  "soci_biografia", "soci_email", "soci_web", "facebook", "twitter", "instagram", "youtube", "linkedin"];
     protected $valid_mimes = [ "image/png" , "image/jpg", "image/jpeg", "image/gif" ];
     protected $max_file_size;
-        
+
     /**
      * Class constructor.
      */
     public function __construct()
     {
         $this->max_file_size = config('ait.image-max-size');
-        
+
         $this->api_client = new Client([
 			'base_uri' => config('ait.wordpress.url'),
 			'verify' =>false
@@ -59,12 +59,12 @@ class User extends CorcelUser
 
 
 
-   
+
     public function scopeSlug($query, $slug){
         $query->where('user_login',$slug);
     }
 
-    
+
 
 
     public function scopeByTerm($query, $term){
@@ -81,21 +81,18 @@ class User extends CorcelUser
     }
 
 
-    // ojo este no devuelve el builder 
     public function scopeSocis($query){
-        return $query->get()->filter(function($user){
-            return $user->acf->boolean('es_soci');
-        });
+
+        $query->hasMeta('es_soci',1);
+
     }
 
-   
+
     public static function scopeJunta($query){
-        return $query->get()->filter(function($user){
-            return $user->acf->boolean('es_junta');
-        });
+        $query->hasMeta('es_junta',1);
     }
 
-    
+
 
 
     public static function getBySlug($soci_slug){
@@ -201,7 +198,7 @@ class User extends CorcelUser
 
     }
 
-    
+
     public function renderImage($image, $options=[]){
         // dump($image);
         if(!is_array($options)) $options=[];
@@ -286,7 +283,7 @@ class User extends CorcelUser
 
     protected function errorMessage($code, $name=""){
         $message="Error desconegut";
-        
+
         switch($code){
             case 415: $message= __("El format de l'arxiu <strong>:name</strong> no és correcte. Només pots pujar imatges JPG, PNG o GIF.",["name"=>$name]); break;
             case 413: $message= __("La mida de l'arxiu <strong>:name</strong> és massa gran. Només pots pujar arxius de fins a 3MB.",["name"=>$name]); break;
@@ -297,7 +294,7 @@ class User extends CorcelUser
             "code"=>$code,
             "message"=>$message
         ]);
-            
+
     }
     public function uploadPicture($picture_type, Request $request){
 
@@ -308,11 +305,11 @@ class User extends CorcelUser
             $uploaded_images=[];
             $errors=[];
             foreach($request->file as $file){
-                
+
                 $pic=$this->doUploadPicture($file);
                 if(is_int($pic)){
                     $error=$this->errorMessage($pic,$file->getClientOriginalName());
-                    
+
                     $errors[]= $error->message;//$file->getClientOriginalName();
                 }else{
                     $uploaded_images[]=$pic;
@@ -353,7 +350,7 @@ class User extends CorcelUser
             $image=$this->doUploadPicture($request->file);
             if($image){
                 if(is_int($image)){
-                    $error=$this->errorMessage($image); 
+                    $error=$this->errorMessage($image);
                     abort($error->code, $error->message);
                 }else{
                     $this->saveMeta([$picture_type=>$image->id]);
@@ -367,9 +364,9 @@ class User extends CorcelUser
                 }
             }else{
                 $error=$this->errorMessage(400);
-                    
+
             }
-            
+
         }
 
 
@@ -382,11 +379,11 @@ class User extends CorcelUser
 
     private function doUploadPicture($file){
         $fileName=$file->getClientOriginalName();
-        
+
         if($file->getSize() > $this->max_file_size) return 413;
 
         if(!in_array($file->getMimeType(), $this->valid_mimes)) return 415;
-         
+
         $fileContent = File::get($file->path());
         try{
 
@@ -437,6 +434,6 @@ class User extends CorcelUser
         }
         $this->saveMeta($api);
         $this->saveRest($rest);
-            
+
     }
 }
