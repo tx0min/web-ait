@@ -9,7 +9,7 @@
                 {!! $user->renderProfileImage(['class'=>'profile-picture','size'=>'medium']) !!}
             </div>
             <div class="col-lg-9 pt-2  text-break text-center text-lg-left">
-                <h1 class="display-4 text-break">{{ $user->displayName() }}</h1>
+                <h1 class="display-2 text-break">{{ $user->displayName() }}</h1>
                 <div class="mb-3">
                     @if($web=$user->acf->url('soci_web')) <a href="{{ $web }}" target="_blank" class="d-block">{{ $web }}</a> @endif
                     @if($mail=$user->acf->text('soci_email')) <a href="mailto:{{ $mail }}" class="d-block">{{ $mail }}</a> @endif

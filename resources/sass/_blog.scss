@@ -6,25 +6,14 @@
         }
 
         .post-inner{
-            border:1px solid rgba($primary, 1);
+            border:0px solid rgba($primary, 1);
             transition: all 200ms ease-out;
 
             h5{
                 margin-bottom: 0;
             }
         }
-        &.size-featured .post-inner,
-        &:hover .post-inner{
-            background-color: $primary;
-            color:$white;
-            a{
-                color:$white;
-            }
-            // .badge{
-            //     background-color:$white;
-            //     color:$primary;
-            // }
-        }
+
 
 
     }

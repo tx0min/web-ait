@@ -5,7 +5,7 @@
 @endphp
 
 <div class="post grid__item size-{{ $importance?$importance:'normal' }}" >
-    <div class="post-inner">
+    <div class="grid-inner">
         @if($imagesrc)
             <a href="{{ route('blog.post',['post_slug'=>$post->slug]) }}">
                 <figure class="mb-0">

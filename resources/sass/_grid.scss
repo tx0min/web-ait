@@ -28,14 +28,29 @@
       text-decoration: none;
       float: left;
 
+      a{
+        text-decoration: none;
+      }
+
+      &.size-featured .grid-inner,
+      &:hover .grid-inner{
+          background-color: $primary;
+          color:$white;
+          a{
+              color:$white;
+          }
+
+      }
+
       figure{
         overflow: hidden;
         background-color: $primary;
+
         display: block;
 
         img{
           transition: all 200ms ease-in;
-          opacity:1;
+          opacity:.95;
         }
 
       }
@@ -43,7 +58,7 @@
       &:hover{
        figure img{
           transform: scale(1.1);
-          opacity:.7;
+          opacity:0.7;
         }
       }
 
