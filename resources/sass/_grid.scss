@@ -95,6 +95,10 @@
         .grid__item{
             width:50%;
         }
+        .grid__item{
+            padding-left:0em;
+            padding-right:0em;
+        }
 
         .grid__item.size-important{
             width:50%;
@@ -110,7 +114,10 @@
             width:100% !important;
         }
 
-
+        .grid__item{
+            padding-left:0em;
+            padding-right:0em;
+        }
         .grid__item.size-featured,
         .grid__item.size-important{
             width:100%;

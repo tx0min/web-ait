@@ -72,9 +72,16 @@ InfiniteScroll.imagesLoaded = imagesLoaded;
 //require('jscroll');
 // require('isotope-fit-columns')
 
+require('autosize');
+import * as autosize from 'autosize';
+
 
 
 onWindowLoad(function() {
+
+
+    //autosizes
+    autosize(document.querySelectorAll('textarea'));
 
     //GRIDS
     if($('.grid').length>0){

@@ -52,15 +52,15 @@
                 <div class="col-md-9 order-md-1">
 
 
-                    <ul class="nav nav-tabs responsive-tabs">
+                    <ul class="nav nav-pills responsive-tabs">
                         <li class="nav-item">
                             <a class="nav-link active" id="user-tab" data-toggle="tab" href="#user-tab-content" role="tab"><h3>Sobre tu</h3></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="xarxes-tab" data-toggle="tab" href="#xarxes-tab-content" role="tab"><h3>@icon('envelope')  Contacte</h3></a>
+                            <a class="nav-link" id="xarxes-tab" data-toggle="tab" href="#xarxes-tab-content" role="tab"><h3>Contacte</h3></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="portfolio-tab" data-toggle="tab" href="#portfolio-tab-content" role="tab"><h3>@icon('images') Portafoli</h3></a>
+                            <a class="nav-link" id="portfolio-tab" data-toggle="tab" href="#portfolio-tab-content" role="tab"><h3>Portafoli</h3></a>
                         </li>
                     </ul>
 

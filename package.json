@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "autosize": "^4.0.2",
         "bootstrap-select": "^1.13.12",
         "imagesloaded": "^4.1.4",
         "infinite-scroll": "^3.0.6",

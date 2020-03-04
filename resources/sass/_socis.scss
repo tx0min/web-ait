@@ -5,6 +5,18 @@
     }
 }
 
+
+.grid-form{
+    border-bottom: 1px solid $primary;
+
+    .form-control,
+    .form-control:focus,
+    .bootstrap-select .dropdown-toggle{
+        border-width:0px !important;
+        border-color: transparent !important;
+
+    }
+  }
 @include media-breakpoint-down(sm) {
   .grid-form{
     position:fixed;
@@ -15,11 +27,11 @@
     z-index:1;
     padding:.5em 0;
     background-color: $primary;
+    border-bottom-width: 0px;
     color:$white;
     .form-control,
     .form-control:focus,
     .bootstrap-select .dropdown-toggle{
-        border-color: transparent !important;
         background-color: transparent !important;
         color:$white !important;
     }
