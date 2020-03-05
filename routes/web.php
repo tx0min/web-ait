@@ -17,6 +17,7 @@ Auth::routes();
 Route::get('/sitemap.xml', 'SiteMapController@index');
 
 Route::get('/', 'WebController@home')->name('home');
+Route::get('/wp', 'WebController@wordpress')->name('wordpress');
 
 Route::get('/associacio', 'WebController@associacio')->name('associacio');
 Route::get('/fes-te-soci', 'WebController@festeSoci')->name('fes-te-soci');

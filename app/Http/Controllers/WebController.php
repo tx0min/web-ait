@@ -42,6 +42,17 @@ class WebController extends Controller
         return view('associacio', compact('page','users'));
     }
 
+    public function wordpress(){
+        $wp_api_url=config('ait.wordpress.url');
+        if($wp_api_url){
+            $wp_url=dirname($wp_api_url)."/wp-admin";
+            // dd($wp_url);
+            return redirect()->to($wp_url);
+        }else{
+            return redirect()->route('home');
+        }
+    }
+    
     public function festeSoci(){
 
         $page=Post::slug(config('fes-te-soci'))->first();
