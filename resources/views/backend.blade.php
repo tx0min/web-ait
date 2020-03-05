@@ -52,7 +52,7 @@
                 <div class="col-md-9 order-md-1">
 
 
-                    <ul class="nav nav-pills responsive-tabs">
+                    <ul class="nav nav-pills responsive-tabs nav-justified">
                         <li class="nav-item">
                             <a class="nav-link active" id="user-tab" data-toggle="tab" href="#user-tab-content" role="tab"><h3>Sobre tu</h3></a>
                         </li>
@@ -66,18 +66,46 @@
 
 
                     <div class="tab-content"">
-                        <div class="tab-pane active py-5" id="user-tab-content" role="tabpanel" >
+                        <div class="tab-pane active py-md-5" id="user-tab-content" role="tabpanel" >
 
 
                             {{-- <div class="form-group">
                                 <label for="f_numero_de_soci">Soci</label>
                                 <input type="text" class="form-control" id="f_numero_de_soci" readonly  name="numero_de_soci" aria-describedby="f_numero_de_soci" value="{{ $user->acf->text('numero_de_soci') }}">
+                            </div>--}}
+
+                            <div class="form-group row">
+                                <label for="f_username" class="col-md-3 col-form-label text-md-right">Usuari</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="f_user_login" disabled  name="user_login" aria-describedby="f_user_login" value="{{ $user->user_login }}">
+                                </div>
+                               
+
+                            </div> 
+                            <div class="form-group row">
+                                {{-- <label for="f_password" class="col-md-3 col-form-label text-md-right">Contrassenya</label> --}}
+                                <div class="col-md-9 offset-md-3">
+                                    
+
+                                    <button type="button" type="button" data-toggle="collapse" data-target="#change_password_fields"  id="f_password" class="btn btn-block btn-light">Canviar contrassenya</button>
+                                </div>
+                            </div> 
+
+                            <div class=" collapse  @error('new_password') show @enderror " id="change_password_fields">
+                                <div class="form-group row">
+                                    <div class="col-md-9 offset-md-3">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input type="password" class="form-control @error('new_password') is-invalid @enderror" id="f_password"  name="new_password" value="" placeholder="Nova contrassenya...">
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="password" class="form-control @error('new_password') is-invalid @enderror" id="f_password_repeat"  name="new_password_confirmation" value="" placeholder="Repeteix la nova contrassenya...">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="f_user_login">Username</label>
-                                <input type="text" class="form-control" id="f_user_login" disabled  name="user_login" aria-describedby="f_user_login" value="{{ $user->user_login }}">
-                            </div> --}}
                             <div class="form-group row">
                                 <label for="f_first_name" class="col-md-3 col-form-label text-md-right">Nom</label>
                                 <div class="col-md-9">
@@ -136,16 +164,16 @@
 
 
 
-                            <div class="form-group row">
+                            <div class="form-group row d-none d-md-block">
                                 <div class="col-md-9 offset-md-3">
-                                    <button type="submit" class="btn btn-lg btn-primary" >Guardar</button>
+                                    <button type="submit" class="btn btn-lg btn-primary btn-block" >Guardar</button>
                                 </div>
                             </div>
 
 
                         </div>
 
-                        <div class="tab-pane  py-5" id="xarxes-tab-content" role="tabpanel" >
+                        <div class="tab-pane  py-md-5" id="xarxes-tab-content" role="tabpanel" >
 
                             <div class="form-group row">
                                 <label for="f_soci_email" class="col-md-3 col-form-label text-md-right">@icon('envelope') Email</label>
@@ -200,19 +228,19 @@
                             </div>
 
 
-                            <div class="form-group row">
+                            <div class="form-group row d-none d-md-block">
                                 <div class="col-md-9 offset-md-3">
-                                    <button type="submit" class="btn btn-lg btn-primary" >Guardar</button>
+                                    <button type="submit" class="btn btn-lg btn-primary btn-block" >Guardar</button>
                                 </div>
                             </div>
 
 
                         </div>
 
-                        <div class="tab-pane  p-3" id="portfolio-tab-content" role="tabpanel" >
+                        <div class="tab-pane py-md-5" id="portfolio-tab-content" role="tabpanel" >
 
 
-                            <div id="galeria_container" class="image-uploader" data-picture-type="galeria" data-url="{{ route('soci.upload',["picture_type"=>'galeria']) }}" data-method="post" data-multiple="false">
+                            <div id="galeria_container" class="image-uploader mb-3" data-picture-type="galeria" data-url="{{ route('soci.upload',["picture_type"=>'galeria']) }}" data-method="post" data-multiple="false">
                                 <div class="thumbnails-container row no-gutters mb-3">
                                     @if($images=$user->galeria())
                                         @foreach($images as $image)

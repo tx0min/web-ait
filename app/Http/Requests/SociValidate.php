@@ -12,7 +12,8 @@ class SociValidate extends BaseRequest
         // dd(request()->disciplines);
         return [
             'first_name' => ['required'],
-            'disciplines' => ['required']
+            'disciplines' => ['required'],
+            'new_password' => ['nullable','min:6','confirmed']
         ];
     }
 
@@ -23,6 +24,8 @@ class SociValidate extends BaseRequest
             'first_name.required' => 'Cal que emplenis el nom',
             // 'nickname.min'  => 'L'a',
             'disciplines.required'  => 'Tria com a mínim una disciplina',
+            'new_password.min'  => 'La contrassenya ha de tenir un mínim de 6 caràcters',
+            'new_password.confirmed'  => 'La contrassenya no coincideix',
         ];
     }
 

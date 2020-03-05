@@ -78,11 +78,16 @@ class BackController extends Controller
     public function save(SociValidate $request)
     {
         try{
-            //dd($request->all());
+            // dd($request->all());
             $user=Auth::user();
             // dd($user);
             // dd($request->all());
             $user->saveAll($request->all());
+            if($request->new_password){
+                $ret=$user->updatePassword($request->new_password);
+                // dd($ret);
+                
+            }
             
             return redirect()
                 ->route('backend')

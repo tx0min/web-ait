@@ -164,6 +164,20 @@ class User extends CorcelUser
 
     }
 
+    public function updatePassword($password){
+        return  $this->api_client->request('POST', 'wp/v2/users/'.$this->ID,
+            [
+                'auth' => [
+                    config('ait.wordpress.user'),
+                    config('ait.wordpress.password')
+                ],
+                'form_params' => [
+                    'password' => $password
+                ]
+            ]
+        );
+    }
+
     private function setACField($field_name, $value){
         //POST acf/v3/users/user_id
         // dump($field_name);
