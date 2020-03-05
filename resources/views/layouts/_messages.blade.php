@@ -1,7 +1,7 @@
 <div id="messages">
 
     @if ($errors->any())
-        <div class="alert alert-danger alert-dismissible">
+        <div class="alert alert-danger alert-dismissible autohide">
            
             @foreach ($errors->all() as $error)
                 <div>{{ $error }}</div>
@@ -20,7 +20,7 @@
     
         @if (session('success'))
             
-            <div class="alert alert-success alert-dismissible">
+            <div class="alert alert-success alert-dismissible autohide">
                @if(is_array(session('success')) || is_object(session('success')))
                    <pre>{{ var_dump(session('success')) }}</pre>
                @else
@@ -36,7 +36,7 @@
     
     
         @if (session('error'))
-            <div class="alert alert-danger alert-dismissible">
+            <div class="alert alert-danger alert-dismissible autohide">
                 @if(is_array(session('error')) || is_object(session('error')))
                        <pre>{{ var_dump(session('error')) }}</pre>
                @else
@@ -53,7 +53,7 @@
     
     
         @if (session('info'))
-            <div class="alert alert-info alert-dismissible">
+            <div class="alert alert-info alert-dismissible autohide">
                @if(is_array(session('info')) || is_object(session('info')))
                        <pre>{{ var_dump(session('info')) }}</pre>
                @else

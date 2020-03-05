@@ -42,3 +42,9 @@ onWindowError = function(callback){
 onDocumentReady = function (callback){
     document.addEventListener('DOMContentLoaded', callback );
 }
+
+setDocHeight = function () {
+    var h=`${window.innerHeight/100}px`;
+    al('height',h);
+    document.documentElement.style.setProperty('--vh', h);
+};

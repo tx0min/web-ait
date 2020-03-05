@@ -66,13 +66,58 @@ var UserForm  = {
     
 
 
-$(document).ready(function() {
+onDocumentReady(function() {
     UserForm.init();
+    $('.autohide').autohider();
 });
 
 
 
 
+/** autohider */
+$.widget( "ait.autohider", {
+    options: {
+        timeout: 5000,
+        speed: 300,
+        effect:'slide'
+    },
+
+
+    _create: function() {
+        var o=this;
+        this.options = $.extend({}, this.options, this.element.data()); 
+        
+        this.startHide();
+    },
+
+    startHide : function(){
+        var o=this;
+
+        var obj=this.element;
+        // al("start autohide", obj);
+        // al(o.options.effect,o.options.speed);
+
+        var timer=setTimeout(function(){
+            // al("do hide",o.options.effect);
+            if(o.options.effect=='fade'){
+                obj.fadeOut(o.options.speed, function(){
+                    obj.remove();
+                });
+            }else if(o.options.effect=='slide'){
+                obj.slideUp(o.options.speed, function(){
+                    obj.remove();
+                });
+            }else{
+                obj.remove();
+            }
+        },o.options.timeout);
+    }
+
+    
+});
+
+
+/** image uploader */
 $.widget( "ait.imageUploader", {
 
     options: {
@@ -322,12 +367,19 @@ $.widget( "ait.imageUploader", {
         //al(response);
         if(typeof response === 'string') msg=response;
         if(typeof response === 'object' && response.hasOwnProperty('message')) msg=response.message;
-        if(msg)
-            $('#messages').append($('<div class="alert alert-danger alert-dismissible"><div>'+msg+'<div><button type="button" class="close" data-dismiss="alert" aria-label="Close"><small aria-hidden="true">'+_icon('times')+'</small></button></div>'));
+        if(msg){
+            var message=$('<div class="alert alert-danger alert-dismissible autohide"><div>'+msg+'<div><button type="button" class="close" data-dismiss="alert" aria-label="Close"><small aria-hidden="true">'+_icon('times')+'</small></button></div>');
+            $('#messages').append(message);
+            message.autohider();
+        }
+
     },
 
     _showSuccess: function( msg ) {
-        $('#messages').append($('<div class="alert alert-success alert-dismissible"><div>'+msg+'<div><button type="button" class="close" data-dismiss="alert" aria-label="Close"><small aria-hidden="true">'+_icon('times')+'</small></button></div>'));
+        var message=$('<div class="alert alert-success alert-dismissible autohide"><div>'+msg+'<div><button type="button" class="close" data-dismiss="alert" aria-label="Close"><small aria-hidden="true">'+_icon('times')+'</small></button></div>');
+        $('#messages').append(message);
+        message.autohider();
+        
     },
 
     _removeThumbnail: function( id ) {

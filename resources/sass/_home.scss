@@ -50,7 +50,7 @@
 
     #home-slider{
       width:100vw;
-      height:100vh;
+      height: vh(100);
       position: fixed;
       top:0;
       left:0;
@@ -94,7 +94,8 @@
 
     .home-slide{
       width:100vw;
-      height:100vh;
+      height: vh(100);
+      
       // position: fixed;
       // top:0;
       // left:0;
@@ -103,7 +104,8 @@
 
       .gradient{
         width:100vw;
-        height:100vh;
+        height: vh(100);
+      
         position:absolute;
         left:0;
         top:0;
@@ -113,7 +115,8 @@
       }
       .image{
         width:100vw;
-        height:100vh;
+        height: vh(100);
+      
         position:absolute;
         left:0;
         top:0;

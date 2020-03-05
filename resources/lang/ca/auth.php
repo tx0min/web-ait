@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'failed' => 'Les credencians no son correctes.',
+    'failed' => 'Les credencials no son correctes.',
     'throttle' => 'Massa intents de login. Torna-ho a provar en  :seconds segons.',
 
 ];

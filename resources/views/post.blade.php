@@ -13,11 +13,11 @@
             </div>
         
 
-            @if($imagesrc = post_thumbnail_url($post,'size-featured'))
+            {{-- @if($imagesrc = post_thumbnail_url($post,'size-featured'))
                 <div class="alignfull featured-image" style="height:250px;background-image:url({{ $imagesrc }})">
 
                 </div>
-            @endif
+            @endif --}}
 
             <div class="row">
                 <div class="col-md-9">

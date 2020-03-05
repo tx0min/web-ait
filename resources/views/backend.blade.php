@@ -23,7 +23,7 @@
                             {!! $user->renderProfileImage(['class'=>'profile-picture mb-3 image-thumbnail','size'=>'medium']) !!}
                             <a href="#" class="remover">@icon('times')</a>
                         </figure>
-                        <button type="button" class="btn btn-block btn-light browse-button" for="f_profile_picture">Canviar imatge</button>
+                        <button type="button" class="btn btn-block btn-light browse-button btn-lg" for="f_profile_picture">Canviar imatge</button>
                         <input type="file" hidden name="profile_picture" id="f_profile_picture"  aria-describedby="f_profile_picture" />
 
                         <div class="dropzone"><h3>Drop image here...</h3></div>
@@ -38,7 +38,7 @@
                             {!! $user->renderFeaturedImage(['class'=>'mb-3 w-100 image-thumbnail','size'=>'large']) !!}
                             <a href="#" class="remover">@icon('times')</a>
                         </figure>
-                        <button type="button" class="btn btn-block btn-light browse-button" for="f_profile_picture">Canviar imatge</button>
+                        <button type="button" class="btn btn-block btn-light browse-button btn-lg" for="f_profile_picture">Canviar imatge</button>
                         <input type="file" hidden name="featured_image" id="f_featured_image"  aria-describedby="f_featured_image" />
 
                         <div class="dropzone"><h3>Drop image here...</h3></div>
@@ -87,7 +87,7 @@
                                 <div class="col-md-9 offset-md-3">
                                     
 
-                                    <button type="button" type="button" data-toggle="collapse" data-target="#change_password_fields"  id="f_password" class="btn btn-block btn-light">Canviar contrassenya</button>
+                                    <button type="button" type="button" data-toggle="collapse" data-target="#change_password_fields"  id="btn_password" class="btn btn-block btn-light">Canviar contrasenya</button>
                                 </div>
                             </div> 
 
@@ -95,11 +95,11 @@
                                 <div class="form-group row">
                                     <div class="col-md-9 offset-md-3">
                                         <div class="row">
-                                            <div class="col-6">
-                                                <input type="password" class="form-control @error('new_password') is-invalid @enderror" id="f_password"  name="new_password" value="" placeholder="Nova contrassenya...">
+                                            <div class="col-sm-6">
+                                                <input type="password" class="form-control @error('new_password') is-invalid @enderror" id="f_password"  name="new_password" value="" placeholder="Nova contrasenya...">
                                             </div>
-                                            <div class="col-6">
-                                                <input type="password" class="form-control @error('new_password') is-invalid @enderror" id="f_password_repeat"  name="new_password_confirmation" value="" placeholder="Repeteix la nova contrassenya...">
+                                            <div class="col-sm-6">
+                                                <input type="password" class="form-control @error('new_password') is-invalid @enderror" id="f_password_repeat"  name="new_password_confirmation" value="" placeholder="Repeteix la contrasenya...">
                                             </div>
                                         </div>
                                     </div>
@@ -230,7 +230,7 @@
 
                             <div class="form-group row d-none d-md-block">
                                 <div class="col-md-9 offset-md-3">
-                                    <button type="submit" class="btn btn-lg btn-primary btn-block" >Guardar</button>
+                                    <button type="submit" class="btn btn-lg btn-primary btn-block btn-lg" >Guardar</button>
                                 </div>
                             </div>
 
@@ -254,7 +254,7 @@
                                     @endif
                                 </div>
 
-                                <button type="button" class="btn btn-block btn-light browse-button" for="f_galeria">Afegir imatge/s</button>
+                                <button type="button" class="btn btn-block btn-lg btn-light browse-button" for="f_galeria">Afegir imatge/s</button>
                                 <input type="file" hidden name="galeria" id="f_galeria"  aria-describedby="f_galeria" multiple />
 
                                 <div class="dropzone"><h3>Drop image/s here...</h3></div>
@@ -269,7 +269,7 @@
 
 
             <div class="mobile-form-buttons">
-                <button type="submit" class="btn btn-lg btn-primary" >Guardar</button>
+                <button type="submit" class="btn btn-lg btn-primary btn-lg" >Guardar</button>
             </div>
 
         </form>

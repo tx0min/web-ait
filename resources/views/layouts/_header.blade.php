@@ -14,16 +14,16 @@
                 <nav id="nav-container">
                    
                     <ul class="nav">
-                        <li class="nav-item">
+                        <li class="nav-item {{ isActiveRoute('associacio') }} "  >
                             <a class="nav-link" href="{{ route('associacio') }}">{{ __('Associacio') }}</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item {{ isActiveRoute('socis') }}">
                             <a class="nav-link" href="{{ route('socis') }}">{{ __('Socis') }}</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item {{ isActiveRoute('blog') }}">
                             <a class="nav-link" href="{{ route('blog') }}">{{ __('Actualitat') }}</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item {{ isActiveRoute('fes-te-soci') }}">
                             <a class="nav-link" href="{{ route('fes-te-soci') }}">{{ __('Fes-te soci!') }}</a>
                         </li>
                     </ul>
@@ -32,15 +32,15 @@
                        
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                <a class="nav-link" href="{{ route('login') }}">@icon('door-open') {{ __('Accedir') }}</a>
                             </li>
                             
                         @else
-                            <li class="nav-item">
+                            <li class="nav-item {{ isActiveRoute('backend') }} ">
                                 <a class="nav-link" href="{{ route('backend') }}">  @icon('user-circle') {{ Auth::user()->displayName() }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#" onclick="event.preventDefault();document.getElementById('logout-form').submit();" >  @icon('sign-out-alt') {{ __('Logout') }}</a>
+                                <a class="nav-link" href="#" onclick="event.preventDefault();document.getElementById('logout-form').submit();" >  @icon('sign-out-alt') {{ __('Sortir') }}</a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" hidden>
                                     @csrf
                                     {{-- <button type="submit" class="nav-link btn btn-link">{{ __('Logout') }}</button> --}}

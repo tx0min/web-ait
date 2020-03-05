@@ -15,6 +15,11 @@
 @import '~bootstrap-select/dist/css/bootstrap-select.min.css';
 
 
+@function vh($quantity) {
+  @return calc(var(--vh, 1vh) * #{$quantity});
+}
+
+
 //wordpresss styles
 @import 'theme';
 @import 'vendor/pace';
@@ -25,6 +30,7 @@
 
 
 
+html, body { height: 100% }
 
 /** layout styles */
 
@@ -97,8 +103,13 @@ header{
     background-color:$white;
     transition:right 200ms ease-out;
     text-transform: uppercase;
-  }
 
+    .nav-item{
+      &.active .nav-link{
+        font-weight: 800;
+      }
+    }
+  }
 
   @include media-breakpoint-down(sm) {
 
@@ -108,15 +119,39 @@ header{
       top:0;
       z-index:20;
       width:90% !important;
-      height:100vh;
-      padding-top:5em;
+      
+      height: vh(100);
+      padding-top:4em;
       text-transform: uppercase;
       font-size:1.5em;
-
+      display: flex;
+      flex-direction: column;
 
       ul.nav{
         flex-direction: column;
+
+        &:last-child{
+          margin-top:auto;
+          padding-bottom: .5em;
+        }
+        .nav-item{
+          padding-top: 0.5rem;
+          padding-bottom: 0.5rem;
+          .nav-link{
+            padding-top: 0;
+            padding-bottom: 0;
+            border-left:2px solid transparent;
+            &:hover,&:focus,&:active{
+              border-color: $primary;
+            }
+          }
+          &.active .nav-link{
+            border-color: $primary;
+          }
+        }
       }
+
+
 
     }
   }
@@ -141,10 +176,17 @@ header{
         ul.nav .nav-item{
           padding-right: 2rem;
           padding-left: 2rem;
-
+          
           .nav-link{
             padding-left:0;
             padding-right:0;
+            &:hover,&:focus,&:active{
+              border-bottom:2px solid $primary;
+            }
+          }
+
+          &.active .nav-link{
+            border-bottom:2px solid $primary;
           }
         }
 
@@ -155,6 +197,8 @@ header{
         ul.nav:last-child .nav-item{
           padding-right:0px;
         }
+
+        
       }
     // }
 
@@ -174,19 +218,20 @@ header{
 
 @include media-breakpoint-down(sm) {
 
+
   html.nav-opened{
-    body{
-      transition: background 600ms ease-out;
-      background-color:$gray-300;
+
+    body,header{
+      transition: background 300ms ease-out;
+      background-color:$gray-500;
     }
     .main-row,
     .nav-aside{
-      transition: filter 600ms ease-out;
-      filter:blur(3px) grayscale(100);
+      transition: filter 300ms ease-out;
+      filter: blur(2px) grayscale(60);
 
     }
     header{
-      background-color:transparent;
       nav{
         right: 0;
       }

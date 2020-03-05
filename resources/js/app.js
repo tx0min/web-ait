@@ -77,8 +77,17 @@ import * as autosize from 'autosize';
 
 
 
+window.addEventListener('resize', function () {
+    setDocHeight();
+});
+window.addEventListener('orientationchange', function () {
+    setDocHeight();
+});
+    
+
 onWindowLoad(function() {
 
+    setDocHeight();
 
     //autosizes
     autosize(document.querySelectorAll('textarea'));
