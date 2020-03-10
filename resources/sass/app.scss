@@ -182,6 +182,7 @@ header{
             padding-right:0;
             &:hover,&:focus,&:active{
               border-bottom:2px solid $primary;
+              border-color: var(--text-color);
             }
           }
 

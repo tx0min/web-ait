@@ -38,6 +38,7 @@
     @include media-breakpoint-up(md) {
       header nav a{
         color: var(--text-color);
+        
       }
       #main-aside svg{
         fill: var(--text-color);

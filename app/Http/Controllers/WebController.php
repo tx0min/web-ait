@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FesteSociValidate;
+use App\Mail\PeticioAltaSoci;
+use App\Models\AltaSoci;
 use Illuminate\Http\Request;
 
 use Corcel\Model\Post;
@@ -10,6 +13,7 @@ use Corcel\Acf\Field\Image;
 use Corcel\Model\Option;
 use Corcel\Model\Taxonomy;
 use Exception;
+use Illuminate\Support\Facades\Mail;
 
 class WebController extends Controller
 {
@@ -56,7 +60,28 @@ class WebController extends Controller
     public function festeSoci(){
 
         $page=Post::slug(config('fes-te-soci'))->first();
+        $disciplines= Taxonomy::where('taxonomy', 'disciplines')->get();
+        
+        return view('fes-te-soci',compact('page','disciplines'));
+    }
 
-        return view('fes-te-soci',compact('page'));
+
+    public function sendSoci(FesteSociValidate $request){
+        // dd($request->all());
+        $soci=new AltaSoci($request->all());
+        
+        $mailable=new PeticioAltaSoci($soci);
+        
+        try{
+            // return $mailable;
+            Mail::to(config('ait.email-alta-soci'))->send($mailable);
+        
+            return redirect()->route('fes-te-soci')->with(['success'=>"La teva sol·licitud s'ha enviat correctament. En breu ens posarem en contacte amb tu per confirmar la teva alta de soci."]);
+        }catch(Exception $e){
+            // dd($e);
+            return redirect()
+                ->route('fes-te-soci')
+                ->with(['error'=>"Hi ha hagut algun enviant el correu..."]);
+        }
     }
 }

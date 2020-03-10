@@ -17,5 +17,6 @@ return [
         'medium' => 'square-medium',
         'big' => 'square-big' 
     ],
-    'image-max-size' => 3000000 //3 MB
+    'image-max-size' => 3000000, //3 MB
+    'email-alta-soci' => env('AIT_MAIL_ALTA', ''),
 ];
