@@ -98,8 +98,10 @@ return [
     | been provided here, which will work well on most of your systems.
     |
     */
+    'sendmail' => env('MAIL_SENDMAIL', '/usr/sbin/sendmail -bs'),
 
-    'sendmail' => '/usr/sbin/sendmail -bs',
+
+
 
     /*
     |--------------------------------------------------------------------------

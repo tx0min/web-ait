@@ -6,7 +6,7 @@ use App\User;
 use Corcel\Model\Taxonomy;
 use Illuminate\Support\Str;
 
-class AltaSoci 
+class AltaSoci
 {
     public $user_login;
     public $password;
@@ -20,7 +20,7 @@ class AltaSoci
     public $disciplines;
     public $disciplines_id;
 
-    
+
     public function __construct($attributes = [])
     {
         // dd($attributes);
@@ -33,7 +33,7 @@ class AltaSoci
         $this->data_naixement = $attributes['data_naixement'] ?? null;
         $this->localitat = $attributes['localitat'] ?? null;
         $this->adreca = $attributes['adreca'] ?? null;
-        
+
         if($attributes['disciplines']){
             $this->disciplines =[];
             $this->disciplines_id =[];
@@ -57,12 +57,16 @@ class AltaSoci
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
         ]);
-        
-        
+
+
         //campos ACF
         $user=User::slug($this->user_login)->first();
         $user->setACFields([
             'soci_email' => $this->user_email,
+            'localitat' => $this->localitat,
+            'adreca' => $this->adreca,
+            'data_naixement' => $this->data_naixement,
+            'telefon' => $this->telefon,
             'disciplines' => $this->disciplines_id
         ]);
 

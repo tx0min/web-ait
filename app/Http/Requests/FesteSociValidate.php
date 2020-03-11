@@ -7,12 +7,12 @@ use App\Rules\UniqueUsername;
 
 class FesteSociValidate extends BaseRequest
 {
-    
+
     public function rules()
     {
         // dd(request()->disciplines);
         return [
-            // 'user_login' => ['required','alpha_dash','min:3','max:25', new UniqueUsername],
+            'user_login' => ['required','alpha_dash','min:3','max:25', new UniqueUsername],
             'first_name' => ['required'],
             'user_email' => ['required','email'],
             'data_naixement' => ['required','date_format:d/m/Y'],
