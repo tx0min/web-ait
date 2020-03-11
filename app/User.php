@@ -261,10 +261,10 @@ class User extends CorcelUser
 
     protected function getImageSrc($image, $options=[]){
         $options=$this->getImageOptions($options);
-
+        // dump($options);
         $imgsrc=asset('img/pencil-placeholder.png');
         if($image && $image->url){
-            if($image->mime_type=="image/gif"){
+            if($options["size"]=="full" || $image->mime_type=="image/gif"){
                 $imgsrc=$image->url;
             }else{
                 $imgsrc=$image->size($options["size"])->url;
@@ -279,8 +279,10 @@ class User extends CorcelUser
 
 
     public function getFeaturedImageSrc( $options=[]){
+        // dump($options);
         $image=$this->featuredImage();
         return $this->getImageSrc($image, $options);
+        // die();
     }
 
 

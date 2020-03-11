@@ -41,7 +41,7 @@
                                 <div class="grid-inner">
                                     <a href="{{ route('socis.soci',['soci_slug'=>$user->slug]) }}">
                                         <figure class="mb-0">
-                                            {!! $user->renderFeaturedImage(['class'=>'card-img-top','size'=>'medium']) !!}
+                                            {!! $user->renderFeaturedImage(['class'=>'card-img-top','size'=>'big']) !!}
                                         </figure>
                                     </a>
                                     <div class="d-flex align-items-start p-2">

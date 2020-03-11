@@ -7,7 +7,7 @@
 
 @section('content')
 
-<div class="alignfull soci-featured-image" style="background-image:url({{ $user->getFeaturedImageSrc(['class'=>'','size'=>'large']) }}) ">
+<div class="alignfull soci-featured-image" style="background-image:url({{ $user->getFeaturedImageSrc(['class'=>'','size'=>'full']) }}) ">
 {{-- {!! $user->renderFeaturedImage(['class'=>'','size'=>'large']) !!} --}}
 </div>
 <div class="row soci-container" >

@@ -15,7 +15,11 @@ return [
     'sizes' => [
         'small' => 'square-small',
         'medium' => 'square-medium',
-        'big' => 'square-big' 
+        'big' => 'square-big',
+        'large' => 'square-big',
+        'important' => 'size-important',
+        'featured' => 'size-featured',
+        'full' => 'full' 
     ],
     'image-max-size' => 3000000, //3 MB
     'email-alta-soci' => env('AIT_MAIL_ALTA', ''),
