@@ -33,6 +33,8 @@
                 </main>
             </div>
         </div>
+        @yield('footer')
+        
     </div>
 
 

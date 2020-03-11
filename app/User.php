@@ -8,7 +8,7 @@ use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use File;
-
+use Illuminate\Support\Facades\Log;
 
 class User extends CorcelUser
 {
@@ -17,7 +17,7 @@ class User extends CorcelUser
 
     protected $api_client;
     protected $rest_fields = ["disciplines"];
-    protected $api_fields = ["first_name", "last_name", "nickname", "display_name",  "soci_biografia", "soci_email", "soci_web", "facebook", "twitter", "instagram", "youtube", "linkedin"];
+    protected $api_fields = ["first_name", "last_name", "nickname", "display_name","telefon", "localitat","adreca", "soci_biografia", "soci_email", "soci_web", "facebook", "twitter", "instagram", "youtube", "linkedin"];
     protected $valid_mimes = [ "image/png" , "image/jpg", "image/jpeg", "image/gif" ];
     protected $max_file_size;
 
@@ -145,6 +145,7 @@ class User extends CorcelUser
         $image= $this->featuredImage();
         return $image && $image->url!=null;
     }
+    
     public function featuredImage(){
         return $this->acf->image('featured_image');
     }
@@ -164,24 +165,43 @@ class User extends CorcelUser
 
     }
 
-    public function updatePassword($password){
-        return  $this->api_client->request('POST', 'wp/v2/users/'.$this->ID,
-            [
-                'auth' => [
-                    config('ait.wordpress.user'),
-                    config('ait.wordpress.password')
-                ],
-                'form_params' => [
-                    'password' => $password
-                ]
-            ]
-        );
+    public static function createUser($form_params=[]){
+        $tmpuser=new User();
+        $response=$tmpuser->api_client->request('POST', 'wp/v2/users',[
+            'auth' => [
+                config('ait.wordpress.user'),
+                config('ait.wordpress.password')
+            ],
+            'form_params' => $form_params
+        ]);
+        return $response;
     }
 
-    private function setACField($field_name, $value){
-        //POST acf/v3/users/user_id
-        // dump($field_name);
-        // dd($value);
+    public function updatePassword($password){
+        
+        // Log::debug("Calling to url: wp/v2/users/".$this->ID);
+        // Log::debug("Options:");
+        // Log::debug($args);
+		
+        $response=$this->api_client->request('POST', 'wp/v2/users/'.$this->ID,[
+            'auth' => [
+                config('ait.wordpress.user'),
+                config('ait.wordpress.password')
+            ],
+            'form_params' => [
+                'password' => $password
+            ]
+        ]);
+
+        // Log::debug( "STATUS:".$response->getStatusCode() );
+        // Log::debug("BODY:");
+        // Log::debug($response->getBody());
+
+        return $response;
+
+    }
+
+    public function setACFields($fields){
         return  $this->api_client->request('POST', 'acf/v3/users/'.$this->ID,
             [
                 'auth' => [
@@ -189,13 +209,17 @@ class User extends CorcelUser
                     config('ait.wordpress.password')
                 ],
                 'form_params' => [
-                    'fields' => [
-                        $field_name => $value
-                    ]
+                    'fields' => $fields
                 ]
             ]
         );
+    }
 
+
+    public function setACField($field_name, $value){
+        return  $this->setACFields([
+            $field_name => $value
+        ]);
     }
 
 
@@ -205,9 +229,11 @@ class User extends CorcelUser
 
 
 
+
     public function renderProfileImage($options=[]){
         return $this->renderImage($this->profileImage(), $options);
     }
+
 
     public function renderFeaturedImage($options=[]){
         return $this->renderImage($this->featuredImage(), $options);
@@ -215,8 +241,8 @@ class User extends CorcelUser
     }
 
 
-    public function renderImage($image, $options=[]){
-        // dump($image);
+
+    protected function getImageOptions($options=[]){
         if(!is_array($options)) $options=[];
 
         $defaults=[
@@ -228,7 +254,15 @@ class User extends CorcelUser
         $options=array_merge($defaults,$options);
         $options["size"] = config('ait.sizes.'.$options["size"]);
 
+        return $options;
 
+    }
+
+
+    protected function getImageSrc($image, $options=[]){
+        $options=$this->getImageOptions($options);
+
+        $imgsrc=asset('img/pencil-placeholder.png');
         if($image && $image->url){
             if($image->mime_type=="image/gif"){
                 $imgsrc=$image->url;
@@ -236,10 +270,23 @@ class User extends CorcelUser
                 $imgsrc=$image->size($options["size"])->url;
             }
             if(!$imgsrc) $imgsrc=$image->url;
-        }else{
-            $imgsrc=asset('img/pencil-placeholder.png');
         }
 
+        return $imgsrc;
+    }
+
+
+
+
+    public function getFeaturedImageSrc( $options=[]){
+        $image=$this->featuredImage();
+        return $this->getImageSrc($image, $options);
+    }
+
+
+    public function renderImage($image, $options=[]){
+        $options=$this->getImageOptions($options);
+        $imgsrc=$this->getImageSrc($image, $options);    
         return '<img src="'. $imgsrc. '" class="'.$options["class"].'" alt="'.$options["title"].'">';
     }
 
@@ -435,9 +482,7 @@ class User extends CorcelUser
 
 
     public function saveRest($fields){
-        foreach($fields as $key=>$value){
-            $this->setACField($key,$value);
-        }
+        $this->setACFields($fields);
     }
 
     public function saveAll($fields){

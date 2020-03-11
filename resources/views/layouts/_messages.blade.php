@@ -4,7 +4,7 @@
         <div class="alert alert-danger alert-dismissible autohide">
            
             @foreach ($errors->all() as $error)
-                <div>{{ $error }}</div>
+                <div>{!! $error !!}</div>
             @endforeach
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <small aria-hidden="true">@icon('times')</small>

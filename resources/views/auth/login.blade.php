@@ -1,7 +1,12 @@
 @extends('layouts.master')
 
+@section('footer')
+    @include('layouts._footer')
+@endsection
+
+
 @section('content')
-<div class="row ">
+<div class="row page-content">
     <div class="col-md-6">
         
         <form method="POST" action="{{ route('login') }}">

@@ -1,18 +1,49 @@
 @extends('layouts.master')
 
+@section('footer')
+    @include('layouts._footer')
+@endsection
+
+
 @section('content')
 
 
 
-<div class="row ">
+<div class="row page-content">
+    <div class="col-md-3">
+        <video src="{{ asset('img/video-apuntate.mp4') }}" autoplay loop class="embed-responsive"></video>
+    </div>
     <div class="col-md-6">
 
         @include('layouts._messages')
 
-        <form method="POST" action="{{ route('fes-te-soci.send') }}" enctype="multipart/form-data" class="mb-3" id="fes-te-soci-form">
+        <form method="POST" action="{{ route('fes-te-soci.alta') }}" enctype="multipart/form-data" class="mb-3" id="fes-te-soci-form">
             @csrf
             @method('POST')
             
+            <div class="form-group row">
+                <label for="f_user_login" class="col-md-3 col-form-label text-md-right">Nom d'usuari</label>
+                <div class="col-md-9">
+                    <input type="text" class="form-control @error('user_login') is-invalid @enderror" id="f_user_login" name="user_login" value="{{ old('user_login') }}" >
+                    <small class="form-text text-muted">
+                        El necessitaràs per accedir al teu perfil de la web i gestionar el teu portafoli.
+                      </small>
+                </div>
+             </div>
+
+            <div class="form-group row">
+                <div class="col-md-9 offset-md-3">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <input type="password" class="form-control @error('password') is-invalid @enderror" id="f_password"  name="password" value="" placeholder="Contrasenya...">
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="password" class="form-control @error('password') is-invalid @enderror" id="f_password_repeat"  name="password_confirmation" value="" placeholder="Repeteix-la...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group row">
                 <label for="f_first_name" class="col-md-3 col-form-label text-md-right">Nom</label>
                 <div class="col-md-9">
@@ -27,9 +58,9 @@
              </div>
 
             <div class="form-group row">
-                <label for="f_email" class="col-md-3 col-form-label text-md-right">Email</label>
+                <label for="f_user_email" class="col-md-3 col-form-label text-md-right">Email</label>
                 <div class="col-md-9">
-                    <input type="text" class="form-control @error('email') is-invalid @enderror" id="f_email" name="email" value="{{ old('email') }}" >
+                    <input type="text" class="form-control @error('user_email') is-invalid @enderror" id="f_user_email" name="user_email" value="{{ old('user_email') }}" >
                 </div>
              </div>
 

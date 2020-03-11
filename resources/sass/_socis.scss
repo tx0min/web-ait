@@ -2,7 +2,7 @@
 
 
 .grid-form{
-    border-bottom: 1px solid $primary;
+    // border-bottom: 1px solid $primary;
 
     .form-control,
     .form-control:focus,
@@ -29,6 +29,52 @@
     .bootstrap-select .dropdown-toggle{
         background-color: transparent !important;
         color:$white !important;
+    }
+  }
+}
+
+
+
+
+.soci-featured-image{
+  height:400px;
+  overflow:hidden;
+  display: flex;
+  align-content: center;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: $gray-300;
+}
+
+// .soci-featured-image img{
+//   width: 100%;
+//   height:auto;
+//   background-color: $gray-300;
+// }
+
+
+
+@include media-breakpoint-down(sm) {
+  .soci-featured-image{
+    height:50vh;
+  }
+  .soci-container{
+    margin-top:-70px;
+  }
+}
+
+@include media-breakpoint-up(md) {
+
+  // .soci-container{
+  //   margin-top:$fixed-margin-top;
+  // }
+  
+  .soci-container{
+    
+
+    .profile-picture{
+      margin-top:-45%;
     }
   }
 }

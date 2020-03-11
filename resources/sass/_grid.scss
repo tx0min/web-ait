@@ -149,7 +149,11 @@
 
 }
 
-
+@include media-breakpoint-up(md) {
+    .grid{
+        margin-top:3em;
+    }
+}
 .page-load-status {
     display: none; /* hidden by default */
     padding: 2em;

@@ -30,12 +30,25 @@
 
 
 
-html, body { height: 100% }
+html, body { 
+  height: 100%;
+  position: relative;
+  min-height: 100%;
+}
+
+#app{
+  min-height: 100%;
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
 /** layout styles */
 
 #main-aside{
   display:none;
+  padding-top:$fixed-margin-top-sm;
+  z-index:1;
 }
 
 
@@ -48,6 +61,7 @@ html, body { height: 100% }
       -ms-flex: 0 0 230px;
       flex: 0 0 230px;
       justify-content:center;
+      padding-top:$fixed-margin-top;
 
       > a{
         width:70%;
@@ -75,6 +89,8 @@ header{
   width:100%;
   z-index:10;
   background-color: $white;
+  
+  transition: background 200ms ease-out;
 
 
   .nav-aside{
@@ -217,6 +233,12 @@ header{
 }
 
 
+html.onTop{
+ header{
+    background-color: transparent;
+ }
+}
+
 @include media-breakpoint-down(sm) {
 
 
@@ -250,16 +272,21 @@ header{
 
 .main-row{
   flex-wrap: nowrap;
-  padding-top:5.2em;
+  .page-content{
+    padding-top:$fixed-margin-top-sm;
+  }
 
 }
 
 @include media-breakpoint-up(md) {
 
-.main-row > main{
-    padding-top:3em;
-  }
 
+.main-row {
+    .page-content{
+      padding-top:$fixed-margin-top;
+    }
+   
+  }
 }
 
 @include media-breakpoint-down(sm) {
@@ -295,6 +322,24 @@ header{
 
   }
 }
+
+
+
+@include media-breakpoint-down(sm) {
+
+  .profile-picture{
+    width:140px;
+    height:auto;
+  }
+
+
+}
+
+footer{
+  margin-top:3em;
+}
+
+
 
 
 @import 'grid';

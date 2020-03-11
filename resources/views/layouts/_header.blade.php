@@ -5,10 +5,12 @@
 
     <div class="container-fluid">
         <div class="row align-items-center">
-            <a class="col nav-aside"  href="{{ route('home') }}">
-                @svg('img/logo-ait.svg',['class'=>'img-responsive fill-primary'])
-                {{-- <img src="{{ asset('img/favicon.png') }}"/> --}}
-            </a>
+            <div class="col nav-aside">
+                <a class=""  href="{{ route('home') }}">
+                    @svg('img/logo-ait.svg',['class'=>'img-responsive fill-primary'])
+                    {{-- <img src="{{ asset('img/favicon.png') }}"/> --}}
+                </a>
+            </div>
             
             <div class="col">
                 <nav id="nav-container">

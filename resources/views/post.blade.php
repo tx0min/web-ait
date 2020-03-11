@@ -1,8 +1,13 @@
 @extends('layouts.master')
 
+@section('footer')
+    @include('layouts._footer')
+@endsection
+
+
 @section('content')
     @if($post)
-        <div class="single-post">
+        <div class="single-post page-content">
             <div class="row mb-5">
                 <div class="col-md-9">
                     <div class="display-1 ">{{ $post->post_title }}</div>

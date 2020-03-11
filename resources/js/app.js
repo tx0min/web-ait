@@ -32,12 +32,23 @@ $(document).ready(function(e){
 
     //NAV
 
+    $('header').on('click',function(e){
+        al(e.target);
+        if(!$(e.target).is('a') && !$(e.target).is('svg') && !$(e.target).is('img')  ){
+            e.preventDefault();
+            e.stopPropagation();
+            goToTop();
+        }
+    });
     $('header .nav-toggle').on('click',function(e){
         e.preventDefault();
+        e.stopPropagation();
         $('html').toggleClass('nav-opened');
     })
 
 
+    
+   isOnTop();
 
    $(document).on('keyup', function(e) {
         if (e.keyCode === 27 && $('html').is('.nav-opened')){
@@ -79,6 +90,11 @@ import * as autosize from 'autosize';
 
 window.addEventListener('resize', function () {
     setDocHeight();
+    isOnTop();
+});
+
+window.addEventListener('scroll', function () {
+    isOnTop();
 });
 window.addEventListener('orientationchange', function () {
     setDocHeight();
@@ -86,6 +102,8 @@ window.addEventListener('orientationchange', function () {
     
 
 onWindowLoad(function() {
+    
+    isOnTop();
 
     setDocHeight();
 

@@ -66,10 +66,10 @@ class WebController extends Controller
     }
 
 
-    public function sendSoci(FesteSociValidate $request){
+    public function altaSoci(FesteSociValidate $request){
         // dd($request->all());
         $soci=new AltaSoci($request->all());
-        
+        $soci->save();
         $mailable=new PeticioAltaSoci($soci);
         
         try{

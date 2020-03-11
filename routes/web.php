@@ -21,7 +21,7 @@ Route::get('/wp', 'WebController@wordpress')->name('wordpress');
 
 Route::get('/associacio', 'WebController@associacio')->name('associacio');
 Route::get('/fes-te-soci', 'WebController@festeSoci')->name('fes-te-soci');
-Route::post('/fes-te-soci', 'WebController@sendSoci')->name('fes-te-soci.send');
+Route::post('/fes-te-soci', 'WebController@altaSoci')->name('fes-te-soci.alta');
 
 
 Route::get('/socis', 'SocisController@socis')->name('socis');

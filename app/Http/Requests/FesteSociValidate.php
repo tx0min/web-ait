@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\BaseRequest;
+use App\Rules\UniqueUsername;
 
 class FesteSociValidate extends BaseRequest
 {
@@ -11,11 +12,12 @@ class FesteSociValidate extends BaseRequest
     {
         // dd(request()->disciplines);
         return [
+            // 'user_login' => ['required','alpha_dash','min:3','max:25', new UniqueUsername],
             'first_name' => ['required'],
-            'email' => ['required','email'],
+            'user_email' => ['required','email'],
             'data_naixement' => ['required','date_format:d/m/Y'],
             'disciplines' => ['required'],
-            // 'new_password' => ['nullable','min:6','confirmed']
+            'password' => ['required','min:6','confirmed']
         ];
     }
 
@@ -23,15 +25,19 @@ class FesteSociValidate extends BaseRequest
     public function messages()
     {
         return [
+            'user_login.required' => 'Cal que emplenis el nom d\'usuari',
+            'user_login.alpha_dash' => 'Caràcters no permesos. Només números, lletres i guions.',
+            'user_login.min' => 'El nom d\'usuari ha de tenir 3 caràcters com a mínim.',
+            'user_login.max' => 'El nom d\'usuari ha de tenir 25 caràcters com a màxim.',
             'first_name.required' => 'Cal que emplenis el nom',
-            'email.required' => 'Cal que emplenis el correu electrònic',
-            'email.email' => 'El correu electrònic no és vàlid',
+            'user_email.required' => 'Cal que emplenis el correu electrònic',
+            'user_email.email' => 'El correu electrònic no és vàlid',
             'data_naixement.required' => 'Cal que emplenis la data de naixement',
             'data_naixement.date_format' => 'Introdueix una data de naixement vàlida en format dd/mm/any',
-            // 'nickname.min'  => 'L'a',
             'disciplines.required'  => 'Tria com a mínim una disciplina',
-            // 'new_password.min'  => 'La contrasenya ha de tenir un mínim de 6 caràcters',
-            // 'new_password.confirmed'  => 'La contrasenya no coincideix',
+            'password.required'  => 'Cal que emplenis la contrasenya.',
+            'password.min'  => 'La contrasenya ha de tenir un mínim de 6 caràcters',
+            'password.confirmed'  => 'La contrasenya no coincideix',
         ];
     }
 

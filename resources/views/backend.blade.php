@@ -1,11 +1,16 @@
 @extends('layouts.master')
 
+@section('footer')
+    @include('layouts._footer')
+@endsection
+
+
 @section('content')
 
 
 
 
-<div class="row ">
+<div class="row page-content ">
     <div class="col-xl-10">
 
 
@@ -149,6 +154,20 @@
                              </div>
 
                              <div class="form-group row">
+                                <label for="f_localitat" class="col-md-3 col-form-label text-md-right">Localitat</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="f_localitat" name="localitat" value="{{ $user->acf->text('localitat') }}"/>
+                                </div>
+                             </div>
+
+                             <div class="form-group row">
+                                <label for="f_adreca" class="col-md-3 col-form-label text-md-right">Adreça</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="f_adreca" name="adreca" value="{{ $user->acf->text('adreca') }}"/>
+                                </div>
+                             </div>
+
+                             <div class="form-group row">
                                 <label for="f_disciplines" class="col-md-3 col-form-label text-md-right @error('disciplines') text-danger @enderror">Disciplines @error('disciplines') @icon('exclamation-circle') @enderror</label>
                                 <div class="col-md-9">
                                     @foreach($disciplines as $disciplina)
@@ -179,6 +198,13 @@
                                 <label for="f_soci_email" class="col-md-3 col-form-label text-md-right">@icon('envelope') Email</label>
                                 <div class="col-md-9">
                                     <input type="email" class="form-control" id="f_soci_email" name="soci_email" placeholder="Email ..." value="{{ $user->emailContacte() }}">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="f_telefon" class="col-md-3 col-form-label text-md-right">@icon('phone') Telèfon</label>
+                                <div class="col-md-9">
+                                    <input type="telefon" class="form-control" id="f_telefon" name="telefon" placeholder="Telèfon ..." value="{{ $user->acf->text('telefon') }}">
                                 </div>
                             </div>
 

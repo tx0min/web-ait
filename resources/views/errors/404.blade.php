@@ -1,7 +1,7 @@
 @extends('layouts.error')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid page-content">
     <div class="row">
         <div class="col-sm-8  ">
             <div class="anim from-bottom in delay-1">

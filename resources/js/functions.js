@@ -45,6 +45,22 @@ onDocumentReady = function (callback){
 
 setDocHeight = function () {
     var h=`${window.innerHeight/100}px`;
-    al('height',h);
+    // al('height',h);
     document.documentElement.style.setProperty('--vh', h);
 };
+
+
+goToTop = function(){
+    // al("isOntop");
+    $("html, body").animate({ scrollTop: 0 }, 200);
+
+    // al("TOP", top);
+}
+isOnTop = function(){
+    // al("isOntop");
+    var offset=80;
+    var top=$(window).scrollTop();
+    if(top<=offset) $('html').addClass('onTop');
+    else $('html').removeClass('onTop');
+    // al("TOP", top);
+}
