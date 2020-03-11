@@ -15,7 +15,7 @@
         {{-- @dump($user->meta->where('meta_key','wp_capabilities')) --}}
         <div class="row align-items-start">
             <div class="col-lg-3 text-center text-lg-left">
-                {!! $user->renderProfileImage(['class'=>'profile-picture','size'=>'medium']) !!}
+                {!! $user->renderProfileImage(['class'=>'profile-picture','size'=>'big']) !!}
             </div>
             <div class="col-lg-9 pt-4  text-break text-center text-lg-left">
                 <h1 class="display-2 text-break">{{ $user->displayName() }}</h1>

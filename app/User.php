@@ -260,14 +260,13 @@ class User extends CorcelUser
 
 
     protected function getImageSrc($image, $options=[]){
-        $options=$this->getImageOptions($options);
-        // dump($options);
         $imgsrc=asset('img/pencil-placeholder.png');
         if($image && $image->url){
             if($options["size"]=="full" || $image->mime_type=="image/gif"){
                 $imgsrc=$image->url;
             }else{
                 $imgsrc=$image->size($options["size"])->url;
+                
             }
             if(!$imgsrc) $imgsrc=$image->url;
         }
@@ -280,14 +279,19 @@ class User extends CorcelUser
 
     public function getFeaturedImageSrc( $options=[]){
         // dump($options);
+        
         $image=$this->featuredImage();
+        $options=$this->getImageOptions($options);
+        
         return $this->getImageSrc($image, $options);
         // die();
     }
 
 
     public function renderImage($image, $options=[]){
+        // dump($options);
         $options=$this->getImageOptions($options);
+        // dump($options);
         $imgsrc=$this->getImageSrc($image, $options);    
         return '<img src="'. $imgsrc. '" class="'.$options["class"].'" alt="'.$options["title"].'">';
     }
