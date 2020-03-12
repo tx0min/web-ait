@@ -7,7 +7,7 @@
 @section('content')
     <div class="page-content">
         {{-- @dump($disciplines) --}}
-        <form method="post" action="{{ route('socis.search') }}" id="socis-form" class="grid-form">
+        <form method="post" action="{{ route('socis.search') }}" id="socis-form" class="grid-form ">
             @csrf
             <div class="row ">
                 <div class="col-xl-9 col-lg-8 col-6">

@@ -17,7 +17,7 @@
                    
                     <ul class="nav">
                         <li class="nav-item {{ isActiveRoute('associacio') }} "  >
-                            <a class="nav-link" href="{{ route('associacio') }}">{{ __('Associacio') }}</a>
+                            <a class="nav-link" href="{{ route('associacio') }}">{{ __('Associació') }}</a>
                         </li>
                         <li class="nav-item {{ isActiveRoute('socis') }}">
                             <a class="nav-link" href="{{ route('socis') }}">{{ __('Socis') }}</a>
