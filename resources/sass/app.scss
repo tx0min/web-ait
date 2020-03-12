@@ -100,7 +100,9 @@ header{
 
     svg{
       display:inline-block;
+      opacity:1;
       height:50px;
+      transition: opacity 200ms ease-out;
     }
   }
 
@@ -225,18 +227,30 @@ header{
 
     .nav-aside{
       svg{
-        display:none;
+        height:40px;
+        opacity:1;
       }
     }
+ 
   }
 
 }
 
 
 html.onTop{
- header{
+  header{
     background-color: transparent;
- }
+
+    @include media-breakpoint-up(md) {
+
+      .nav-aside{
+        svg{
+          opacity:0;
+        }
+      }
+    
+    }
+  }
 }
 
 @include media-breakpoint-down(sm) {

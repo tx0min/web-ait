@@ -288,35 +288,46 @@ $.widget( "ait.imageUploader", {
     _uploadMultipleFiles: function( files ) {
         var o=this;
 
-        var formdata = new FormData();
-        formdata.append('_token', csrfToken());
-        formdata.append('multiple', true);
+        // al(files);
+        if(files.length>0) {
+            // for (var x = 0; x < files.length; x++) {
 
-        for (var x = 0; x < files.length; x++) {
-            formdata.append('file[]', files[x]);
-        }
-         
-        $.ajax({
-            url: o.options.url,
-            type: o.options.method,
-            data: formdata,
-            contentType: false,
-            processData: false,
-            dataType: 'json',
-            success: function(response){
-                // al(response);
-                if(response.errors.length>0){
-                    $.each(response.errors, function(i,item){
-                        o._showError(item);
-                    });
+            var formdata = new FormData();
+            formdata.append('_token', csrfToken());
+            formdata.append('file', files[0]);
+            formdata.append('multiple', true);
+        
+            $.ajax({
+                url: o.options.url,
+                type: o.options.method,
+                data: formdata,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(response){
+                    // al(response);
+                    var image={
+                        url: response.imageurl,
+                        id: response.imageid,
+                    };
+                    o._addThumbnail(image);
+
+                    //quito el primer elemento y llamo recursivamente
+                    // al(files);
+                    files.shift();
+                    o._uploadMultipleFiles(files);
+                    // o._showSuccess("Imatge afegida!");
+                },
+                error: function( jqXHR, textStatus, errorThrown ){
+                    // al("Error",jqXHR);
+                    // al(textStatus);
+                    // o._showSuccess("Imatge afegida!");
+                    o._showError("Error desconegut");
                 }
-                o._addThumbnails(response);
-            },
-            error: function( jqXHR, textStatus, errorThrown ){
-                //al("Error",jqXHR);
-                o._showError(jqXHR.responseJSON);
-            }
-        });
+            });
+            // }
+        }
+        
         
     },
 
@@ -353,7 +364,8 @@ $.widget( "ait.imageUploader", {
             o._uploadSingleFile(files[0]);
 
         }else{
-            o._uploadMultipleFiles(files);
+            var fileArray = Array.from(files);
+            o._uploadMultipleFiles(fileArray);
             
         }
         
@@ -392,6 +404,22 @@ $.widget( "ait.imageUploader", {
         }
     },
         
+    _addThumbnail: function( image ) {
+        var o=this;
+        
+        var thumb=$('<div class="col-sm-4 col-md-3 col-6 p-2 thumb-image" data-id="'+image.id+'" >'+
+            '<figure>'+
+                '<img src="'+image.url+'" class="img-fluid w-100 " />'+
+                '<a href="#" class="remover">'+_icon('times')+'</a>'+
+            '</figure>'+
+            '</div>');
+        // al(thumb);
+        o.element.find('.thumbnails-container').append(thumb);
+        setTimeout(function(){
+            thumb.find('figure').addClass('in');
+        },100);
+    },
+
     _addThumbnails: function( response ) {
         // al('_addThumbnail',imageurl);
         var o=this;
@@ -401,17 +429,9 @@ $.widget( "ait.imageUploader", {
         
         var intr = setInterval(function(){
             if(i<response.images.length){
-                
-                
                 var image=response.images[i];
-                var thumb='<div class="col-sm-4 col-md-3 col-6 p-2 thumb-image" data-id="'+image.id+'" >'+
-                '<figure>'+
-                    '<img src="'+image.url+'" class="img-fluid w-100 " />'+
-                    '<a href="#" class="remover">'+_icon('times')+'</a>'+
-                '</figure>'+
-                '</div>';
-                // al(thumb);
-                o.element.find('.thumbnails-container').append($(thumb));
+                o._addThumbnail(image);
+
                 i++;
             }else{
                 clearInterval(intr);

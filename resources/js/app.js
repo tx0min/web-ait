@@ -33,8 +33,8 @@ $(document).ready(function(e){
     //NAV
 
     $('header').on('click',function(e){
-        al(e.target);
-        if(!$(e.target).is('a') && !$(e.target).is('svg') && !$(e.target).is('img')  ){
+        // al(e.target);
+        if(!$(e.target).is('a') && !$(e.target).is('svg') && !$(e.target).is('path') && !$(e.target).is('img')  ){
             e.preventDefault();
             e.stopPropagation();
             goToTop();

@@ -45,7 +45,17 @@
     }
     .thumbnails-container figure{
         position: relative;
+        transform: translateY(30px) scale(0.5);
+        opacity: 0;
+        transition: all 200ms ease-in;
+
+        &.in{
+            transform: translateY(0px) scale(1);
+            opacity: 1;
+        }
     }
+
+    
 
     &.empty{
         img{

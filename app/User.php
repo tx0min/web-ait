@@ -370,59 +370,65 @@ class User extends CorcelUser
 
         $size= config("ait.sizes.medium");
 
-        if($request->multiple){
-            $uploaded_images=[];
-            $errors=[];
-            foreach($request->file as $file){
+        // if($request->multiple){
+        //     $uploaded_images=[];
+        //     $errors=[];
+        //     foreach($request->file as $file){
 
-                $pic=$this->doUploadPicture($file);
-                if(is_int($pic)){
-                    $error=$this->errorMessage($pic,$file->getClientOriginalName());
+        //         $pic=$this->doUploadPicture($file);
+        //         if(is_int($pic)){
+        //             $error=$this->errorMessage($pic,$file->getClientOriginalName());
 
-                    $errors[]= $error->message;//$file->getClientOriginalName();
-                }else{
-                    $uploaded_images[]=$pic;
-                }
-            }
-
-
-
-            $image_ids=$this->getCurrentImageIds($picture_type);
-
-            $retimages=[];
-
-            foreach($uploaded_images as $uploaded_image){
-                $image_ids[]=$uploaded_image->id;
-                $imageurl=isset($uploaded_image->media_details->sizes->{$size})? $uploaded_image->media_details->sizes->{$size}->source_url:$uploaded_image->source_url;
-
-                $retimages[]=[
-                    "id"=>$uploaded_image->id,
-                    "url"=>$imageurl,
-                ];
-            }
+        //             $errors[]= $error->message;//$file->getClientOriginalName();
+        //         }else{
+        //             $uploaded_images[]=$pic;
+        //         }
+        //     }
 
 
-            try{
 
-                $this->saveImageIds($picture_type, $image_ids);
+        //     $image_ids=$this->getCurrentImageIds($picture_type);
 
-                return [
-                    "status"=>"success",
-                    "images" => $retimages,
-                    "errors" => $errors
-                ];
-            }  catch(Exception $e){
-                //dd($e);
-            }
+        //     $retimages=[];
 
-        }else{
+        //     foreach($uploaded_images as $uploaded_image){
+        //         $image_ids[]=$uploaded_image->id;
+        //         $imageurl=isset($uploaded_image->media_details->sizes->{$size})? $uploaded_image->media_details->sizes->{$size}->source_url:$uploaded_image->source_url;
+
+        //         $retimages[]=[
+        //             "id"=>$uploaded_image->id,
+        //             "url"=>$imageurl,
+        //         ];
+        //     }
+
+
+        //     try{
+
+        //         $this->saveImageIds($picture_type, $image_ids);
+
+        //         return [
+        //             "status"=>"success",
+        //             "images" => $retimages,
+        //             "errors" => $errors
+        //         ];
+        //     }  catch(Exception $e){
+        //         //dd($e);
+        //     }
+
+        // }else{
             $image=$this->doUploadPicture($request->file);
             if($image){
                 if(is_int($image)){
                     $error=$this->errorMessage($image);
                     abort($error->code, $error->message);
                 }else{
-                    $this->saveMeta([$picture_type=>$image->id]);
+                    if($request->multiple){
+                        $image_ids=$this->getCurrentImageIds($picture_type);
+                        $image_ids[]=$image->id;
+                        $this->saveImageIds($picture_type, $image_ids);
+                    }else{
+                        $this->saveMeta([$picture_type=>$image->id]);
+                    }
 
                     $imageurl = isset($image->media_details->sizes->{$size})? $image->media_details->sizes->{$size}->source_url:$image->source_url;
                     return [
@@ -433,10 +439,10 @@ class User extends CorcelUser
                 }
             }else{
                 $error=$this->errorMessage(400);
-
+                abort($error->code, $error->message);
             }
 
-        }
+        // }
 
 
 

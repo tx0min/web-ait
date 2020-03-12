@@ -34,7 +34,7 @@
                         <div class="dropzone"><h3>Drop image here...</h3></div>
 
                     </div>
-                    <small class="text-muted ">Aquesta imatge apareixerà arrodonida automàticament. La mida recomanada és de 150x150px</small>
+                    <small class="text-muted ">Aquesta imatge apareixerà arrodonida automàticament. La mida recomanada és de 150x150px. Mida màxima: {{ human_filesize(config('ait.image-max-size')) }} </small>
 
 
                     <h3 class="mt-5 text-center pb-2">Imatge de portada</h3>
@@ -48,7 +48,7 @@
 
                         <div class="dropzone"><h3>Drop image here...</h3></div>
                     </div>
-                    <small class="text-muted ">Aquesta imatge apareixerà a la graella de socis en format quadrat. La mida recomanada és de 500x500px</small>
+                    <small class="text-muted ">Aquesta imatge apareixerà a la graella de socis en format quadrat. La mida recomanada és de 500x500px. Mida màxima: {{ human_filesize(config('ait.image-max-size')) }} </small>
 
                 </div>
 
@@ -271,7 +271,7 @@
                                     @if($images=$user->galeria())
                                         @foreach($images as $image)
                                             <div class="col-sm-4 col-md-3 col-6 p-2 thumb-image" data-id="{{ $image->attachment->ID }}" >
-                                                <figure>
+                                                <figure class="in">
                                                     <img src="{{ wp_image_url($image, config('ait.sizes.big') ) }}" class="img-fluid w-100 " />
                                                     <a href="#" class="remover">@icon('times')</a>
                                                 </figure>
@@ -281,6 +281,9 @@
                                 </div>
 
                                 <button type="button" class="btn btn-block btn-lg btn-light browse-button" for="f_galeria">Afegir imatge/s</button>
+
+                                <small class="text-muted d-block pt-3">Mida màxima: {{ human_filesize(config('ait.image-max-size')) }}</small>
+
                                 <input type="file" hidden name="galeria" id="f_galeria"  aria-describedby="f_galeria" multiple />
 
                                 <div class="dropzone"><h3>Drop image/s here...</h3></div>
