@@ -20,6 +20,10 @@
 }
 
 .single-post{
+    img{
+        max-width: 100%;
+        height: auto;
+    }
     .featured-image{
         border-top:1px solid $primary;
         border-bottom:1px solid $primary;
