@@ -138,16 +138,24 @@ class User extends CorcelUser
         return $image && $image->url!=null;
     }
     public function profileImage(){
-        return $this->acf->image('profile_picture');
+        try{
+            return $this->acf->image('profile_picture');
+        }catch(Exception $e){
+            return null;
+        }
     }
 
     public function hasFeaturedImage(){
         $image= $this->featuredImage();
         return $image && $image->url!=null;
     }
-    
+
     public function featuredImage(){
-        return $this->acf->image('featured_image');
+        try{
+            return $this->acf->image('featured_image');
+        }catch(Exception $e){
+            return null;
+        }
     }
 
 
@@ -178,11 +186,11 @@ class User extends CorcelUser
     }
 
     public function updatePassword($password){
-        
+
         // Log::debug("Calling to url: wp/v2/users/".$this->ID);
         // Log::debug("Options:");
         // Log::debug($args);
-		
+
         $response=$this->api_client->request('POST', 'wp/v2/users/'.$this->ID,[
             'auth' => [
                 config('ait.wordpress.user'),
@@ -265,8 +273,12 @@ class User extends CorcelUser
             if($options["size"]=="full" || $image->mime_type=="image/gif"){
                 $imgsrc=$image->url;
             }else{
-                $imgsrc=$image->size($options["size"])->url;
-                
+                try{
+                    $imgsrc=$image->size($options["size"])->url;
+                }catch(Exception $e){
+                    $imgsrc=$image->url;
+                }
+
             }
             if(!$imgsrc) $imgsrc=$image->url;
         }
@@ -279,10 +291,10 @@ class User extends CorcelUser
 
     public function getFeaturedImageSrc( $options=[]){
         // dump($options);
-        
+
         $image=$this->featuredImage();
         $options=$this->getImageOptions($options);
-        
+
         return $this->getImageSrc($image, $options);
         // die();
     }
@@ -292,7 +304,7 @@ class User extends CorcelUser
         // dump($options);
         $options=$this->getImageOptions($options);
         // dump($options);
-        $imgsrc=$this->getImageSrc($image, $options);    
+        $imgsrc=$this->getImageSrc($image, $options);
         return '<img src="'. $imgsrc. '" class="'.$options["class"].'" alt="'.$options["title"].'">';
     }
 
