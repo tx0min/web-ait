@@ -120,9 +120,10 @@ class User extends CorcelUser
     }
 
     public function displayName(){
-        $display=$this->acf->text('display_name');
+        return user_display_name($this);
+        /* $display=$this->acf->text('display_name');
         if($display=="full_name") return implode(" ",[$this->first_name,$this->last_name]);
-        else return isset($this->{$display})?$this->{$display}:$this->nickname;
+        else return isset($this->{$display})?$this->{$display}:$this->nickname; */
     }
 
     public function get_display(){

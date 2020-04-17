@@ -13,8 +13,9 @@
                 {{-- @dump($slide) --}}
                 <div class="image" style="background-image:url({{$slide["image"]->url}})" ></div>
                 <div class="gradient" style="opacity:{{ $slide["grad_opac"] }}" ></div>
-                @if($slide["author"])
-                    <a class="author-name" href="{{ route('socis.soci',['soci_slug'=>$slide["author"]->slug]) }}">{{ $slide["author"]->display_name }}</a>
+                @if($author = $slide["author"])
+
+                    <a class="author-name" href="{{ route('socis.soci',['soci_slug'=>$author->slug]) }}">{{ user_display_name($author) }}</a>
                 @endif
 
                 <div class="page-content">

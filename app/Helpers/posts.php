@@ -48,3 +48,12 @@ if (! function_exists('post_date')) {
         // return $post->post_date;
     }
 }
+
+if (! function_exists('user_display_name')) {
+
+    function user_display_name($user){
+        $display=$user->acf->text('display_name');
+        if($display=="full_name") return implode(" ",[$user->first_name,$user->last_name]);
+        else return isset($user->{$display})?$user->{$display}:$user->nickname;
+    }
+}

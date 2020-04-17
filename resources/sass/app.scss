@@ -351,6 +351,31 @@ html.onTop{
 
 footer{
   margin-top:3em;
+  padding:5em 1em;
+  color:$white;
+  background-color: $primary;
+
+  .social{
+      a{
+          color:$white;
+          font-size:2em;
+      }
+  }
+
+  .nav{
+      margin-top:3em;
+      display: block;
+      li{
+          display: inline-block;
+          a{
+            padding:.5em;
+           color:$white;
+           text-transform: uppercase;
+           font-size: .8em;
+       }
+      }
+
+  }
 }
 
 
