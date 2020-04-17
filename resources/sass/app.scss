@@ -30,7 +30,7 @@
 
 
 
-html, body { 
+html, body {
   height: 100%;
   position: relative;
   min-height: 100%;
@@ -89,7 +89,7 @@ header{
   width:100%;
   z-index:10;
   background-color: $white;
-  
+
   transition: background 200ms ease-out;
 
 
@@ -231,7 +231,7 @@ header{
         opacity:1;
       }
     }
- 
+
   }
 
 }
@@ -248,7 +248,7 @@ html.onTop{
           opacity:0;
         }
       }
-    
+
     }
   }
 }
@@ -299,7 +299,7 @@ html.onTop{
     .page-content{
       padding-top:$fixed-margin-top;
     }
-   
+
   }
 }
 

@@ -20,17 +20,88 @@
 }
 
 .single-post{
-    img{
-        max-width: 100%;
-        height: auto;
+    .post-title {
+        line-height: 1em;
+        margin-bottom: .5em;
     }
-    .featured-image{
-        border-top:1px solid $primary;
-        border-bottom:1px solid $primary;
-        margin-top:2em;
-        margin-bottom:2em;
-        background-position: center top;
-        background-repeat: no-repeat;
-        background-size: cover;
+    .post-date{
+        font-size:.9em;
+        display:inline-block;
+    }
+    .post-categories{
+        display:inline-block;
+
+    }
+
+    .post-body{
+
+        img{
+            max-width: 100%;
+            height: auto;
+        }
+        p{
+            margin-bottom:1em;
+            &:last-child{
+                margin-bottom:0;
+            }
+        }
+        blockquote{
+            border-top: 1px solid $gray-600;
+            border-bottom: 1px solid $gray-600;
+            padding:2em;
+            margin:2em 0;
+            color:$gray-600;
+            font-size:1.1em;
+            font-style: italic;
+
+            &:first-child{
+                padding-top: 0;
+            }
+        }
+        hr{
+            border-color: $gray-400;
+            margin:2em 0;
+        }
+        h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
+            margin-bottom:1.5em;
+        }
+
+        @include media-breakpoint-up(md) {
+
+            blockquote{
+                border-top-width: 0px;
+                border-bottom-width: 0px;
+                border-left: 1px solid $gray-600;
+                padding:0em 0 0 2em;
+            }
+        }
+        .featured-image{
+            border-top:1px solid $primary;
+            border-bottom:1px solid $primary;
+            margin-top:2em;
+            margin-bottom:2em;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        ul, ol{
+            margin-bottom:2em;
+        }
+        a:not(.wp-block-file__button):not(.wp-block-button__link){
+            color: $primary;
+            font-weight: bold;
+        }
+
+        .wp-block-image{
+            figcaption{
+                font-size:.8em;
+                font-style: italic;
+            }
+        }
+
+
+        .wp-block-button.btn-block > a {
+            display: block;
+        }
     }
 }

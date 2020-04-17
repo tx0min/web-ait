@@ -47,7 +47,7 @@ $(document).ready(function(e){
     })
 
 
-    
+
    isOnTop();
 
    $(document).on('keyup', function(e) {
@@ -99,16 +99,31 @@ window.addEventListener('scroll', function () {
 window.addEventListener('orientationchange', function () {
     setDocHeight();
 });
-    
+
+
+onDocumentReady(function() {
+    //make responsive iframes
+    $('iframe').each(function(){
+        if(!$(this).parent().is('.embed-responsive') ){
+            $(this).wrap($('<div class="embed-responsive embed-responsive-16by9"/>'));
+
+            $(this).addClass('embed-responsive-item');
+        }
+
+    });
+});
+
 
 onWindowLoad(function() {
-    
+
     isOnTop();
 
     setDocHeight();
 
     //autosizes
     autosize(document.querySelectorAll('textarea'));
+
+
 
     //GRIDS
     if($('.grid').length>0){
@@ -148,7 +163,12 @@ onWindowLoad(function() {
             append: '.grid__item',
             outlayer: msnry,
             status: '.page-load-status',
+            history:false
         });
+
+
+
+
     }
 });
 

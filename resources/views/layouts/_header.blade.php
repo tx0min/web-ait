@@ -11,10 +11,10 @@
                     {{-- <img src="{{ asset('img/favicon.png') }}"/> --}}
                 </a>
             </div>
-            
+
             <div class="col">
                 <nav id="nav-container">
-                   
+
                     <ul class="nav">
                         <li class="nav-item {{ isActiveRoute('associacio') }} "  >
                             <a class="nav-link" href="{{ route('associacio') }}">{{ __('Associació') }}</a>
@@ -23,7 +23,7 @@
                             <a class="nav-link" href="{{ route('socis') }}">{{ __('Socis') }}</a>
                         </li>
                         <li class="nav-item {{ isActiveRoute('blog') }}">
-                            <a class="nav-link" href="{{ route('blog') }}">{{ __('Actualitat') }}</a>
+                            <a class="nav-link" href="{{ route('blog') }}">{{ __('Activitats') }}</a>
                         </li>
                         <li class="nav-item {{ isActiveRoute('fes-te-soci') }}">
                             <a class="nav-link" href="{{ route('fes-te-soci') }}">{{ __('Fes-te soci!') }}</a>
@@ -31,12 +31,12 @@
                     </ul>
 
                     <ul class="nav ">
-                       
+
                         @guest
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">@icon('door-open') {{ __('Accedir') }}</a>
                             </li>
-                            
+
                         @else
                             <li class="nav-item {{ isActiveRoute('backend') }} ">
                                 <a class="nav-link" href="{{ route('backend') }}">  @icon('user-circle') {{ Auth::user()->displayName() }}</a>
