@@ -159,7 +159,7 @@ onWindowLoad(function() {
 
 
         var infScroll = new InfiniteScroll( grid, {
-            path: '.page-link[rel=next]',
+            path: 'a.page-link[rel=next]',
             append: '.grid__item',
             outlayer: msnry,
             status: '.page-load-status',

@@ -24,9 +24,10 @@ Route::get('/fes-te-soci', 'WebController@festeSoci')->name('fes-te-soci');
 Route::post('/fes-te-soci', 'WebController@altaSoci')->name('fes-te-soci.alta');
 
 
-Route::get('/socis', 'SocisController@socis')->name('socis');
-Route::get('/socis/disciplina/{disciplina}', 'SocisController@disciplina')->name('socis.disciplina');
-Route::get('/socis/{soci_slug}', 'SocisController@soci')->name('socis.soci');
+//Route::get('/socis', 'SocisController@socis')->name('socis');
+Route::get('/socis/flush', 'SocisController@flush')->name('socis.flush');
+Route::get('/socis/{disciplina?}', 'SocisController@socis')->name('socis');
+Route::get('/soci/{soci_slug}', 'SocisController@soci')->name('socis.soci');
 Route::post('/socis', 'SocisController@search')->name('socis.search');
 
 Route::get('/blog', 'BlogController@blog')->name('blog');

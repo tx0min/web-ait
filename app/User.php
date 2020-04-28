@@ -15,11 +15,11 @@ class User extends CorcelUser
 
     // use HasTaxonomies;
 
-    protected $api_client;
     protected $rest_fields = ["disciplines"];
     protected $api_fields = ["first_name", "last_name", "nickname", "display_name","telefon", "localitat","adreca", "soci_biografia", "soci_email", "soci_web", "facebook", "twitter", "instagram", "youtube", "linkedin"];
     protected $valid_mimes = [ "image/png" , "image/jpg", "image/jpeg", "image/gif" ];
     protected $max_file_size;
+    protected $wp_url;
 
     /**
      * Class constructor.
@@ -27,14 +27,17 @@ class User extends CorcelUser
     public function __construct()
     {
         $this->max_file_size = config('ait.image-max-size');
+        $this->wp_url = config('ait.wordpress.url');
 
-        $this->api_client = new Client([
-			'base_uri' => config('ait.wordpress.url'),
-			'verify' =>false
-		]);
     }
 
 
+    protected function api_client(){
+        return new Client([
+			'base_uri' => $this->wp_url,
+			'verify' =>false
+		]);
+    }
     public function taxonomies()
     {
         return $this->belongsToMany(
@@ -162,7 +165,7 @@ class User extends CorcelUser
 
     private function getACField($field_name){
         //GET acf/v3/users/user_id/field_name
-        $response=$this->api_client->request('GET', 'acf/v3/users/'.$this->ID.'/'.$field_name,
+        $response=$this->api_client()->request('GET', 'acf/v3/users/'.$this->ID.'/'.$field_name,
             [
                 'auth' => [
                     config('ait.wordpress.user'),
@@ -176,7 +179,7 @@ class User extends CorcelUser
 
     public static function createUser($form_params=[]){
         $tmpuser=new User();
-        $response=$tmpuser->api_client->request('POST', 'wp/v2/users',[
+        $response=$tmpuser->api_client()->request('POST', 'wp/v2/users',[
             'auth' => [
                 config('ait.wordpress.user'),
                 config('ait.wordpress.password')
@@ -192,7 +195,7 @@ class User extends CorcelUser
         // Log::debug("Options:");
         // Log::debug($args);
 
-        $response=$this->api_client->request('POST', 'wp/v2/users/'.$this->ID,[
+        $response=$this->api_client()->request('POST', 'wp/v2/users/'.$this->ID,[
             'auth' => [
                 config('ait.wordpress.user'),
                 config('ait.wordpress.password')
@@ -211,7 +214,7 @@ class User extends CorcelUser
     }
 
     public function setACFields($fields){
-        return  $this->api_client->request('POST', 'acf/v3/users/'.$this->ID,
+        return  $this->api_client()->request('POST', 'acf/v3/users/'.$this->ID,
             [
                 'auth' => [
                     config('ait.wordpress.user'),
@@ -478,7 +481,7 @@ class User extends CorcelUser
             //subo el archivo
             //POST /wp-json/wp/v2/media
             //form data : file
-            $response=$this->api_client->request('POST', 'wp/v2/media', [
+            $response=$this->api_client()->request('POST', 'wp/v2/media', [
                 'auth' => [
                     config('ait.wordpress.user'),
                     config('ait.wordpress.password')

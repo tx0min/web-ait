@@ -6,6 +6,9 @@ use App\Models\Url;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Corcel\Model\Post;
+use Corcel\Model\Taxonomy;
+
 
 class SiteMapController extends Controller
 {
@@ -52,14 +55,14 @@ class SiteMapController extends Controller
         $this->siteMap->add(
             Url::create('/blog')
                 ->lastUpdate($startOfMonth)
-                ->frequency('monthly')
+                ->frequency('daily')
                 ->priority('0.8')
         );
 
         $this->siteMap->add(
             Url::create('/socis')
                 ->lastUpdate($startOfMonth)
-                ->frequency('monthly')
+                ->frequency('weekly')
                 ->priority('0.8')
         );
 
@@ -72,12 +75,22 @@ class SiteMapController extends Controller
     }
     private function addProfilePages()
     {
-        // ...
+
     }
 
     private function addArticles()
     {
-        // ...
+        $posts=Post::type('post')->newest()->published();
+        //dd($posts);//
+        if($posts=$posts->get()){
+            foreach($posts as $post){
+                $this->siteMap->add(
+                    Url::create('/blog/'.$post->slug)
+                        ->lastUpdate($post->post_date)
+                );
+            }
+        }
+
     }
 
     private function addCategories()
