@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Corcel\Model\Post;
 use Corcel\Model\Taxonomy;
-
+use App\User;
 
 class SiteMapController extends Controller
 {
@@ -72,10 +72,42 @@ class SiteMapController extends Controller
                 ->frequency('monthly')
                 ->priority('0.8')
         );
+
+        $this->siteMap->add(
+            Url::create('/avis-legal')
+                ->lastUpdate($startOfMonth)
+                ->frequency('yearly')
+                ->priority('0.8')
+        );
+
+        $this->siteMap->add(
+            Url::create('/politica-privacitat')
+                ->lastUpdate($startOfMonth)
+                ->frequency('yearly')
+                ->priority('0.8')
+        );
+
+        $this->siteMap->add(
+            Url::create('/cookies')
+                ->lastUpdate($startOfMonth)
+                ->frequency('yearly')
+                ->priority('0.8')
+        );
     }
+
+
     private function addProfilePages()
     {
-
+        $users=User::socis()->get();
+        //dd($users);//
+        if($users){
+            foreach($users as $user){
+                $this->siteMap->add(
+                    Url::create( route('socis.soci',['soci_slug'=>$user->slug]) )
+                        ->lastUpdate($user->post_date)
+                );
+            }
+        }
     }
 
     private function addArticles()

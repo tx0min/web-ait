@@ -56,12 +56,12 @@ class WebController extends Controller
             return redirect()->route('home');
         }
     }
-    
+
     public function festeSoci(){
 
         $page=Post::slug(config('fes-te-soci'))->first();
         $disciplines= Taxonomy::where('taxonomy', 'disciplines')->get();
-        
+
         return view('fes-te-soci',compact('page','disciplines'));
     }
 
@@ -71,11 +71,11 @@ class WebController extends Controller
         $soci=new AltaSoci($request->all());
         $soci->save();
         $mailable=new PeticioAltaSoci($soci);
-        
+
         try{
             // return $mailable;
             Mail::to(config('ait.email-alta-soci'))->send($mailable);
-        
+
             return redirect()->route('fes-te-soci')->with(['success'=>"La teva sol·licitud s'ha enviat correctament. En breu ens posarem en contacte amb tu per confirmar la teva alta de soci."]);
         }catch(Exception $e){
             // dd($e);
@@ -83,5 +83,26 @@ class WebController extends Controller
                 ->route('fes-te-soci')
                 ->with(['error'=>"Hi ha hagut algun enviant el correu..."]);
         }
+    }
+
+
+
+    private function loadWordpressPage($pagename){
+        $page=Post::slug($pagename)->first();
+        if(!$page) abort(404);
+        return view('page', compact('page'));
+    }
+
+
+    public function avisLegal(){
+        return $this->loadWordpressPage(config('ait.pages.avis-legal'));
+    }
+
+    public function cookies(){
+        return $this->loadWordpressPage(config('ait.pages.cookies'));
+    }
+
+    public function politicaPrivacitat(){
+        return $this->loadWordpressPage(config('ait.pages.politica-privacitat'));
     }
 }

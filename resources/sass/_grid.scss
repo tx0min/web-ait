@@ -30,6 +30,11 @@
 
       a{
         text-decoration: none;
+        color: $link-color;
+
+        &.badge-dark{
+            color: #fff;
+        }
       }
 
       &.size-featured .grid-inner,

@@ -38,7 +38,7 @@
     @include media-breakpoint-up(md) {
       header nav a{
         color: var(--text-color);
-        
+
       }
       #main-aside svg{
         fill: var(--text-color);
@@ -96,7 +96,7 @@
     .home-slide{
       width:100vw;
       height: vh(100);
-      
+
       // position: fixed;
       // top:0;
       // left:0;
@@ -106,7 +106,7 @@
       .gradient{
         width:100vw;
         height: vh(100);
-      
+
         position:absolute;
         left:0;
         top:0;
@@ -117,7 +117,7 @@
       .image{
         width:100vw;
         height: vh(100);
-      
+
         position:absolute;
         left:0;
         top:0;

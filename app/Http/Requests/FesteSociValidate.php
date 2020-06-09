@@ -17,6 +17,8 @@ class FesteSociValidate extends BaseRequest
             'user_email' => ['required','email'],
             'data_naixement' => ['required','date_format:d/m/Y'],
             'disciplines' => ['required'],
+            'check-politica' => ['required'],
+            'check-condicions' => ['required'],
             'password' => ['required','min:6','confirmed']
         ];
     }
@@ -38,6 +40,8 @@ class FesteSociValidate extends BaseRequest
             'password.required'  => 'Cal que emplenis la contrasenya.',
             'password.min'  => 'La contrasenya ha de tenir un mínim de 6 caràcters',
             'password.confirmed'  => 'La contrasenya no coincideix',
+            'check-politica.required'  => 'Cal que acceptis la política de privacitat',
+            'check-condicions.required'  => 'Cal que acceptis les condicions d\'inscripció',
         ];
     }
 

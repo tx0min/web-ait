@@ -11,6 +11,9 @@ return [
         'associacio' => 'associacio',
         'fes-te-soci' => 'fes-te-soci',
         'home' => 'inicio',
+        'avis-legal' => 'avis-legal',
+        'cookies' => 'cookies',
+        'politica-privacitat' => 'politica-privacitat',
     ],
     'sizes' => [
         'small' => 'square-small',
@@ -19,7 +22,7 @@ return [
         'large' => 'square-big',
         'important' => 'size-important',
         'featured' => 'size-featured',
-        'full' => 'full' 
+        'full' => 'full'
     ],
     'image-max-size' => 3145728, //3 MB
     'email-alta-soci' => env('AIT_MAIL_ALTA', ''),

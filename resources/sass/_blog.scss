@@ -63,7 +63,8 @@
             margin:2em 0;
         }
         h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
-            margin-bottom:1.5em;
+            margin-top:1.5em;
+            margin-bottom:1em;
         }
 
         @include media-breakpoint-up(md) {
@@ -88,8 +89,8 @@
             margin-bottom:2em;
         }
         a:not(.wp-block-file__button):not(.wp-block-button__link){
-            color: $primary;
-            font-weight: bold;
+            color: $info;
+            /*font-weight: bold;*/
         }
 
         .wp-block-image{

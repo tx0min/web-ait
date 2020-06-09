@@ -23,6 +23,9 @@ Route::get('/associacio', 'WebController@associacio')->name('associacio');
 Route::get('/fes-te-soci', 'WebController@festeSoci')->name('fes-te-soci');
 Route::post('/fes-te-soci', 'WebController@altaSoci')->name('fes-te-soci.alta');
 
+Route::get('/avis-legal', 'WebController@avisLegal')->name('avis-legal');
+Route::get('/cookies', 'WebController@cookies')->name('cookies');
+Route::get('/politica-privacitat', 'WebController@politicaPrivacitat')->name('politica-privacitat');
 
 //Route::get('/socis', 'SocisController@socis')->name('socis');
 Route::get('/socis/flush', 'SocisController@flush')->name('socis.flush');

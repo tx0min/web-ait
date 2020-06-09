@@ -288,6 +288,10 @@ html.onTop{
   flex-wrap: nowrap;
   .page-content{
     padding-top:$fixed-margin-top-sm;
+
+    a{
+
+    }
   }
 
 }
@@ -363,8 +367,10 @@ footer{
   }
 
   .nav{
-      margin-top:3em;
-      display: block;
+      &:first-child{
+          margin-top:3em;
+      }
+      display: inline-block;
       li{
           display: inline-block;
           a{
@@ -389,5 +395,6 @@ footer{
 @import 'blog';
 @import 'socis';
 @import 'back';
+
 
 

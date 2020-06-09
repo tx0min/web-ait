@@ -28,6 +28,7 @@ $(document).ready(function(e){
         accordionOn: ['xs', 'sm']
    });
 
+   $('[data-toggle="popover"]').popover({html:true})
 
 
     //NAV

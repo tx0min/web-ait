@@ -1812,6 +1812,12 @@ p.wp-block-subhead {
     border-color: transparent;
 }
 
+.wp-block-table table td,
+.wp-block-table table th{
+    padding:.5em;
+    border-bottom: 1px solid $gray-600;
+}
+
 .wp-block-text-columns {
     display: flex;
 }

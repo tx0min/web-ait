@@ -16,7 +16,17 @@
             </div>
             <div class="col-md-4 text-center text-md-left">
                 @include('layouts._mainmenu')
-
+                <ul class="nav">
+                    <li class="nav-item {{ isActiveRoute('avis-legal') }} "  >
+                        <a class="nav-link" href="{{ route('avis-legal') }}">{{ __('Avís Legal') }}</a>
+                    </li>
+                    <li class="nav-item {{ isActiveRoute('cookies') }} "  >
+                        <a class="nav-link" href="{{ route('cookies') }}">{{ __('Política de Cookies') }}</a>
+                    </li>
+                    <li class="nav-item {{ isActiveRoute('politica-privacitat') }} "  >
+                        <a class="nav-link" href="{{ route('politica-privacitat') }}">{{ __('Política de privacitat') }}</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
